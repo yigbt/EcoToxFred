@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ```
 
 Then run the `streamlit run` command to start the app on [localhost:8501](http://localhost:8501/
-[http://localhost:8501/).
+http://localhost:8501/).
 
 ```{sh}
 streamlit run bot.py
