@@ -10,7 +10,7 @@ MATCH (n:Substance)
 DETACH DELETE n
 
 // where is Diuron a driver with high driver importance
-MATCH (s:Substance {preferredName: 'Diuron'})-[r:IS_DRIVER]->(l:Site)
+MATCH (s:Substance {name: 'Diuron'})-[r:IS_DRIVER]->(l:Site)
   WHERE r.driver_importance > 0.8
 RETURN s, r, l
 
