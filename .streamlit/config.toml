@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2024 Helmholtz Centre for Environmental Research (UFZ)
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[server]
+port = 8501
+
+# The base path for the URL where Streamlit should be served from.
+# Default: "" - needs to be adjusted, when deployed on WOMBAT
+baseUrlPath = ""
+
+# Max size, in megabytes, for files uploaded with the file_uploader.
+# Default: 200
+maxUploadSize = 200
+
+[browser]
+
+# Whether to send usage statistics to Streamlit.
+# Default: true
+gatherUsageStats = false
+
+serverPort = 8501
+
