@@ -27,3 +27,15 @@ MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
   WHERE r.driver_importance > 0.8
 RETURN DISTINCT s.name, s.DTXSID, r.driver_importance
   ORDER BY r.driver_importance
+
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.name='DDT'
+RETURN l
+
+MATCH (s:Substance) -[r:MEASURED_AT]-> (l:Site)
+WHERE s.name = 'Diuron'
+RETURN DISTINCT s.name as Name, l.country as Country
+
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.DTXSID='DTXSID0020446'
+RETURN DISTINCT l.country as Country
