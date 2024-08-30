@@ -11,6 +11,8 @@ def connect_to_neo4j() -> Neo4jGraph:
     Returns:
         Neo4jGraph: The Neo4j graph instance
     """
+    # TODO: Catch ValueError("Cannot resolve address {}".format(address))
+    # ValueError: Could not connect to Neo4j database. Please ensure that the url is correct
     return Neo4jGraph(
         url=st.secrets["NEO4J_URI"],
         username=st.secrets["NEO4J_USERNAME"],

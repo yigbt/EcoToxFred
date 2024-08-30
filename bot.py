@@ -85,6 +85,7 @@ if question := st.chat_input("What do you want to know?"):
 if st.session_state.messages[-1]["role"] != "assistant":
     message = st.session_state.messages[-1]
     with st.spinner("Thinking..."):
+        # TODO: Try catch
         generated_response = generate_response(st.session_state.messages[-1]["content"])
         write_message({
             "role": "assistant",

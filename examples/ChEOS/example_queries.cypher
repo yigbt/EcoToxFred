@@ -39,3 +39,7 @@ RETURN DISTINCT s.name as Name, l.country as Country
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
 WHERE s.DTXSID='DTXSID0020446'
 RETURN DISTINCT l.country as Country
+
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.DTXSID='DTXSID0020446'
+RETURN l.name as SamplingSite, r.year as Year, r.quarter as Quarter
