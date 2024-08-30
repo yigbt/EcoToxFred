@@ -27,3 +27,7 @@ MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
   WHERE r.driver_importance > 0.8
 RETURN DISTINCT s.name, s.DTXSID, r.driver_importance
   ORDER BY r.driver_importance
+
+// TU computation in GDB
+// median_concentration = median(concentration_value)
+// TU = ifelse (toxsource=qsar); (median_concentration * neutral_fraction) / tox_value; median_concentration / tox_value
