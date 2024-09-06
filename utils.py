@@ -1,5 +1,12 @@
+from typing import TextIO
+
 import streamlit as st
 from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
+
+
+def get_version() -> str:
+    with open("VERSION", "r") as f:
+        return f.read().strip()
 
 
 # tag::write_message[]

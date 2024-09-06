@@ -2,10 +2,17 @@ import streamlit as st
 
 import agent
 from llm import llm
-from utils import write_message
+from utils import write_message, get_version
 
 # Page Config
-st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png")
+st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
+    layout='centered',
+    menu_items={
+        'about': f'''**EcoToxFred v{get_version()}**        
+        A Neo4j-backed Chatbot discussing environmental monitoring data
+        contact: Jana Schor jana.schor@ufz.de'''
+    }
+)
 
 example_questions = [
     "What is Diuron and where has it been measured?",
@@ -56,10 +63,10 @@ def add_question_to_messages(text):
 
 
 with st.sidebar:
-    st.image("figures/UFZ_MPG_Logo.png")
-    st.header("EcoToxFred", divider=True)
+    st.image("figures/UFZ_MPG_Logo.svg")
+    st.header(f"EcoToxFred (v{get_version()})", divider=True)
     st.markdown(
-        "Here, we present EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring "
+        "A Chatbot for discussing environmental monitoring "
         "data collected in a large knowledge graph and stored in a Neo4j Graph Database."
     )
     st.header("Example Questions", divider=True)
