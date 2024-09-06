@@ -51,7 +51,7 @@ decider_chain = (
 #     else:
 #         return general_chain
 
-def create_cypher_qa_chain(prompt_template: PromptTemplate) -> GraphCypherQAChain:
+def create_direct_cypher_chain(prompt_template: PromptTemplate) -> GraphCypherQAChain:
     """
     Creates a GraphCypherQAChain using the provided prompt template and Neo4j graph.
 

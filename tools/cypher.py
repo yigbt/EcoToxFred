@@ -1,7 +1,4 @@
-from llm import llm
-from graph import graph
 from tools import cypher_utils
-from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
 from langchain.prompts.prompt import PromptTemplate
 
 
@@ -115,28 +112,9 @@ def create_cypher_prompt_template():
         Cypher Query:""")
 
 
-# def create_cypher_qa_chain(prompt_template: PromptTemplate) -> GraphCypherQAChain:
-#     """
-#     Creates a GraphCypherQAChain using the provided prompt template and Neo4j graph.
-#
-#     Args:
-#         prompt_template (PromptTemplate): The prompt template for Cypher queries
-#     """
-#     return GraphCypherQAChain.from_llm(
-#         llm,
-#         graph=graph,
-#         verbose=True,
-#         cypher_prompt=prompt_template,
-#         return_embedding=False,  # Don't return embedding properties for better performance
-#         validate_cypher=True,
-#         return_intermediate_steps=True,
-#     )
-
 
 def invoke_cypher_tool(arg, **kwargs):
-    chain = cypher_utils.create_cypher_qa_chain(prompt_template=create_cypher_prompt_template())
+    chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
     query_result = chain.invoke(arg, **kwargs)
+    cypher_utils.decider_chain.invoke(query_result['result'])
     return str(query_result)
-
-
-# cypher_qa = create_cypher_qa_chain(prompt_template=create_cypher_prompt_template())

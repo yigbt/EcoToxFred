@@ -56,6 +56,7 @@ def add_question_to_messages(text):
 
 
 with st.sidebar:
+    st.image("figures/UFZ_MPG_Logo.png")
     st.header("EcoToxFred", divider=True)
     st.markdown(
         "Here, we present EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring "
