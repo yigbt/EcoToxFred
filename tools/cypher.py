@@ -116,5 +116,5 @@ def create_cypher_prompt_template():
 def invoke_cypher_tool(arg, **kwargs):
     chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
     query_result = chain.invoke(arg, **kwargs)
-    cypher_utils.decider_chain.invoke(query_result['result'])
+    # cypher_utils.decider_chain.invoke(query_result['result'])
     return str(query_result)
