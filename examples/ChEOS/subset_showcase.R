@@ -208,6 +208,15 @@ main <- function() {
   write_csv(is_driver, file = file.path(args$out_dir, "ETF_auradb_is_driver_relation.csv"))
   write_csv(summarized_impact_on, file = file.path(args$out_dir, "ETF_auradb_summarized_impact_on_relation.csv"))
 
+  # split summarized_impact_on file
+  split <- summarized_impact_on_n / 3
+  write_csv(summarized_impact_on[1:split,],
+        file = file.path(args$out_dir, "ETF_auradb_summarized_impact_on_relation_01.csv"))
+  write_csv(summarized_impact_on[(split+1):(split*2),],
+        file = file.path(args$out_dir, "ETF_auradb_summarized_impact_on_relation_02.csv"))
+  write_csv(summarized_impact_on[(2*split+1):summarized_impact_on_n,],
+        file = file.path(args$out_dir, "ETF_auradb_summarized_impact_on_relation_03.csv"))
+
 }
 
 main()
