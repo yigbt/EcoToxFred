@@ -10,9 +10,9 @@ CREATE CONSTRAINT `name_Site_uniq` IF NOT EXISTS
 FOR (n: `Site`)
 REQUIRE (n.`name`) IS UNIQUE;
 
-CREATE CONSTRAINT `key_measured_at` IF NOT EXISTS
+CREATE CONSTRAINT `key_measured_at_uniq` IF NOT EXISTS
 FOR ()-[r: MEASURED_AT]->()
-REQUIRE (r.key) IS KEY;
+REQUIRE (r.key) IS UNIQUE;
 
 CREATE CONSTRAINT `key_tested_for_toxicity_uniq` IF NOT EXISTS
 FOR ()-[r: TESTED_FOR_TOXICITY]->()

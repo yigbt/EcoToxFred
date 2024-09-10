@@ -1,5 +1,16 @@
 library("tidyverse")
 library("dplyr")
+library("argparse")
+
+# Cmd line arguments ------------------------------------------------------------------------------------------------- #
+
+parser <- ArgumentParser()
+
+# by default ArgumentParser will add an help option
+parser$add_argument("--in_dir", type = "character", help = paste("Directory where the input files can be found."))
+parser$add_argument("--out_dir", type = "character", help = paste("Directory where the output files will be placed."))
+
+# Functions ---------------------------------------------------------------------------------------------------------- #
 
 load_data <- function(files) {
   data <- lapply(files, read_csv)
@@ -43,29 +54,28 @@ filter_drivers_data <- function(data) {
 }
 
 main <- function() {
-  log_file <- file("examples/ChEOS/subset_showcase_big.log", open = "a")
 
-  files <- list.files(path = "/data/cheos/cheos_mix/Quarters/CleanGeoStreamR/rdata", pattern = ".rda", full.names = TRUE)
-  # files <- files[grep(pattern = 'neo4j_', files)]
+  args <- parser$parse_args()
+
+  log_file_path <- file.path(args$out_dir, "subset_showcase.log")
+
+  # these files are uploaded to the NC folder 'auradb_input_data/original_rda_files'
+  files <- list.files(path = args$in_dir, pattern = ".rda", full.names = TRUE)
+  files <- files[grep(pattern = 'neo4j_', files)]
 
   for (file_name in (files)) { load(file_name) }
 
-  sink(log_file)
-  print("01 Loaded files:")
-  sink()
+  log_file <- file(log_file_path, open = "a")
+  writeLines("01 Loaded files:", log_file)
+  writeLines(files, log_file)
 
-  sink(log_file)
-  files
-  sink()
-
-  sink(log_file)
-  print("02 # of entries:")
-  print(paste("Chemicals #:", chemical_data %>% nrow()))
-  print(paste("Hazard #:", hazard_data %>% nrow()))
-  print(paste("Exposure #:", exposure_TU_data %>% nrow()))
-  print(paste("Locations #:", location_tox_data %>% nrow()))
-  print(paste("Drivers #:", drivers_per_location %>% nrow()))
-  sink()
+  writeLines("\n02 # of entries:", log_file)
+  writeLines(paste("Chemicals #:", chemical_data %>% nrow()), log_file)
+  writeLines(paste("Hazard #:", hazard_data %>% nrow()), log_file)
+  writeLines(paste("Exposure #:", exposure_TU_data %>% nrow()), log_file)
+  writeLines(paste("Locations #:", location_tox_data %>% nrow()), log_file)
+  writeLines(paste("Drivers #:", drivers_per_location %>% nrow()), log_file)
+  close(log_file)
 
   exposure <- exposure_TU_data %>% filter_exposure_data()
   exposure_sites <- exposure$station_name_n %>% unique()
@@ -88,25 +98,15 @@ main <- function() {
     filter_drivers_data() %>%
     filter(DTXSID %in% exposure_substances, station_name_n %in% exposure_sites)
 
-  sink(log_file)
-  print("03 # of filtered entries:")
-  print(paste("Chemicals #:", substances %>% nrow()))
-  print(paste("Hazard #:", hazard %>% nrow()))
-  print(paste("Exposure #:", exposure %>% nrow()))
-  print(paste("Locations #:", sites %>% nrow()))
-  print(paste("Drivers #:", drivers %>% nrow()))
-  sink()
+  log_file <- file(log_file_path, open = "a")
+  writeLines("\n03 # of filtered entries:", log_file)
+  writeLines(paste("Chemicals #:", substances %>% nrow()), log_file)
+  writeLines(paste("Hazard #:", hazard %>% nrow()), log_file)
+  writeLines(paste("Exposure #:", exposure %>% nrow()), log_file)
+  writeLines(paste("Locations #:", sites %>% nrow()), log_file)
+  writeLines(paste("Drivers #:", drivers %>% nrow()), log_file)
+  close(log_file)
 
-
-  sink(log_file)
-  print("04 # of nodes:")
-  print(paste("Site #:", site_nodes %>% nrow()))
-  print(paste("Substance #:", substance_nodes %>% nrow()))
-  print(paste("Species #:", species_nodes %>% nrow()))
-  print(paste("Total #:", (site_nodes %>% nrow()) +
-    (substance_nodes %>% nrow()) +
-    (species_nodes %>% nrow())))
-  sink()
 
   # relations
   # MEASURED_AT : substance-site
@@ -162,6 +162,15 @@ main <- function() {
 
   relations_n <- sum(is_driver_n, measured_at_n, summarized_impact_on_n, tested_for_toxicity_n)
 
+  log_file <- file(log_file_path, open = "a")
+  writeLines("\n04 # of relations:", log_file)
+  writeLines(paste("IS_DRIVER #:", is_driver_n), log_file)
+  writeLines(paste("MEASURED_AT #:", measured_at_n), log_file)
+  writeLines(paste("SUMMARIZED_IMPACT_ON #:", summarized_impact_on_n), log_file)
+  writeLines(paste("TESTED_FOR_TOXICITY #:", tested_for_toxicity_n), log_file)
+  writeLines(paste("Total #:", relations_n), log_file)
+  close(log_file)
+
   # nodes
   species_nodes <- exposure %>%
     select(species) %>%
@@ -177,18 +186,27 @@ main <- function() {
     select(DTXSID, casrn, Name, inchi, inchiKey, IN_REACH, use_groups, use_groups_N) %>%
     unique() %>%
     filter(DTXSID %in% relevant_substances)
-
   nodes_n <- sum(nrow(species_nodes), nrow(substance_nodes), nrow(site_nodes))
 
+  log_file <- file(log_file_path, open = "a")
+  writeLines("\n05 # of nodes:", log_file)
+  writeLines(paste("Site #:", site_nodes %>% nrow()), log_file)
+  writeLines(paste("Substance #:", substance_nodes %>% nrow()), log_file)
+  writeLines(paste("Species #:", species_nodes %>% nrow()), log_file)
+  writeLines(paste("Total #:", (site_nodes %>% nrow()) +
+    (substance_nodes %>% nrow()) +
+    (species_nodes %>% nrow())), log_file)
+  close(log_file)
+
   # save nodes to .csv
-  write_csv(site_nodes, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_site_nodes.csv")
-  write_csv(substance_nodes, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_substance_nodes.csv")
-  write_csv(species_nodes, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_species_nodes.csv")
+  write_csv(site_nodes, file = file.path(args$out_dir, "ETF_auradb_site_nodes.csv"))
+  write_csv(substance_nodes, file = file.path(args$out_dir, "ETF_auradb_substance_nodes.csv"))
+  write_csv(species_nodes, file = file.path(args$out_dir, "ETF_auradb_species_nodes.csv"))
   # save relations to .csv
-  write_csv(measured_at, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_measured_at_relation.csv")
-  write_csv(tested_for_toxicity, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_tested_for_toxicity_relation.csv")
-  write_csv(is_driver, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_is_driver_relation.csv")
-  write_csv(summarized_impact_on, file = "/data/cheos/cheos_mix/Quarters/NORMAN_2024/output/ETF_auradb_summarized_impact_on_relation.csv")
+  write_csv(measured_at, file = file.path(args$out_dir, "ETF_auradb_measured_at_relation.csv"))
+  write_csv(tested_for_toxicity, file = file.path(args$out_dir, "ETF_auradb_tested_for_toxicity_relation.csv"))
+  write_csv(is_driver, file = file.path(args$out_dir, "ETF_auradb_is_driver_relation.csv"))
+  write_csv(summarized_impact_on, file = file.path(args$out_dir, "ETF_auradb_summarized_impact_on_relation.csv"))
 
 }
 

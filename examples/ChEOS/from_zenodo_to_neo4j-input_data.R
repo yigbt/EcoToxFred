@@ -79,7 +79,9 @@ summarize_concentrations <- function(data) {
     summarise("median_concentration" = median(concentration_value)) %>%
     ungroup()
   left_join(data_sub,
-            df %>% select(-c(concentration_value, Norman_record_ID, Norman_SusDat_ID)) %>% unique(),
+            df %>%
+              select(-c(concentration_value, Norman_record_ID, Norman_SusDat_ID)) %>%
+              unique(),
             by = join_by(station_name_n, DTXSID, time_point))
 }
 
@@ -125,9 +127,12 @@ main <- function() {
 
   # setwd("/home/hertelj/git-hertelj/llm-chatbot-python/examples/ChEOS/")
   empodat_data <- get_exposure_data(
-    sql_file = "/home/hertelj/git-hertelj/llm-chatbot-python/examples/ChEOS/exposure_data.sql")
+    sql_file = "/home/hertelj/git-hertelj/EcoToxFred/examples/ChEOS/exposure_data.sql")
 
-  chemical_data <- read_csv(file = "/data/cheos/zenodo/v2/01_chemical_data.csv")
+  chemical_data <- read_csv(file = "/data/cheos/zenodo/v2/04_chemical_data.csv")
+  chemical_data <- chemical_data %>%
+    select(IDX:use_groups_N) %>%
+    unique()
 
   data <- merge_and_rearrange_data(chemical_data, empodat_data)  # add DTXSID
   data <- data %>% summarize_concentrations()  # median_concentrations per quarter
@@ -158,7 +163,7 @@ main <- function() {
                                            data_e = exposure_data,
                                            limit = 0.75)
 
-  write_csv(sites_data, file = "/data/cheos/zenodo/v2/neo4j_sites.data")
+  write_csv(sites_data, file = "/data/cheos/zenodo/v2/neo4j_sites.csv")
   write_csv(exposure_data, file = "/data/cheos/zenodo/v2/neo4j_exposure.csv")
   write_csv(chemical_data, file = "/data/cheos/zenodo/v2/neo4j_chemical.csv")
   write_csv(hazard_data, file = "/data/cheos/zenodo/v2/neo4j_hazard.csv")
