@@ -1,6 +1,6 @@
 import pytest
 
-from prompts import get_general_cypher_examples, get_map_cypher_examples
+from prompts import CypherExampleCollections
 from typing import List
 from utils import connect_to_neo4j_for_test
 
@@ -14,7 +14,8 @@ def database_connection():
         assert False, "No database connection could be established"
 
 # For now, simply combining all available Cypher examples and running all of them.
-cypher_examples: List[dict] = get_general_cypher_examples() + get_map_cypher_examples()
+cypher_examples: List[dict] = (CypherExampleCollections.general_cypher_queries.examples +
+                               CypherExampleCollections.map_cypher_queries.examples)
 
 @pytest.mark.parametrize("example", cypher_examples, ids=[e["information"][:40] for e in cypher_examples])
 def test_cypher_query(database_connection, example):

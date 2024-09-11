@@ -49,4 +49,5 @@ def test_location_map():
             )
         )
     )
-    fig.show()
+    # fig.show()
+    assert True

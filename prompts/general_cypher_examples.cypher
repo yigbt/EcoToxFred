@@ -1,11 +1,11 @@
-// 0. To find information about a certain substance by the substance's name
+// To find information about a certain substance by the substance's name
 MATCH (s:Substance)
   WHERE s.Name = 'Diuron'
 RETURN s.DTXSID AS DTXSID, s.Name AS Name,
        s.casrn AS CASrn, s.use_groups AS UseGroups,
        s.IN_REACH AS InREACH
 
-// 1. To find sites where a certain substance has been measured. Result is in descending order of the measured concentration.
+// To find sites where a certain substance has been measured. Result is in descending order of the measured concentration.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.Name = 'Diuron'
 RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID,
@@ -14,7 +14,7 @@ RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID,
        l.name AS SiteName, l.country AS Country, l.river_basin AS RiverBasin, l.water_body AS WaterBody
   ORDER BY r.median_concentration DESC
 
-// 2. To find sites where a certain substance has been measured with a concentration above a threshold. Result is in descending order of the measured concentration.
+// To find sites where a certain substance has been measured with a concentration above a threshold. Result is in descending order of the measured concentration.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.Name = 'Diuron' AND r.median_concentration > 0.001
 RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID,
@@ -23,7 +23,7 @@ RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID,
        l.name AS SiteName, l.country AS Country, l.river_basin AS RiverBasin, l.water_body AS WaterBody
   ORDER BY r.median_concentration DESC
 
-// 3. To find all chemicals measured in a certain river above a threshold:
+// To find all chemicals measured in a certain river above a threshold:
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE l.water_body = 'seine' //AND r.median_concentration > 0.001
 RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
@@ -31,27 +31,27 @@ RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
        l.name AS Site
   ORDER BY r.median_concentration DESC
 
-// 4. To find all substances measured in France
+// To find all substances measured in France
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE l.country = 'France'
 RETURN DISTINCT s.DTXSID AS DTXSID, s.Name AS Name
   ORDER BY Name
 
-// 5. To find the most frequent driver chemicals above a driver importance of 0.6, provide the top 10 records
+// To find the most frequent driver chemicals above a driver importance of 0.6, provide the top 10 records
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
   WHERE r.driver_importance > 0.6
 RETURN DISTINCT s.Name AS ChemicalName, count(r) AS frequency
   ORDER BY frequency DESC
   LIMIT 10
 
-// 6. To find the substances with highest driver importance, provide the first 10
+// To find the substances with highest driver importance, provide the first 10
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
   WHERE r.driver_importance > 0.8
 RETURN DISTINCT s.Name, s.DTXSID, r.driver_importance
   ORDER BY r.driver_importance DESC
   LIMIT 10
 
-// 7. To find sites where a certain substance is driver
+// To find sites where a certain substance is driver
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
   WHERE s.Name = 'Diuron'
 RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
