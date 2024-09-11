@@ -3,3 +3,4 @@ __pycache__
 secrets/.env
 .DS_Store
 .vscode
+tmp_data

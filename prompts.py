@@ -1,7 +1,12 @@
 import yaml
 from functools import partial
+import os
 import re
 from typing import List
+
+current_file_path = os.path.abspath(__file__)
+current_directory = os.path.dirname(current_file_path)
+prompts_directory = os.path.join(current_directory, 'prompts')
 
 class Prompt:
     def __init__(self, prompt_file: str):
@@ -31,8 +36,11 @@ class CypherExamples:
         self.examples: List[dict] = []
         self.read_cypher_file(example_file)
 
+    def get_queries(self):
+        return [e["cypher"] for e in self.examples]
+
     def read_cypher_file(self, file_path):
-        with open(file_path, 'r') as file:
+        with open(file_path) as file:
             content = file.read()
 
         # Split sections by one or more blank lines
@@ -51,7 +59,14 @@ class CypherExamples:
                     cypher.append(line.strip())
 
             # Join comment lines and query lines respectively
-            info_str = ' '.join(information)
-            cypher_str = ' '.join(cypher)
+            info_str = '\n'.join(information)
+            cypher_str = '\n'.join(cypher)
 
             self.examples.append({"information": info_str, "cypher": cypher_str})
+
+def get_general_cypher_examples() -> List[dict]:
+    return CypherExamples(os.path.join(prompts_directory, "general_cypher_examples.cypher")).examples
+
+def get_map_cypher_examples() -> List[dict]:
+    return CypherExamples(os.path.join(prompts_directory, "map_cypher_examples.cypher")).examples
+

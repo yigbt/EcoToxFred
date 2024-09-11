@@ -15,8 +15,10 @@ dependencies:
   - pandas
   - pillow
   - plotly
+  - pytest
   - requests
   - streamlit
   - tenacity
+  - toml
   - wikipedia
   - yaml

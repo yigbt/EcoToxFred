@@ -1,15 +1,17 @@
 from graph import graph
 import pandas as pd
 import plotly.express as px
-
-locations_cypher = \
-    """MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
-    WHERE r.year > 2010
-    RETURN l.name as name, l.lat as lat, l.lon as lon, r.sumTU as tu LIMIT 25
-    """
+import plotly.io as pio
 
 
 def test_location_map():
+    locations_cypher = \
+        """MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+        WHERE r.year > 2010
+        RETURN l.name as name, l.lat as lat, l.lon as lon, r.sumTU as tu LIMIT 25
+        """
+
+    pio.renderers.default = "browser"
     result = graph.query(locations_cypher)
     df = pd.DataFrame.from_dict(result)
     df["sumTU"] = df["tu"].astype(float)
@@ -46,4 +48,4 @@ def test_location_map():
             )
         )
     )
-    return fig
+    fig.show()
