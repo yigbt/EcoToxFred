@@ -1,18 +1,19 @@
-from graph import graph
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 
+from utils import connect_to_neo4j_for_test
 
 def test_location_map():
     locations_cypher = \
         """MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
         WHERE r.year > 2010
-        RETURN l.name as name, l.lat as lat, l.lon as lon, r.sumTU as tu LIMIT 25
+        RETURN l.name as name, l.lat as lat, l.lon as lon, r.sumTU as tu LIMIT 100
         """
 
     pio.renderers.default = "browser"
-    result = graph.query(locations_cypher)
+    db = connect_to_neo4j_for_test()
+    result = db.query(locations_cypher)
     df = pd.DataFrame.from_dict(result)
     df["sumTU"] = df["tu"].astype(float)
     fig = px.scatter_geo(
