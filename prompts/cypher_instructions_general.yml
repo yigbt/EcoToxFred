@@ -22,5 +22,4 @@ prompt: |+
   For questions that involve European rivers, lakes or water bodies search in the properties of the Site nodes.
   For questions that involve toxicity information use the toxic unit properties 'TU' or 'sumTU' of the relations
   measured_at and summarized_impact_on.
-  In case the result contains multiple values, return introductory sentences followed by a list of the values.
   </instructions>
