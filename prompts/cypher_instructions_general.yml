@@ -1,4 +1,5 @@
 parameters:
+  - cypher_instructions # prompts/cypher_instructions.yml
 prompt: |+
   <context>
   Chemicals are substances.
@@ -9,17 +10,5 @@ prompt: |+
   <context>
 
   <instructions>
-  Ignore water body, river basin and country information in case you are only asked about finding information on a 
-  certain chemical.
-  If you cannot find the requested chemical name, ask the user to provide the Comptox Dashboard ID of the 
-  requested chemical which is the DTXSID.
-  For questions that involve time or the interrogative 'when' refer to the node and relation properties year 
-  and quarter.
-  If you cannot find the requested river name in water_body search in river_basin.
-  If you cannot find the requested river name in river_basin search in water_body search.
-  For questions that involve geographic or location information or the interrogative 'where' search in the 
-  properties of the Site nodes.
-  For questions that involve European rivers, lakes or water bodies search in the properties of the Site nodes.
-  For questions that involve toxicity information use the toxic unit properties 'TU' or 'sumTU' of the relations
-  measured_at and summarized_impact_on.
+  {cypher_instructions}
   </instructions>

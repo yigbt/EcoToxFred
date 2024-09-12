@@ -1,0 +1,11 @@
+parameters:
+prompt: |+
+  If you cannot find the requested chemical name, ask the user to provide the Comptox Dashboard ID of the requested 
+  chemical, which is the DTXSID.
+  For questions that involve time or the interrogative 'when', please refer to the node and relation properties year 
+  and quarter.
+  For questions that involve European rivers, lakes, or water bodies, search in the properties of the Site nodes.
+  If you cannot find the requested lake or river name in the water_body property, search the river_basin property.
+  If you cannot find the requested lake or river name in the river_basin property, search the water_body property.
+  For questions that involve toxicity information, use the toxic unit properties TU or sumTU of the relations 
+  measured_at and summarized_impact_on.

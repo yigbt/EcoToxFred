@@ -1,0 +1,10 @@
+parameters:
+  - cypher_instructions # prompts/cypher_instructions.yml
+prompt: |+
+  <instructions>
+  {cypher_instructions}
+  Always return median or mean concentration, toxic unit, or sumTU values since they will be plotted on the y-axis of a 
+  two-dimensional plot.
+  Always return year and quarter information or site names since they will be plotted to the x-axis of a two-dimensional 
+  plot.
+  </instructions>

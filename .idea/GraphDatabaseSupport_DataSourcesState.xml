@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GraphDatabaseSupport.DataSourcesState">
+    <option name="containerV1">
+      <DataSourceContainerV1>
+        <option name="dataSources">
+          <list>
+            <DataSourceV1>
+              <option name="uuid" value="36909f4a-181f-4e3a-8163-0dd70647ee88" />
+              <option name="name" value="EcoToxFred" />
+              <option name="dataSourceType" value="NEO4J_BOLT" />
+              <option name="configuration">
+                <map>
+                  <entry key="authType" value="User &amp; Password" />
+                  <entry key="database" value="neo4j" />
+                  <entry key="host" value="651a6ea9.databases.neo4j.io" />
+                  <entry key="password" value="5S2b-k6vLWD3bi9UCbcttHaNYvhV3y4euo0j6kNpC-M" />
+                  <entry key="port" value="7687" />
+                  <entry key="protocol" value="neo4j+s" />
+                  <entry key="user" value="neo4j" />
+                </map>
+              </option>
+            </DataSourceV1>
+          </list>
+        </option>
+      </DataSourceContainerV1>
+    </option>
+  </component>
+</project>

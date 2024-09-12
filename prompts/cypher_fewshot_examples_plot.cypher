@@ -1,16 +1,16 @@
-// To show the (median) measured concentrations of a certain substance on the European map
+// To show the (median) measured concentrations of a certain substance
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron'
-RETURN s.name AS ChemicalName, // plot title
-       r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
-       l.name AS SiteName, // point hover
-       l.lat AS Lat, l.lon AS Lon // x,y coordinates
+  WHERE s.Name = 'Diuron'
+RETURN s.Name AS ChemicalName, // plot title
+       r.median_concentration AS Concentration, // y-axis
+       l.name AS SiteName, // x-axis
+       r.time_point AS DateTime // x-asis
   ORDER BY r.median_concentration DESC
 
 // To show the (median) measured concentrations of a certain substance at a certain range of time
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron' AND r.year >= 2010 AND r.year <= 2020
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND r.year >= 2010 AND r.year <= 2020
+RETURN s.Name AS ChemicalName, // plot title
        r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
@@ -19,8 +19,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // To show the driver_importance distribution of a certain substance
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE s.name = 'Diuron'
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron'
+RETURN s.Name AS ChemicalName, // plot title
        r.driver_importance AS DriverImportance, // [0,1], continuous point color from blue to red, with midpoint at 0.5
        r.species AS Species, // add to point hover
        l.name AS SiteName, // point hover
@@ -29,8 +29,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // To show the driver_importance distribution of a certain substance at a certain time
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE s.name = 'Diuron' AND r.year >= 2010
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND r.year >= 2010
+RETURN s.Name AS ChemicalName, // plot title
        r.driver_importance AS DriverImportance, // [0,1], continuous point color from blue to red, with midpoint at 0.5
        r.year AS Year, r.quarter AS Quarter, r.species AS Species, // add to point hover
        l.name AS SiteName, l.country AS Country, // point hover
@@ -39,8 +39,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // To show the distribution of the toxic unit (TU) of a certain substance at a certain time for the species algae (unicellular)
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron' AND r.year >= 2010
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND r.year >= 2010
+RETURN s.Name AS ChemicalName, // plot title
        r.TU_algae AS TU, // >=0, continuous point color from yellow to red, with midpoint orange at 1
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
