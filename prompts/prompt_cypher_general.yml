@@ -1,0 +1,19 @@
+parameters:
+  - basic_intro # prompts/basic_intro.yml
+  - cypher_intro # prompts/cypher_intro.yml
+  - cypher_fewshot_examples_general # prompts/cypher_fewshot_examples_general.cypher
+  - question
+prompt: |+
+  {basic_intro}
+  {cypher_intro}
+  {cypher_context_instructions_general}
+
+  <examples>
+  {cypher_fewshot_examples_general}
+  </examples>
+
+  <question>
+  {question}
+  </question>
+
+  Cypher Query:

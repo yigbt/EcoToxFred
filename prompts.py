@@ -67,7 +67,7 @@ class Prompts:
     """
     @classproperty
     def general_cypher_prompt(self) -> Prompt:
-        return Prompt(os.path.join(prompts_directory, "general_cypher_prompt.yml"))
+        return Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
 
 
 class CypherExampleCollection:
@@ -131,8 +131,8 @@ class CypherExampleCollections:
     """
     @classproperty
     def general_cypher_queries(self) -> CypherExampleCollection:
-        return CypherExampleCollection(os.path.join(prompts_directory, "general_cypher_examples.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))
 
     @classproperty
     def map_cypher_queries(self) -> CypherExampleCollection:
-        return CypherExampleCollection(os.path.join(prompts_directory, "general_cypher_examples.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))

@@ -1,0 +1,26 @@
+parameters:
+prompt: |+
+  <context>
+  Chemicals are substances.
+  Surface waters are comprised in water bodies and river basins.
+  A sampling site is a location where the concentration of a chemical has been measured. 
+  Measured chemical concentrations are summarized quarterly for the individual sampling sites. 
+  The verb detected in the context of chemical monitoring refers to a measured concentration above 0.
+  <context>
+
+  <instructions>
+  Ignore water body, river basin and country information in case you are only asked about finding information on a 
+  certain chemical.
+  If you cannot find the requested chemical name, ask the user to provide the Comptox Dashboard ID of the 
+  requested chemical which is the DTXSID.
+  For questions that involve time or the interrogative 'when' refer to the node and relation properties year 
+  and quarter.
+  If you cannot find the requested river name in water_body search in river_basin.
+  If you cannot find the requested river name in river_basin search in water_body search.
+  For questions that involve geographic or location information or the interrogative 'where' search in the 
+  properties of the Site nodes.
+  For questions that involve European rivers, lakes or water bodies search in the properties of the Site nodes.
+  For questions that involve toxicity information use the toxic unit properties 'TU' or 'sumTU' of the relations
+  measured_at and summarized_impact_on.
+  In case the result contains multiple values, return introductory sentences followed by a list of the values.
+  </instructions>
