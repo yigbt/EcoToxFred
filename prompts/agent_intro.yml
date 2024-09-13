@@ -1,7 +1,7 @@
 parameters:
   - basic_intro  # prompts/basic_intro.yml
   - tools
-  - toolnames
+  - tool_names
 prompt: |+
   {basic_intro}
   TOOLS:
