@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import re
 from typing import List, Iterable
+from langchain_core.prompts import PromptTemplate
 
 import yaml
 from sqlalchemy.util import classproperty
@@ -88,6 +89,9 @@ class Prompt:
         self.prompt = self.prompt.format_map(DefaultDict(parameters))
         self.parameters = set(self.parameters) - params_key_set
 
+    def get_prompt_template(self) -> PromptTemplate:
+        return PromptTemplate(input_variable=list(self.parameters), template=self.prompt)
+
 
 # noinspection PyMethodParameters
 class Prompts:
@@ -148,7 +152,7 @@ class Prompts:
             prompt_cypher_map.partial_apply_prompt(basic_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
-            prompt_cypher_map.inject_examples(CypherExampleCollections.general_cypher_queries)
+            prompt_cypher_map.inject_examples(CypherExampleCollections.map_cypher_queries)
             prompt_cypher_map.inject_graph_meta_data()
             cls._cached_prompts["cypher_map"] = prompt_cypher_map
         return cls._cached_prompts["cypher_map"]
@@ -248,7 +252,7 @@ class CypherExampleCollections:
         Provides a collection of Cypher examples for drawing points on a map.
         This can give in a large number of results.
         """
-        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_map.cypher"))
 
     @classproperty
     def plot_cypher_queries(self) -> CypherExampleCollection:
