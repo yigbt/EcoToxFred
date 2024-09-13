@@ -5,6 +5,7 @@ parameters:
   - cypher_fewshot_examples_general # prompts/cypher_fewshot_examples_general.cypher
   - question
 prompt: |+
+  {basic_intro}
   {cypher_intro}
   {cypher_instructions_general}
 

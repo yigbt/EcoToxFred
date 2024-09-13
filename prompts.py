@@ -49,7 +49,6 @@ class Prompt:
         if not re.match(r"[a-z_]+", self.prompt_name):
             raise ValueError("File name of the prompt file must only contain letters and underscores.")
 
-
     def append(self, other: Prompt):
         if self is other:
             raise MemoryError("Cannot append the same Prompt to itself!")
@@ -148,7 +147,9 @@ class Prompts:
             prompt_cypher_map = Prompt(os.path.join(prompts_directory, "prompt_cypher_map.yml"))
             basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
             cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
+            cypher_instructions = Prompt(os.path.join(prompts_directory, "cypher_instructions.yml"))
             cypher_instructions_map = Prompt(os.path.join(prompts_directory, "cypher_instructions_map.yml"))
+            cypher_instructions_map.partial_apply_prompt(cypher_instructions)
             prompt_cypher_map.partial_apply_prompt(basic_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
@@ -159,7 +160,27 @@ class Prompts:
 
     @classproperty
     def cypher_plot(cls) -> Prompt:
-        raise NotImplementedError("Needs to be implemented")
+        """
+        Provides the prompt used for graph database queries that access data for plotting a two-dimensional scatter
+        plot. The agent relies on it when it wants to provide an image of scientific two-dimensional plot with time
+        or site names on the x-axis and any kind of numeric values on the y-axis. Numeric values can be mean or
+        median concentrations, toxic units or summarized toxic units ([sum,ratio,max]TU), or driver importance values.
+        """
+        if "cypher_plot" not in cls._cached_prompts.keys():
+            prompt_cypher_plot = Prompt(os.path.join(prompts_directory, "prompt_cypher_plot.yml"))
+            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
+            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
+            cypher_instructions = Prompt(os.path.join(prompts_directory, "cypher_instructions.yml"))
+            cypher_instructions_plot = Prompt(os.path.join(prompts_directory, "cypher_instructions_plot.yml"))
+            cypher_instructions_plot.partial_apply_prompt(cypher_instructions)
+            prompt_cypher_plot.partial_apply_prompt(basic_intro)
+            prompt_cypher_plot.partial_apply_prompt(cypher_intro)
+            prompt_cypher_plot.partial_apply_prompt(cypher_instructions_plot)
+            prompt_cypher_plot.inject_examples(CypherExampleCollections.plot_cypher_queries)
+            prompt_cypher_plot.inject_graph_meta_data()
+            cls._cached_prompts["cypher_plot"] = prompt_cypher_plot
+        return cls._cached_prompts["cypher_plot"]
+
 
 class CypherExampleCollection:
     """
@@ -260,5 +281,4 @@ class CypherExampleCollections:
         Provides a collection of Cypher examples used for drawing charts.
         This can give in a large number of results.
         """
-        raise NotImplementedError("Needs to be implemented")
-
+        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_plot.cypher"))

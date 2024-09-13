@@ -2,7 +2,6 @@ parameters:
   - schema
   - meta
 prompt: |+
-  {basic_intro}
   Further, you are an expert Neo4j Developer translating user questions into Cypher to answer questions about chemicals, 
   and their measured concentrations in European surface waters like rivers and lakes. 
   Convert the user's question based on the schema and meta information about nodes and relations of the Neo4J database.
