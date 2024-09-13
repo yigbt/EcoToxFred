@@ -1,14 +1,17 @@
 from __future__ import annotations
-import yaml
+
 import os
 import re
-from typing import List
+from typing import List, Iterable
 
+import yaml
 from sqlalchemy.util import classproperty
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
 prompts_directory = os.path.join(current_directory, 'prompts')
+
+graph_metadata_file = os.path.join(prompts_directory, "graph_schema_metadata.json")
 
 
 class DefaultDict(dict):
@@ -32,23 +35,52 @@ class Prompt:
     prompt: |+
       Write your prompt here using newlines and the parameters like {schema} as you like.
     """
+
     def __init__(self, prompt_file: str):
         with open(prompt_file) as f:
             self.data = yaml.safe_load(f)
         self.prompt = self.data['prompt']
-        if "parameters" in self.data.keys():
+        if "parameters" in self.data.keys() and self.data['parameters'] is not None:
             self.parameters = set(self.data['parameters'])
         else:
             self.parameters = set()
+        self.prompt_name = os.path.splitext(os.path.basename(prompt_file))[0]
+        if not re.match(r"[a-z_]+", self.prompt_name):
+            raise ValueError("File name of the prompt file must only contain letters and underscores.")
 
-    def append(self, other):
+
+    def append(self, other: Prompt):
+        if self is other:
+            raise MemoryError("Cannot append the same Prompt to itself!")
         self.prompt += "\n" + other.prompt
         self.parameters = self.parameters.union(other.parameters)
 
     def inject_examples(self, examples: CypherExampleCollection):
         assert len(examples.examples) > 0
-        assert "examples" in self.parameters
-        self.partial_apply({"examples": examples.format_examples_as_markdown()})
+        placeholder_name = examples.get_placeholder_name()
+        assert placeholder_name in self.parameters
+        self.partial_apply({placeholder_name: examples.format_examples_as_markdown()})
+
+    def inject_graph_meta_data(self):
+        """
+        Injects meta-information about the nodes and relations in the graph database into the {meta} placeholder.
+
+        This step should probably be done at last because I'm not sure of the curly braces in the JSON format will
+        have an influence on the other placeholders.
+        """
+        assert self.has_parameter("meta")
+        with open(graph_metadata_file) as f:
+            self.partial_apply({"meta": f.read()})
+
+    def has_parameter(self, parameter: str) -> bool:
+        return parameter in self.parameters
+
+    def has_parameters(self, parameters: Iterable) -> bool:
+        return set(parameters).issubset(self.parameters)
+
+    def partial_apply_prompt(self, prompt: Prompt):
+        self.partial_apply({prompt.prompt_name: prompt.prompt})
+        self.parameters = self.parameters.union(prompt.parameters)
 
     def partial_apply(self, parameters: dict):
         params_key_set = set(parameters.keys())
@@ -57,6 +89,7 @@ class Prompt:
         self.parameters = set(self.parameters) - params_key_set
 
 
+# noinspection PyMethodParameters
 class Prompts:
     """
     Helper class to get easy access to all prompts.
@@ -65,10 +98,64 @@ class Prompts:
     Also, if we create partial prompts that we need to build up by merging them,
     this would be the right place for it.
     """
-    @classproperty
-    def general_cypher_prompt(self) -> Prompt:
-        return Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
 
+    _cached_prompts = {}
+
+    @classproperty
+    def agent(cls) -> Prompt:
+        """
+        Provides the prompt for the agent that orchestrates all tools and delivers the final answers.
+        """
+        if "agent" not in cls._cached_prompts.keys():
+            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
+            agent_intro = Prompt(os.path.join(prompts_directory, "agent_intro.yml"))
+            agent_prompt = Prompt(os.path.join(prompts_directory, "prompt_agent.yml"))
+            agent_intro.partial_apply_prompt(basic_intro)
+            agent_prompt.partial_apply_prompt(agent_intro)
+            cls._cached_prompts["agent"] = agent_prompt
+        return cls._cached_prompts["agent"]
+
+    @classproperty
+    def cypher_general(cls) -> Prompt:
+        """
+        Provides the prompt used for general graph database queries.
+        This is used with a Cypher QA chain, and the agent relies on it when it wants to provide a text answer.
+        """
+        if "cypher_general" not in cls._cached_prompts.keys():
+            prompt_cypher_general = Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
+            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
+            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
+            cypher_instructions_general = Prompt(os.path.join(prompts_directory, "cypher_instructions_general.yml"))
+            prompt_cypher_general.partial_apply_prompt(basic_intro)
+            prompt_cypher_general.partial_apply_prompt(cypher_intro)
+            prompt_cypher_general.partial_apply_prompt(cypher_instructions_general)
+            prompt_cypher_general.inject_examples(CypherExampleCollections.general_cypher_queries)
+            prompt_cypher_general.inject_graph_meta_data()
+            cls._cached_prompts["cypher_general"] = prompt_cypher_general
+        return cls._cached_prompts["cypher_general"]
+
+    @classproperty
+    def cypher_map(cls) -> Prompt:
+        """
+        Provides the prompt used for graph database queries that access data for plotting on a map.
+        The agent relies on it when it wants to provide an image of a map with annotated points.
+        """
+        if "cypher_map" not in cls._cached_prompts.keys():
+            prompt_cypher_map = Prompt(os.path.join(prompts_directory, "prompt_cypher_map.yml"))
+            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
+            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
+            cypher_instructions_map = Prompt(os.path.join(prompts_directory, "cypher_instructions_map.yml"))
+            prompt_cypher_map.partial_apply_prompt(basic_intro)
+            prompt_cypher_map.partial_apply_prompt(cypher_intro)
+            prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
+            prompt_cypher_map.inject_examples(CypherExampleCollections.general_cypher_queries)
+            prompt_cypher_map.inject_graph_meta_data()
+            cls._cached_prompts["cypher_map"] = prompt_cypher_map
+        return cls._cached_prompts["cypher_map"]
+
+    @classproperty
+    def cypher_plot(cls) -> Prompt:
+        raise NotImplementedError("Needs to be implemented")
 
 class CypherExampleCollection:
     """
@@ -79,12 +166,29 @@ class CypherExampleCollection:
     """
 
     def __init__(self, example_file: str):
+        """
+        Reads a Cypher example file.
+
+        :param example_file: Path to the example file.
+            The file name must only contain letters and underscores.
+        """
         self.examples: List[dict] = []
         self.read_cypher_file(example_file)
+        self.example_name = os.path.splitext(os.path.basename(example_file))[0]
+        if not re.match(r"[a-z_]+", self.example_name):
+            raise ValueError("File name of the example file must only contain letters and underscores.")
 
     def get_queries(self) -> List[str]:
         """Returns the list of Cypher queries for this collection."""
         return [e["cypher"] for e in self.examples]
+
+    def get_placeholder_name(self):
+        """
+        Returns the name of the file where the Cypher examples were read from.
+
+        We assume that the f-string placeholder used in the prompt file has the same name.
+        """
+        return self.example_name
 
     def format_examples_as_markdown(self) -> str:
         result_lines = []
@@ -129,10 +233,28 @@ class CypherExampleCollections:
     """
     Provides access to all Cypher example collections.
     """
+
     @classproperty
     def general_cypher_queries(self) -> CypherExampleCollection:
+        """
+        Provides a collection of Cypher examples for the general case typically used to access a limited number of
+        results that can be presented in text form.
+        """
         return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))
 
     @classproperty
     def map_cypher_queries(self) -> CypherExampleCollection:
+        """
+        Provides a collection of Cypher examples for drawing points on a map.
+        This can give in a large number of results.
+        """
         return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))
+
+    @classproperty
+    def plot_cypher_queries(self) -> CypherExampleCollection:
+        """
+        Provides a collection of Cypher examples used for drawing charts.
+        This can give in a large number of results.
+        """
+        raise NotImplementedError("Needs to be implemented")
+
