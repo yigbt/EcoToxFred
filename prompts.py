@@ -61,17 +61,6 @@ class Prompt:
         assert placeholder_name in self.parameters
         self.partial_apply({placeholder_name: examples.format_examples_as_markdown()})
 
-    def inject_graph_meta_data(self):
-        """
-        Injects meta-information about the nodes and relations in the graph database into the {meta} placeholder.
-
-        This step should probably be done at last because I'm not sure of the curly braces in the JSON format will
-        have an influence on the other placeholders.
-        """
-        assert self.has_parameter("meta")
-        with open(graph_metadata_file) as f:
-            self.partial_apply({"meta": f.read()})
-
     def has_parameter(self, parameter: str) -> bool:
         return parameter in self.parameters
 
@@ -133,7 +122,6 @@ class Prompts:
             prompt_cypher_general.partial_apply_prompt(cypher_intro)
             prompt_cypher_general.partial_apply_prompt(cypher_instructions_general)
             prompt_cypher_general.inject_examples(CypherExampleCollections.general_cypher_queries)
-            prompt_cypher_general.inject_graph_meta_data()
             cls._cached_prompts["cypher_general"] = prompt_cypher_general
         return cls._cached_prompts["cypher_general"]
 
@@ -154,7 +142,6 @@ class Prompts:
             prompt_cypher_map.partial_apply_prompt(cypher_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
             prompt_cypher_map.inject_examples(CypherExampleCollections.map_cypher_queries)
-            prompt_cypher_map.inject_graph_meta_data()
             cls._cached_prompts["cypher_map"] = prompt_cypher_map
         return cls._cached_prompts["cypher_map"]
 
@@ -177,7 +164,6 @@ class Prompts:
             prompt_cypher_plot.partial_apply_prompt(cypher_intro)
             prompt_cypher_plot.partial_apply_prompt(cypher_instructions_plot)
             prompt_cypher_plot.inject_examples(CypherExampleCollections.plot_cypher_queries)
-            prompt_cypher_plot.inject_graph_meta_data()
             cls._cached_prompts["cypher_plot"] = prompt_cypher_plot
         return cls._cached_prompts["cypher_plot"]
 
@@ -282,3 +268,9 @@ class CypherExampleCollections:
         This can give in a large number of results.
         """
         return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_plot.cypher"))
+
+
+def get_graph_meta_data() -> str:
+    with open(graph_metadata_file) as f:
+        meta = f.read()
+    return meta
