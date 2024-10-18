@@ -10,12 +10,11 @@ st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
     menu_items={
         'about': f'''**EcoToxFred v{get_version()}**        
         A Neo4j-backed Chatbot discussing environmental monitoring data
-        contact: Jana Schor jana.schor@ufz.de'''
+        contact: Jana Schor jana.schor@ufz.de, Patrick Scheibe pscheibe@cbs.mpg.de'''
     }
 )
 
 example_questions = [
-    "Please provide information about the structure of the database.",
     "What is Diuron and where has it been measured?",
     "What is Triclosan? Has it been measured in European freshwater?",
     "Find the 10 most frequent driver chemicals above a driver importance of 0.6",
