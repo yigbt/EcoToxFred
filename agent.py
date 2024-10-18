@@ -79,7 +79,7 @@ def create_toolset(general_chat: ChatPromptTemplate) -> [Tool]:
         Tool.from_function(
             name=pm_tool.name,
             description=pm_tool.description,
-            func=pm_tool.run_with_args
+            func=pm_tool.run
         ),
         Tool.from_function(
             name="Wikipedia Search",

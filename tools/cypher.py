@@ -112,9 +112,23 @@ def create_cypher_prompt_template():
         Cypher Query:""")
 
 
-
 def invoke_cypher_tool(arg, **kwargs):
-    chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
+    max_k = 20
+    chain = cypher_utils.create_direct_cypher_chain(
+        prompt_template=create_cypher_prompt_template(),
+        number_max_results=max_k
+    )
     query_result = chain.invoke(arg, **kwargs)
-    # cypher_utils.decider_chain.invoke(query_result['result'])
-    return str(query_result)
+    answer = f"Unfortunately, the database request failed."
+    if "result" in query_result:
+        data = query_result["result"]
+        answer = \
+            f"""
+            The following search query returned exactly {len(data)} results.
+            Note that results are limited to {max_k} because of token constraints, which helps optimize performance and costs.
+            
+            Data:
+            {data}
+            """
+
+    return answer

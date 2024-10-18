@@ -19,6 +19,7 @@ def create_direct_cypher_chain(
         verbose=True,
         cypher_prompt=prompt_template,
         return_intermediate_steps=True,
+        allow_dangerous_requests=True
     )
     chain.return_direct = True
     chain.top_k = number_max_results

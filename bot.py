@@ -15,9 +15,12 @@ st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
 )
 
 example_questions = [
+    "Please provide information about the structure of the database.",
     "What is Diuron and where has it been measured?",
-    "For Diuron, can you provide the name of the sampling site and the measurement time point as a list?",
-    "What is Diuron and where has it been measured?"
+    "What is Triclosan? Has it been measured in European freshwater?",
+    "Find the 10 most frequent driver chemicals above a driver importance of 0.6",
+    "For Citalopram, provide the name of the sampling site and the measurement time point as a table?",
+    "Show the distribution of the summarized toxic unit (sumTU) for algae since 2010."
 ]
 
 # Set up the session state and initialize the LLM agent

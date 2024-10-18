@@ -1,19 +1,16 @@
+from logging import getLogger
 from typing import Any, Type, Optional, Dict
 
 import pandas as pd
 import plotly.express as px
 from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
-from langchain_community.graphs import Neo4jGraph
-from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_community.tools import BaseTool
-from langchain_openai import ChatOpenAI
+from langchain_core.callbacks import CallbackManagerForToolRun
 from pydantic import BaseModel, Field, model_validator
-# from pydantic.v1 import BaseModel, Field, root_validator
 
 from graph import connect_to_neo4j
 from llm import get_chat_llm
-from prompts import Prompts, get_graph_meta_data, Prompt
-from logging import getLogger
+from prompts import Prompts, get_graph_meta_data
 
 logger = getLogger(__name__)
 
@@ -46,10 +43,21 @@ class PlotMap(BaseModel):
 
     def run(self, query: str) -> dict:
         results = self.cypher_chain.invoke({"query": query, "meta": get_graph_meta_data()})
-        # # Check validity of result and create Pandas df from it
-        df = PlotMap.create_pandas_from_result(results["result"])
-        rendered_image = PlotMap.render_image(df)
-        return {"figure": rendered_image}
+        df_description = "NO DATA WAS FOUND"
+        if "result" in results and len(results["result"]) > 0:
+            df = pd.DataFrame(results["result"])
+            df_description  = df.describe(include='all').to_string()
+        answer = f"""
+            The user expects an image of a map with annotated sites.
+            However, this functionality is currently not implemented.
+            You receive the summarized statistics of the data that would have been shown on the map.
+            Summarize what would have been shown on the map in future tense.
+            In a separate paragraph, clearly inform the user that plotting a map is an upcoming feature.
+            
+            Summarized statistics of the data:
+            {df_description}
+            """
+        return answer
 
     @staticmethod
     def create_pandas_from_result(result) -> pd.DataFrame:
@@ -119,21 +127,9 @@ class PlotMapTool(BaseTool):
                         "Show Diuron's toxic unit (TU) distribution since 2010 for the species algae (unicellular).\n"
                         "Show Diuron's driver importance distribution in France between January 2010 and December 2012.")
     args_schema: Type[BaseModel] = PlotMapInput
-    response_format: str = "content_and_artifact"
+    response_format: str = "content"
     plot_map: PlotMap = Field(default_factory=PlotMap)
 
-    def run_with_args(self, query: str) -> Any:
-        from uuid import uuid4
-        tool_call_id = f"plot_map_{uuid4().hex}"
-        return self.invoke({
-            "args": {"query": query},
-            "id": tool_call_id,
-            "type": "tool_call"}
-        )
-
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
-        figure = self.plot_map.run(query)
-        contents = "A map with annotated sites."
-        return contents, figure["figure"]
-        # logger.info(f"QUERY: \n\n{query}\n\n")
-        # return query, "Test"
+        result = self.plot_map.run(query)
+        return result
