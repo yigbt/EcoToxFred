@@ -13,7 +13,7 @@ def get_chat_llm() -> ChatOpenAI:
     """
     return ChatOpenAI(
         openai_api_key=st.secrets["OPENAI_API_KEY"],
-        model=st.secrets["OPENAI_MODEL"]
+        model=st.secrets["OPENAI_MODEL"],
     )
 
 

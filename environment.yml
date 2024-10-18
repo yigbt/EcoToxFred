@@ -1,0 +1,24 @@
+name: edt_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.*
+  - langchain-openai
+  - langchain
+  - langchain-core
+  - langchain-community
+  - langchainhub
+  - matplotlib
+  - neo4j-python-driver
+  - networkx
+  - openai
+  - pandas
+  - pillow
+  - plotly
+  - pytest
+  - requests
+  - streamlit
+  - tenacity
+  - toml
+  - wikipedia
+  - yaml

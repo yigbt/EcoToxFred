@@ -119,7 +119,7 @@ def create_dalle_prompt_template() -> PromptTemplate:
 
 
 def invoke_cypher_plot_tool(arg, **kwargs):
-    cypher_chain = cypher_utils.create_cypher_qa_chain(prompt_template=create_cypher_prompt_template())
+    cypher_chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
     query_result = cypher_chain.invoke(arg, **kwargs)
 
     result_plot = create_results_plot(query_result['result'])
@@ -137,7 +137,7 @@ def invoke_cypher_plot_tool(arg, **kwargs):
 
 
 def invoke_cypher_plot_tool_with_dalle(arg, **kwargs):
-    cypher_chain = cypher_utils.create_cypher_qa_chain(prompt_template=create_cypher_prompt_template())
+    cypher_chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
     query_result = cypher_chain.invoke(arg, **kwargs)
 
     dalle_prompt_description = create_dalle_prompt_template()

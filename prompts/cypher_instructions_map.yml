@@ -1,0 +1,12 @@
+parameters:
+  - cypher_instructions # prompts/cypher_instructions.yml
+prompt: |+
+  <instructions>
+  {cypher_instructions}
+  Always return latitude and longitude for the sites since they represent the x and y coordinates for the map plot.
+  Always return site name, water body, and river basin information for the sites since they will be used as information 
+  provided on hovering events over the points on the map.
+  If you return a measurement such as mean or median concentration, use the term 'Concentration' in the query results.
+  Likewise, use the term 'DriverImportance' for driver importance and 'TU' for TU_algae, TU_crustacean, and TU_fish.
+  For sumTU, ratioTU, and maxTU, use the names as they are.
+  </instructions>

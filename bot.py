@@ -1,63 +1,105 @@
-import _io
-import re
 import streamlit as st
-from utils import write_message
-from llm import llm, embeddings
-from graph import graph
+
 import agent
-import requests
-from io import BytesIO
-from PIL import Image
-import base64
+from llm import llm
+from utils import write_message, get_version
 
 # Page Config
-st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png")
+st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
+    layout='centered',
+    menu_items={
+        'about': f'''**EcoToxFred v{get_version()}**        
+        A Neo4j-backed Chatbot discussing environmental monitoring data
+        contact: Jana Schor jana.schor@ufz.de'''
+    }
+)
 
-# Set up Session State
-if "messages" not in st.session_state:
+example_questions = [
+    "Please provide information about the structure of the database.",
+    "What is Diuron and where has it been measured?",
+    "What is Triclosan? Has it been measured in European freshwater?",
+    "Find the 10 most frequent driver chemicals above a driver importance of 0.6",
+    "For Citalopram, provide the name of the sampling site and the measurement time point as a table?",
+    "Show the distribution of the summarized toxic unit (sumTU) for algae since 2010."
+]
+
+# Set up the session state and initialize the LLM agent
+if "initialized" not in st.session_state:
+    st.session_state.initialized = True
+    my_chat = agent.create_chemical_chat_chain()
+    tools = agent.create_toolset(general_chat=my_chat)
+    st.session_state.chat_agent = agent.create_agent(current_llm=llm, toolset=tools)
     st.session_state.messages = [
         {"role": "assistant",
          "content": "Hi, I'm EcoToxFred!  How can I help you?",
-         "avatar": "figures/simple_avatar.png"},
+         "avatar": "figures/assistant.png"},
     ]
 
 
-# Submit handler
-def handle_submit(chat_agent, submitted_message):
+def generate_response(prompt):
     """
-    Submit handler:
+    Generate a response for the given prompt using the agent.
+    We can try to stream the agent's work and give some intermediate feedback to the user.
 
-    You will modify this method to talk with an LLM and provide
-    context using data from Neo4j.
+    :param prompt: The input prompt for generating a response.
+    :return: The generated response.
     """
-
-    # Handle the response
-    with st.spinner('Generating response ...'):
-        response = agent.generate_response(chat_agent, submitted_message)
-        find_str = 'figures/plot.png'
-        pattern = re.compile(r'\b\w*' + re.escape(find_str) + r'\w*\b')
-        matches = pattern.findall(response['output'])
-        if len(matches) > 0:
-            for match in matches:
-                response['output'] = response['output'].replace(match, "")
-            write_message('assistant', response['output'])
-            st.image("figures/plot.png", caption="Image generated with matplotlib from graph db cypher query result.")
-        else:
-            write_message('assistant', response['output'])
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+    response = None
+    for s in st.session_state.chat_agent.stream(
+            {'input': prompt},
+            {"configurable": {"session_id": get_script_run_ctx().session_id}}
+    ):
+        if "actions" in s.keys():
+            for act in s["actions"]:
+                st.toast(act.log)
+        response = s
+    return response["output"]
 
 
-my_chat = agent.create_chemical_chat_chain()
-tools = agent.create_toolset(general_chat=my_chat)
-chat_agent = agent.create_agent(current_llm=llm, toolset=tools)
+def add_question_to_messages(text):
+    st.session_state.messages.append({
+        "role": "user",
+        "content": text,
+        "avatar": "figures/user.png"
+    })
+
+
+with st.sidebar:
+    st.image("figures/UFZ_MPG_Logo.svg")
+    st.header(f"EcoToxFred (v{get_version()})", divider=True)
+    st.markdown(
+        "A Chatbot for discussing environmental monitoring "
+        "data collected in a large knowledge graph and stored in a Neo4j Graph Database."
+    )
+    st.header("Example Questions", divider=True)
+    for index, example_question in enumerate(example_questions):
+        st.button(
+            example_question,
+            key=f"example_question_{index}",
+            on_click=add_question_to_messages,
+            args=[example_question]
+        )
 
 # Display messages in Session State
 for message in st.session_state.messages:
-    write_message(message['role'], message['content'], save=False)
+    write_message(message, save=False)
 
 # Handle any user input
 if question := st.chat_input("What do you want to know?"):
-    # Display user message in chat message container
-    write_message('user', question)
+    write_message({
+        "role": "user",
+        "content": question,
+        "avatar": "figures/user.png"
+    })
 
-    # Generate a response
-    handle_submit(chat_agent=chat_agent, submitted_message=question)
+if st.session_state.messages[-1]["role"] != "assistant":
+    message = st.session_state.messages[-1]
+    with st.spinner("Thinking..."):
+        # TODO: Try catch
+        generated_response = generate_response(st.session_state.messages[-1]["content"])
+        write_message({
+            "role": "assistant",
+            "content": generated_response,
+            "avatar": "figures/assistant.png"
+        })

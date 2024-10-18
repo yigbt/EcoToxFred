@@ -7,6 +7,8 @@ from langchain_community.chat_message_histories import Neo4jChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain import hub
+
+from tools.plot_map import PlotMapTool
 from utils import get_session_id
 from langchain_core.prompts import PromptTemplate
 from tools.vector import get_chemical_information
@@ -46,24 +48,25 @@ def create_toolset(general_chat: ChatPromptTemplate) -> [Tool]:
     Returns:
         [Tool]: A list of tools
     """
+    pm_tool = PlotMapTool()
     return [
-        Tool.from_function(
-            name="General Chat",
-            description="For general chat not covered by other tools",
-            func=general_chat.invoke,
-        ),
+        # Tool.from_function(
+        #     name="General Chat",
+        #     description="For general chat not covered by other tools",
+        #     func=general_chat.invoke,
+        # ),
         # Tool.from_function(
         #     name="Visualize Graph",
         #     description="Provide a graph or network visualisation of chemicals, measured and detected chemical "
         #                 "concentrations in European rivers and lakes.",
         #     func=invoke_cypher_graph_tool,
         # ),
-        Tool.from_function(
-            name="Plot Cypher Result",
-            description="Provide a scientific plot of measured and detected chemical concentrations or chemical "
-                        "driver importance values in European rivers and lakes.",
-            func=invoke_cypher_plot_tool,
-        ),
+        # Tool.from_function(
+        #     name="Plot Cypher Result",
+        #     description="Provide a scientific plot of measured and detected chemical concentrations or chemical "
+        #                 "driver importance values in European rivers and lakes.",
+        #     func=invoke_cypher_plot_tool,
+        # ),
         Tool.from_function(
             name="Graph DB Search",
             description="Provide details about chemicals and measured and detected chemical concentrations or "
@@ -71,6 +74,12 @@ def create_toolset(general_chat: ChatPromptTemplate) -> [Tool]:
                         "quarter information of the measurement time points. "
                         "Information from European surface water bodies like rivers and lakes can be requested.",
             func=invoke_cypher_tool,
+        ),
+        # PlotMapTool(),
+        Tool.from_function(
+            name=pm_tool.name,
+            description=pm_tool.description,
+            func=pm_tool.run
         ),
         Tool.from_function(
             name="Wikipedia Search",
