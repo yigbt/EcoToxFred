@@ -40,6 +40,9 @@ USER ecotoxfred
 COPY *.py .
 COPY figures/ figures/
 COPY tools/ tools/
+COPY prompts/ prompts/
+COPY VERSION VERSION
+
 
 # indicates the container port, which is exposed to the host
 EXPOSE 8501
