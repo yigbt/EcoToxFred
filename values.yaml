@@ -1,0 +1,4 @@
+image:
+  # The Dockerimage-Tag, which should be deployed
+  tag: "2024.1.1"
+  
