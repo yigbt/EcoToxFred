@@ -7,7 +7,7 @@ WITH nodeRecord
   WHERE nodeRecord.DTXSID IS NOT NULL
 MERGE (n:Substance {DTXSID: nodeRecord.DTXSID})
 SET n.casrn = toString(nodeRecord.casrn)
-SET n.Name = toString(nodeRecord.Name)
+SET n.name = toString(nodeRecord.Name)
 SET n.inchi = toString(nodeRecord.inchi)
 SET n.inchiKey = toString(nodeRecord.inchiKey)
 SET n.IN_REACH = toBoolean(nodeRecord.IN_REACH)
