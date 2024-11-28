@@ -1,0 +1,14 @@
+parameters:
+  - agent_intro  # prompts/agent_intro.yml
+  - chat_history
+  - input
+  - agent_scratchpad
+prompt: |+
+  {agent_intro}
+  Begin!
+  
+  Previous conversation history:
+  {chat_history}
+  
+  New input: {input}
+  {agent_scratchpad}

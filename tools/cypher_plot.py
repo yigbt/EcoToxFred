@@ -164,7 +164,7 @@ def plot_to_base64(fig):
 
 
 def invoke_cypher_plot_tool(arg, **kwargs):
-    cypher_chain = cypher_utils.create_cypher_qa_chain(prompt_template=create_cypher_prompt_template())
+    cypher_chain = cypher_utils.create_direct_cypher_chain(prompt_template=create_cypher_prompt_template())
     query_result = cypher_chain.invoke(arg, **kwargs)
 
     figure_file = create_results_plot(query_result['result'])

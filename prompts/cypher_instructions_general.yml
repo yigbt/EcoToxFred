@@ -1,0 +1,6 @@
+parameters:
+  - cypher_instructions # prompts/cypher_instructions.yml
+prompt: |+
+  <instructions>
+  {cypher_instructions}
+  </instructions>

@@ -1,0 +1,221 @@
+{
+  "schema": {
+    "nodes": [
+      {
+        "name": "Substance",
+        "primary_key": "DTXSID",
+        "description": "Represents chemical substances being studied, uniquely identified by their DTXSID. These nodes contain alternative identifiers like CASRN (Chemical Abstracts Service Registry Number), structure-based identifiers like InChI and InChI keys, and use classifications.",
+        "properties": [
+          {
+            "name": "DTXSID",
+            "description": "Unique identifier for the substance. The DSSTox substance identifier (DTXSID) originates from the Environmental Protection Agency CompTox Dashboard."
+          },
+          {
+            "name": "casrn",
+            "description": "Chemical Abstracts Service Registry Number of the substance."
+          },
+          {
+            "name": "name",
+            "description": "Common name of the substance."
+          },
+          {
+            "name": "inchi",
+            "description": "The International Chemical Identifier (InChI) is a textual identifier for chemical substances, designed to provide a standard way to encode molecular information and to facilitate the search for such information in databases and on the web."
+          },
+          {
+            "name": "inchiKey",
+            "description": "The InChIKey, sometimes referred to as a hashed InChI, is a fixed length (27 character) condensed digital representation of the InChI that is not human-understandable."
+          },
+          {
+            "name": "IN_REACH",
+            "description": "Indicator whether the substance is registered in REACH (Registration, Evaluation, Authorisation, and Restriction of Chemicals) and therefore registered for regulation by the European Union."
+          },
+          {
+            "name": "use_groups",
+            "description": "Use group classification for the substance. These annotations for substances are extracted from the publication by Lena Kramer et al. in 2024 with the title Curated mode-of-action data and effect concentrations for chemicals relevant for the aquatic environment, available at https://pubmed.ncbi.nlm.nih.gov/38200014/."
+          },
+          {
+            "name": "use_groups_N",
+            "description": "Number of use groups the substance belongs to."
+          }
+        ]
+      },
+      {
+        "name": "Species",
+        "primary_key": "name",
+        "description": "Represents different biological species being impacted by substances. Each species is identified by its common name and includes its taxonomic classification.",
+        "properties": [
+          {
+            "name": "name",
+            "description": "Common name of the species. Available values are algae, crustacean, and fish."
+          },
+          {
+            "name": "classification",
+            "description": "Taxonomic classification of the species. Available values are unicelluar with algae as representative, invertebrate with crustacean as representative, and vertebrate with fish as representative."
+          }
+        ]
+      },
+      {
+        "name": "Site",
+        "primary_key": "name",
+        "description": "Represents geographic locations where environmental measurements are taken. Each site is identified by its name and contains geographic coordinates (longitude, latitude), country, water body, and river basin information.",
+        "properties": [
+          {
+            "name": "name",
+            "description": "Name of the sampling site. This is also referred to as sampling site, site, place, or location."
+          },
+          {
+            "name": "lon",
+            "description": "Longitude of the site location. The longitude is stored in decimal coordinates."
+          },
+          {
+            "name": "lat",
+            "description": "Latitude of the site location. The latitude is stored in decimal coordinates."
+          },
+          {
+            "name": "country",
+            "description": "The name of the country where the site is located."
+          },
+          {
+            "name": "water_body",
+            "description": "Water body associated with the site. This can be a small stream, a stream, a river, or a lake."
+          },
+          {
+            "name": "river_basin",
+            "description": "The river basin is the area associated with the site or water body where all flowing surface water of different water bodies converges to a single one. In case of a single water body, the river basin has the same name as the water body."
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "MEASURED_AT",
+        "description": "Connects a Substance to a Site, representing a measurement event where the concentration of the substance was recorded at a specific site and time. Includes properties like concentration values and Toxic Units for various species. Measured concentrations are summarized as mean and median concentration values aggregating multiple measurements at different time points for the same Substance and Site pair.",
+        "properties": [
+          {
+            "name": "key",
+            "description": "Unique key for the measurement event."
+          },
+          {
+            "name": "time_point",
+            "description": "Timestamp of the measurement event."
+          },
+          {
+            "name": "year",
+            "description": "Year when the measurement occurred."
+          },
+          {
+            "name": "quarter",
+            "description": "Quarter of the year when the measurement occurred."
+          },
+          {
+            "name": "median_concentration",
+            "description": "Median concentration of the substance measured at a site across one or more measurement timestamps."
+          },
+          {
+            "name": "mean_concentration",
+            "description": "Mean concentration of the substance measured at a site across one or more measurement timestamps."
+          },
+          {
+            "name": "concentration_unit",
+            "description": "Unit of the concentration (e.g., mg/L)."
+          },
+          {
+            "name": "TU_crustacean",
+            "description": "Toxic Unit for crustaceans. This value has been calculated from the ratio of the median measured concentration and the tox value of this substance towards crustacean."
+          },
+          {
+            "name": "TU_fish",
+            "description": "Toxic Unit for fish.This value has been calculated from the ratio of the median measured concentration and the tox value of this substance towards fish."
+          },
+          {
+            "name": "TU_algae",
+            "description": "Toxic Unit for algae. This value has been calculated from the ratio of the median measured concentration and the tox value of this substance towards algae."
+          }
+        ]
+      },
+      {
+        "name": "TESTED_FOR_TOXICITY",
+        "description": "Links a Substance to a Species, representing a toxicity test for the species. It includes toxicity values and chemical properties like the neutral fraction for the substance. The neutral fraction needs to be multiplied to the toxicity value, if this value has been predicted by a QSAR (Quantitative structure–activity relationship) model.",
+        "properties": [
+          {
+            "name": "key",
+            "description": "Unique key for the toxicity test."
+          },
+          {
+            "name": "tox_value_mg_L",
+            "description": "Toxicity value for a given substance in mg/L for the species. This value can be used to calculate the toxic unit (TU) given a measured concentration of this substance."
+          },
+          {
+            "name": "neutral_fraction_jchem",
+            "description": "Neutral fraction based on JChem calculations."
+          }
+        ]
+      },
+      {
+        "name": "IS_DRIVER",
+        "description": "Connects a Substance to a Site, indicating that the substance is a key driver of risk for a particular species at that site. In particular, we consider a substance as driver if its toxic unit (TU) contributes to the upper 75 % of the cumulative risk, the sum of the TUs of all measured substances at at site. Includes information on the species affected, time of the original measurement which was used to compute the individual TU, and the importance of the substance as a driver.",
+        "properties": [
+          {
+            "name": "key",
+            "description": "Unique key for the driver relation."
+          },
+          {
+            "name": "species",
+            "description": "Species affected by the substance."
+          },
+          {
+            "name": "time_point",
+            "description": "Time point for when the substance was determined as a driver. This reflects the measurement timestamp."
+          },
+          {
+            "name": "year",
+            "description": "Year when the substance was determined as a driver."
+          },
+          {
+            "name": "quarter",
+            "description": "Quarter of the year when the substance was determined as a driver."
+          },
+          {
+            "name": "driver_importance",
+            "description": "Driver importance score for the substance."
+          }
+        ]
+      },
+      {
+        "name": "SUMMARIZED_IMPACT_ON",
+        "description": "Connects a Site to a Species, summarizing the cumulative toxic impact of all substances on that species at the site. All individual toxic unit (TU) values are summed up to form the sumTU. Properties include the sum of Toxic Units, maximum Toxic Unit, and the ratio of Toxic Units.",
+        "properties": [
+          {
+            "name": "key",
+            "description": "Unique key for the summarized impact relation."
+          },
+          {
+            "name": "time_point",
+            "description": "Timestamp for the summarized impact."
+          },
+          {
+            "name": "year",
+            "description": "Year when the summarized impact was recorded."
+          },
+          {
+            "name": "quarter",
+            "description": "Quarter of the year when the summarized impact was recorded."
+          },
+          {
+            "name": "sumTU",
+            "description": "Sum of Toxic Units of all TUs from all substances measured at the site at the timestamp and for the species."
+          },
+          {
+            "name": "maxTU",
+            "description": "Observed maximum Toxic Unit of all TUs from all substances measured at the site at the timestamp and for the species."
+          },
+          {
+            "name": "ratioTU",
+            "description": "Ratio of the maxTU and sumTU. This can be used as an indicator if only a single substance drives the risk at this site and time - then this value is 1 or if multiple substances are involved in driving the risk - then this value is below 1."
+          }
+        ]
+      }
+    ]
+  }
+}
