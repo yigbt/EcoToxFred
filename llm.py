@@ -12,8 +12,9 @@ def get_chat_llm() -> ChatOpenAI:
         ChatOpenAI: The ChatOpenAI LLM
     """
     return ChatOpenAI(
-        openai_api_key=st.secrets["OPENAI_API_KEY"],
-        model=st.secrets["OPENAI_MODEL"]
+        openai_api_key=st.secrets["BLABLADOR_API_KEY"],
+        model=st.secrets["BLABLADOR_MODEL"],
+        base_url="https://api.helmholtz-blablador.fz-juelich.de/v1/"
     )
 
 
