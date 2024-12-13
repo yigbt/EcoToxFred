@@ -11,11 +11,18 @@ def get_chat_llm() -> ChatOpenAI:
     Returns:
         ChatOpenAI: The ChatOpenAI LLM
     """
-    return ChatOpenAI(
-        openai_api_key=st.secrets["BLABLADOR_API_KEY"],
-        model=st.secrets["BLABLADOR_MODEL"],
-        base_url="https://api.helmholtz-blablador.fz-juelich.de/v1/"
-    )
+    use_blablador = True
+    if use_blablador:
+        return ChatOpenAI(
+            openai_api_key=st.secrets["BLABLADOR_API_KEY"],
+            model=st.secrets["BLABLADOR_MODEL"],
+            base_url="https://api.helmholtz-blablador.fz-juelich.de/v1/"
+        )
+    else:
+        return ChatOpenAI(
+            openai_api_key=st.secrets["OPENAI_API_KEY"],
+            model=st.secrets["OPENAI_MODEL"]
+        )
 
 
 def create_embeddings() -> OpenAIEmbeddings:
