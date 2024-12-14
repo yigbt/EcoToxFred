@@ -5,7 +5,7 @@
 services:
 
   web:
-    image: "localhost/ecotoxfred"
+    image: "ecotoxfred:dev"
     build: ./
     ports:
       - "8501:8501"
