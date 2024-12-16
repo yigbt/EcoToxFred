@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM python:3.12 as builder
+FROM python:3.13 as builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN pip install --upgrade pip && \
     pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
 
-FROM python:3.12
+FROM python:3.13
 
 RUN apt update && apt upgrade -y -qq \
     && rm -rf /var/lib/apt/lists/*
