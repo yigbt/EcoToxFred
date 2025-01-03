@@ -16,6 +16,7 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     # Set up placeholders for displaying updates in the Streamlit app
     container = st_placeholder  # This container will hold the dynamic Streamlit UI components
     thoughts_placeholder = container.container()  # Container for displaying status messages
+    image_placeholder = container.empty() # Container for showing an image
     token_placeholder = container.empty()  # Placeholder for displaying progressive token updates
     final_text = ""  # Will store the accumulated text from the model's response
 
@@ -35,13 +36,12 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
             # The event signals that a tool is about to be called
             with thoughts_placeholder:
                 status_placeholder = st.empty()  # Placeholder to show the tool's status
-                with status_placeholder.status("Calling Tool...", expanded=True) as s:
+                with status_placeholder.status(f"Using Tool {event['name']}", expanded=False) as s:
                     st.write("Called ", event['name'])  # Show which tool is being called
                     st.write("Tool input: ")
                     st.code(event['data'].get('input'))  # Display the input data sent to the tool
                     st.write("Tool output: ")
                     output_placeholder = st.empty()  # Placeholder for tool output that will be updated later below
-                    s.update(label="Completed Calling Tool!", expanded=False)  # Update the status once done
 
         elif kind == "on_tool_end":
             # The event signals the completion of a tool's execution
@@ -53,6 +53,12 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
                 # Test if event['data'].get('output').artifact exists
                 if 'output' in event['data'].keys():
                     artifact = event['data'].get('output').artifact
+                    with image_placeholder:
+                        st.plotly_chart(
+                            artifact,
+                            key=f"plotly_chart_temporary",
+                            use_container_width=True,
+                            config={'displayModeBar': False})
 
     # Return the final aggregated message after all events have been processed
     return AIMessage(content=final_text) if artifact is None else AIMessage(content=final_text, artifact=artifact)
