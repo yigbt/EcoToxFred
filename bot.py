@@ -2,8 +2,7 @@ import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
-# from llm import llm
-from utils import write_message, get_version
+from utils import get_version
 from graph_agent import GraphEcoToxFredAgent
 from astream_events_handler import invoke_our_graph
 
@@ -30,31 +29,31 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = True
     st.session_state.chat_agent = GraphEcoToxFredAgent()
     st.session_state.messages = [AIMessage(content="Hi, I'm EcoToxFred!  How can I help you?")]
+    st.session_state.figure_numbers = 0
+    st.session_state.example_question = None
 
 
-# def generate_response(prompt):
-#     """
-#     Generate a response for the given prompt using the agent.
-#     We can try to stream the agent's work and give some intermediate feedback to the user.
-#
-#     :param prompt: The input prompt for generating a response.
-#     :return: The generated response.
-#     """
-#     from streamlit.runtime.scriptrunner import get_script_run_ctx
-#     response = None
-#     for s in st.session_state.chat_agent.stream(
-#             {'input': prompt},
-#             {"configurable": {"session_id": get_script_run_ctx().session_id}}
-#     ):
-#         if "actions" in s.keys():
-#             for act in s["actions"]:
-#                 st.toast(act.log)
-#         response = s
-#     return response["output"]
+def generate_response(query: str):
+    """
+    Generates a chat assistant's response based on the user-provided query, updates
+    the application's session state with messages, and renders the response in the user interface.
+    :param query: The user's input message that will be processed and sent to the chat assistant.
+    """
+    st.session_state.messages.append(HumanMessage(content=query))
+    st.chat_message("user", avatar="figures/user.png").write(query)
+
+    with st.chat_message("assistant", avatar="figures/assistant.png"):
+        # create a placeholder container for streaming and any other events to visually render here
+        placeholder = st.container()
+        response = asyncio.run(invoke_our_graph(
+            st.session_state.chat_agent,
+            st.session_state.messages,
+            placeholder))
+        st.session_state.messages.append(response)
 
 
-def add_question_to_messages(text):
-    st.session_state.messages.append(HumanMessage(content=text))
+def handle_example_question(example_question):
+    st.session_state.example_question = example_question
 
 
 with st.sidebar:
@@ -69,7 +68,7 @@ with st.sidebar:
         st.button(
             example_question,
             key=f"example_question_{index}",
-            on_click=add_question_to_messages,
+            on_click=handle_example_question,
             args=[example_question]
         )
 
@@ -81,44 +80,21 @@ for msg in st.session_state.messages:
         with st.chat_message("assistant", avatar="figures/assistant.png"):
             st.write(msg.content)
             if "artifact" in msg.model_extra.keys():
+                st.session_state.figure_numbers += 1
                 st.plotly_chart(
                     msg.artifact,
-                    key="plotly_chart_" + str(random.randint(100000, 999999)),  # todo: does this need an alternative?
+                    key=f"plotly_chart_{st.session_state.figure_numbers:04d}",
                     use_container_width=True,
                     config={'displayModeBar': False})
     elif isinstance(msg, HumanMessage):
         st.chat_message("user", avatar="figures/user.png").write(msg.content)
 
-# Handle any user input
+# If an example button was pressed, we use this as input and generate a response.
+if st.session_state.example_question:
+    generate_response(st.session_state.example_question)
+    st.session_state.example_question = None
+
+# Here the user can type in a question that gets answered.
 question = st.chat_input()
-# if question := st.chat_input("What do you want to know?"):
-#     write_message({
-#         "role": "user",
-#         "content": question,
-#         "avatar": "figures/user.png"
-#     })
-
-# Handle user input if provided
 if question:
-    st.session_state.messages.append(HumanMessage(content=question))
-    st.chat_message("user", avatar="figures/user.png").write(question)
-
-    with st.chat_message("assistant", avatar="figures/assistant.png"):
-        # create a placeholder container for streaming and any other events to visually render here
-        placeholder = st.container()
-        response = asyncio.run(invoke_our_graph(
-            st.session_state.chat_agent,
-            st.session_state.messages,
-            placeholder))
-        st.session_state.messages.append(response)
-
-# if st.session_state.messages[-1]["role"] != "assistant":
-#     message = st.session_state.messages[-1]
-#     with st.spinner("Thinking..."):
-#         # TODO: Try catch
-#         generated_response = generate_response(st.session_state.messages[-1]["content"])
-#         write_message({
-#             "role": "assistant",
-#             "content": generated_response,
-#             "avatar": "figures/assistant.png"
-#         })
+    generate_response(question)
