@@ -47,18 +47,17 @@ class PlotMap(BaseModel):
         artifact = None
         if "result" in results and len(results["result"]) > 0:
             df = pd.DataFrame(results["result"])
-            df_description  = df.describe(include='all').to_string()
+            df_description  = df.describe(include='all').to_json()
             df_for_plot = PlotMap.create_pandas_from_result(results["result"])
             artifact = PlotMap.render_image(df_for_plot)
         answer = f"""
-            The user expects an image of a map with annotated sites.
-            However, this functionality is currently not implemented.
-            You receive the summarized statistics of the data that would have been shown on the map.
-            Summarize what would have been shown on the map in future tense.
-            In a separate paragraph, clearly inform the user that plotting a map is an upcoming feature.
+            A map with annotated sites is shown to the user.
+            You receive the summarized statistics of the data that is shown on the map.
+            Create a compelling figure caption from the summarized statistics.
             
-            Summarized statistics of the data:
+            <summary>
             {df_description}
+            </summary>
             """
 
         return {"content": answer, "artifact": artifact}
