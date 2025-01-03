@@ -46,19 +46,23 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
         elif kind == "on_tool_end":
             # The event signals the completion of a tool's execution
             with thoughts_placeholder:
-                # We assume that `on_tool_end` comes after `on_tool_start`, meaning output_placeholder exists
-                if 'output_placeholder' in locals():
-                    output_placeholder.code(event['data'].get('output').content)  # Display the tool's output
-
-                # Test if event['data'].get('output').artifact exists
                 if 'output' in event['data'].keys():
-                    artifact = event['data'].get('output').artifact
-                    with image_placeholder:
-                        st.plotly_chart(
-                            artifact,
-                            key=f"plotly_chart_temporary",
-                            use_container_width=True,
-                            config={'displayModeBar': False})
+                    # We assume that `on_tool_end` comes after `on_tool_start`, meaning output_placeholder exists
+                    event_output = event['data'].get('output')
+                    if 'output_placeholder' in locals():
+                        if hasattr(event_output, "content"):
+                            output_placeholder.code(event_output.content)  # Display the tool's output
+                        else:
+                            output_placeholder.code(event_output)  # Display the tool's output
+
+                    if hasattr(event_output, "artifact") and event_output.artifact is not None:
+                        artifact = event_output.artifact
+                        with image_placeholder:
+                            st.plotly_chart(
+                                artifact,
+                                key=f"plotly_chart_temporary",
+                                use_container_width=True,
+                                config={'displayModeBar': False})
 
     # Return the final aggregated message after all events have been processed
     return AIMessage(content=final_text) if artifact is None else AIMessage(content=final_text, artifact=artifact)
