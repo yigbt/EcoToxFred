@@ -100,11 +100,7 @@ class Prompts:
         """
         if "agent" not in cls._cached_prompts.keys():
             basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
-            agent_intro = Prompt(os.path.join(prompts_directory, "agent_intro.yml"))
-            agent_prompt = Prompt(os.path.join(prompts_directory, "prompt_agent.yml"))
-            agent_intro.partial_apply_prompt(basic_intro)
-            agent_prompt.partial_apply_prompt(agent_intro)
-            cls._cached_prompts["agent"] = agent_prompt
+            cls._cached_prompts["agent"] = basic_intro
         return cls._cached_prompts["agent"]
 
     @classproperty

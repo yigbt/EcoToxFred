@@ -1,5 +1,7 @@
 tenacity==8.1.0
 langchain==0.3.4
+langgraph==0.2.39
+langsmith==0.1.129
 openai==1.52.0
 langchain-openai==0.2.3
 neo4j-driver==5.25.0

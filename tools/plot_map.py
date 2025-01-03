@@ -44,9 +44,12 @@ class PlotMap(BaseModel):
     def run(self, query: str) -> dict:
         results = self.cypher_chain.invoke({"query": query, "meta": get_graph_meta_data()})
         df_description = "NO DATA WAS FOUND"
+        artifact = None
         if "result" in results and len(results["result"]) > 0:
             df = pd.DataFrame(results["result"])
             df_description  = df.describe(include='all').to_string()
+            df_for_plot = PlotMap.create_pandas_from_result(results["result"])
+            artifact = PlotMap.render_image(df_for_plot)
         answer = f"""
             The user expects an image of a map with annotated sites.
             However, this functionality is currently not implemented.
@@ -57,7 +60,8 @@ class PlotMap(BaseModel):
             Summarized statistics of the data:
             {df_description}
             """
-        return answer
+
+        return {"content": answer, "artifact": artifact}
 
     @staticmethod
     def create_pandas_from_result(result) -> pd.DataFrame:
@@ -114,12 +118,12 @@ class PlotMap(BaseModel):
 
 # TODO: Most of this is boilerplate for now. Need to fix prompt first
 class PlotMapInput(BaseModel):
-    query: str = Field(description="Search query that is turned into a Cypher query for a graph database")
+    query: str = Field(description="Human readable question that asks about chemical substances and where or when they have been measured in European surface water.")
 
 
 class PlotMapTool(BaseTool):
-    name: str = "Geographic Map"
-    description: str = ("This tool fetches chemicals' location and measurements in European surface waters "
+    name: str = "GeographicMap"
+    description: str =("This tool fetches chemicals' location and measurements in European surface waters "
                         "from a graph database and plots geographic locations on a map. "
                         "The input must be a complete sentence requesting sites. "
                         "Example inputs: \n\n"
@@ -127,9 +131,9 @@ class PlotMapTool(BaseTool):
                         "Show Diuron's toxic unit (TU) distribution since 2010 for the species algae (unicellular).\n"
                         "Show Diuron's driver importance distribution in France between January 2010 and December 2012.")
     args_schema: Type[BaseModel] = PlotMapInput
-    response_format: str = "content"
+    response_format: str = "content_and_artifact"
     plot_map: PlotMap = Field(default_factory=PlotMap)
 
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
         result = self.plot_map.run(query)
-        return result
+        return result["content"], result["artifact"]

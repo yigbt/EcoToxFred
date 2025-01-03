@@ -7,6 +7,7 @@ from langchain_community.chat_message_histories import Neo4jChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain import hub
+from langgraph.prebuilt import create_react_agent
 
 from tools.plot_map import PlotMapTool
 from utils import get_session_id

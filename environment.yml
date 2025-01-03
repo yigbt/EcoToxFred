@@ -7,6 +7,8 @@ dependencies:
   - langchain
   - langchain-core
   - langchain-community
+  - langgraph
+  - langsmith
   - langchainhub
   - matplotlib
   - neo4j-python-driver

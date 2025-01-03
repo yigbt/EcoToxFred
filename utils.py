@@ -9,6 +9,13 @@ def get_version() -> str:
     with open("VERSION", "r") as f:
         return f.read().strip()
 
+def get_langsmith_API_keys():
+    return {
+        "LANGSCHAIN_API_KEY": st.secrets["LANGCHAIN_API_KEY"],
+        "LANGCHAIN_ENDPOINT": st.secrets["LANGCHAIN_ENDPOINT"],
+        "LANGCHAIN_PROJECT": st.secrets["LANGCHAIN_PROJECT"],
+        "LANGCHAIN_TRACING_V2": st.secrets["LANGCHAIN_TRACING_V2"]
+    }
 
 # tag::write_message[]
 def write_message(message, save=True):
