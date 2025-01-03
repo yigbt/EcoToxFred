@@ -12,7 +12,7 @@ current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
 prompts_directory = os.path.join(current_directory, 'prompts')
 
-graph_metadata_file = os.path.join(prompts_directory, "graph_schema_metadata.json")
+graph_metadata_file = os.path.join(prompts_directory, "graph_schema_metadata.yml")
 
 
 class DefaultDict(dict):
@@ -118,6 +118,7 @@ class Prompts:
             prompt_cypher_general.partial_apply_prompt(cypher_intro)
             prompt_cypher_general.partial_apply_prompt(cypher_instructions_general)
             prompt_cypher_general.inject_examples(CypherExampleCollections.general_cypher_queries)
+            prompt_cypher_general.partial_apply({"meta": get_graph_meta_data()})
             cls._cached_prompts["cypher_general"] = prompt_cypher_general
         return cls._cached_prompts["cypher_general"]
 
@@ -138,6 +139,7 @@ class Prompts:
             prompt_cypher_map.partial_apply_prompt(cypher_intro)
             prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
             prompt_cypher_map.inject_examples(CypherExampleCollections.map_cypher_queries)
+            prompt_cypher_map.partial_apply({"meta": get_graph_meta_data()})
             cls._cached_prompts["cypher_map"] = prompt_cypher_map
         return cls._cached_prompts["cypher_map"]
 
@@ -160,6 +162,7 @@ class Prompts:
             prompt_cypher_plot.partial_apply_prompt(cypher_intro)
             prompt_cypher_plot.partial_apply_prompt(cypher_instructions_plot)
             prompt_cypher_plot.inject_examples(CypherExampleCollections.plot_cypher_queries)
+            prompt_cypher_plot.partial_apply({"meta": get_graph_meta_data()})
             cls._cached_prompts["cypher_plot"] = prompt_cypher_plot
         return cls._cached_prompts["cypher_plot"]
 

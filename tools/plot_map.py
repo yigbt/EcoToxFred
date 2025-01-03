@@ -42,7 +42,7 @@ class PlotMap(BaseModel):
     cypher_chain: Any
 
     def run(self, query: str) -> dict:
-        results = self.cypher_chain.invoke({"query": query, "meta": get_graph_meta_data()})
+        results = self.cypher_chain.invoke({"query": query})
         df_description = "NO DATA WAS FOUND"
         artifact = None
         if "result" in results and len(results["result"]) > 0:
