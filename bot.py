@@ -9,13 +9,13 @@ from astream_events_handler import invoke_our_graph
 
 # Page Config
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
-    layout='centered',
-    menu_items={
-        'about': f'''**EcoToxFred v{get_version()}**        
+                   layout='centered',
+                   menu_items={
+                       'about': f'''**EcoToxFred v{get_version()}**        
         A Neo4j-backed Chatbot discussing environmental monitoring data
         contact: Jana Schor jana.schor@ufz.de, Patrick Scheibe pscheibe@cbs.mpg.de'''
-    }
-)
+                   }
+                   )
 
 example_questions = [
     "What is Diuron and where has it been measured?",
@@ -30,6 +30,7 @@ if "initialized" not in st.session_state:
     st.session_state.initialized = True
     st.session_state.chat_agent = GraphEcoToxFredAgent()
     st.session_state.messages = [AIMessage(content="Hi, I'm EcoToxFred!  How can I help you?")]
+
 
 # def generate_response(prompt):
 #     """
@@ -82,6 +83,7 @@ for msg in st.session_state.messages:
             if "artifact" in msg.model_extra.keys():
                 st.plotly_chart(
                     msg.artifact,
+                    key="plotly_chart_" + str(random.randint(100000, 999999)),  # todo: does this need an alternative?
                     use_container_width=True,
                     config={'displayModeBar': False})
     elif isinstance(msg, HumanMessage):
@@ -99,9 +101,9 @@ question = st.chat_input()
 # Handle user input if provided
 if question:
     st.session_state.messages.append(HumanMessage(content=question))
-    st.chat_message("user").write(question)
+    st.chat_message("user", avatar="figures/user.png").write(question)
 
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="figures/assistant.png"):
         # create a placeholder container for streaming and any other events to visually render here
         placeholder = st.container()
         response = asyncio.run(invoke_our_graph(
