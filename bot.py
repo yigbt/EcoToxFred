@@ -78,7 +78,6 @@ for msg in st.session_state.messages:
     # we store them as AIMessage and HumanMessage as its easier to send to LangGraph
     if isinstance(msg, AIMessage):
         with st.chat_message("assistant", avatar="figures/assistant.png"):
-            st.write(msg.content)
             if "artifact" in msg.model_extra.keys():
                 st.session_state.figure_numbers += 1
                 st.plotly_chart(
@@ -86,6 +85,7 @@ for msg in st.session_state.messages:
                     key=f"plotly_chart_{st.session_state.figure_numbers:04d}",
                     use_container_width=True,
                     config={'displayModeBar': False})
+            st.write(msg.content)
     elif isinstance(msg, HumanMessage):
         st.chat_message("user", avatar="figures/user.png").write(msg.content)
 
