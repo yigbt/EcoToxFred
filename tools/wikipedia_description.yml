@@ -1,0 +1,8 @@
+name: WikipediaSearch
+description: |+
+  Use this tool to search Wikipedia for general knowledge.
+  Trigger when the question involves broad inquiries or background information on toxicology, species, substances, or sites without specifics.
+  Example triggers: “What is,” “Explain,” “Overview,” or “General info.”
+  Outputs textual answers based on the query.
+  Avoid using this tool for questions requiring data-specific visualizations.
+  Best when the user expects a detailed description or contextual information.
