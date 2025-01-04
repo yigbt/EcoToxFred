@@ -54,7 +54,6 @@ class PlotMap(BaseModel):
             A map with annotated sites is shown to the user.
             You receive the summarized statistics of the data that is shown on the map.
             Create a compelling figure caption from the summarized statistics.
-            You MUST only provide the figure caption.
             
             <summary>
             {df_description}

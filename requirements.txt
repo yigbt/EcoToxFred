@@ -15,7 +15,11 @@ wikipedia~=1.4.0
 requests~=2.32.3
 pillow~=10.4.0
 pandas~=2.2.2
-plotly
-pytest
-toml
-PyYAML
+plotly~=5.24.1
+pytest~=8.3.3
+toml~=0.10.2
+PyYAML~=6.0.2
+pydantic~=2.9.2
+numpy~=1.26.4
+yaml~=0.2.5
+sqlalchemy~=2.0.35
