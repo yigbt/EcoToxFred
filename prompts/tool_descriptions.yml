@@ -25,6 +25,14 @@ GeographicMap:
     Show Diuron's toxic unit (TU) distribution since 2010 for the species algae (unicellular).
     Show Diuron's driver importance distribution in France between January 2010 and December 2012.
 
+GeographicMapInput:
+  query: |+
+    Human readable question that asks about where a specific substance (e.g., Atrazine) has been
+    measured or detected, optionally at a certain time frame (e.g., in the year 2011) and/or with
+    toxicity information for a certain species (e.g., algae) to generate a map showing relevant
+    sampling sites and data either for entire Europe or a provided lake, river, or country.
+
+
 ScientificPlot:
   description: |+
     Use this tool to create 2D plots to visualize relationships or concentration trends.

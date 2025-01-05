@@ -9,7 +9,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain import hub
 from langgraph.prebuilt import create_react_agent
 
-from tools.plot_map import PlotMapTool
+from tools.plot_map import GeographicMap
 from utils import get_session_id
 from langchain_core.prompts import PromptTemplate
 from tools.vector import get_chemical_information
@@ -49,7 +49,7 @@ def create_toolset(general_chat: ChatPromptTemplate) -> [Tool]:
     Returns:
         [Tool]: A list of tools
     """
-    pm_tool = PlotMapTool()
+    pm_tool = GeographicMap()
     return [
         # Tool.from_function(
         #     name="General Chat",
