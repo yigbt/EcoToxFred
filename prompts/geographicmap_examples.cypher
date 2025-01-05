@@ -2,6 +2,7 @@
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.name = 'Diuron'
 RETURN s.name AS ChemicalName, // plot title
+       r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
        l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
        l.lat AS Lat, l.lon AS Lon // x,y coordinates
@@ -11,6 +12,7 @@ MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.name = 'Diuron'
 RETURN s.name AS ChemicalName, // plot title
        r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
+       r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
        l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
        l.lat AS Lat, l.lon AS Lon // x,y coordinates
@@ -33,6 +35,7 @@ MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
 RETURN s.name AS ChemicalName, // plot title
        r.driver_importance AS DriverImportance, // [0,1], continuous point color from blue to red, with midpoint at 0.5
        r.species AS Species, // add to point hover
+       r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
        l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
        l.lat AS Lat, l.lon AS Lon // x,y coordinates

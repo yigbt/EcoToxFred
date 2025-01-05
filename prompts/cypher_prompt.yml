@@ -2,7 +2,7 @@ parameters:
   - meta
   - schema
 prompt: |+
-  You are generating Cypher queries to interact with a graph database. 
+  You are generating Cypher queries to collect data from a neo4j graph database. 
   Your queries must adhere to the following rules:
   
   1. Always construct precise queries based on the given input, retrieving only the required data.

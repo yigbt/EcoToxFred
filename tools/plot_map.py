@@ -15,6 +15,7 @@ from tools.plotly_visualization import create_plotly_map
 
 logger = getLogger(__name__)
 
+
 class PlotMap(BaseModel):
     prompt: Any
     chat_llm: Any
