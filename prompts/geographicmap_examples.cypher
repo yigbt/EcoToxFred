@@ -31,7 +31,7 @@ RETURN s.name AS ChemicalName, // plot title
 
 // Show Diuron's driver importance distribution in France between January 2010 and December 2012.
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE s.name = 'Diuron' AND l.country = 'France' AND r.year >= 2010 AND r.year <=2012
+  WHERE s.name = 'Diuron' AND l.country = 'France' AND r.year >= 2010 AND r.year <= 2012
 RETURN s.name AS ChemicalName, // plot title
        r.driver_importance AS DriverImportance, // [0,1], continuous point color from blue to red, with midpoint at 0.5
        r.species AS Species, // add to point hover
