@@ -8,33 +8,25 @@ from pydantic import BaseModel, Field
 
 from langchain_community.utilities.wikipedia import WikipediaAPIWrapper
 
+from prompts import (ToolDescriptions)
 
-class WikipediaToolInput(BaseModel):
+
+class WikipediaSearchInput(BaseModel):
     """Input for the WikipediaQuery tool."""
 
     query: str = Field(
-        description=(
-            "A concise search query related to a chemical substance, its properties, "
-            "environmental behavior, toxicity, or relevance to aquatic ecosystems. "
-            "The query should be specific enough to retrieve relevant Wikipedia information."
-        )
+        description=ToolDescriptions.get("WikipediaSearchInput", "query")
     )
 
 
-class WikipediaTool(BaseTool):
+class WikipediaSearch(BaseTool):
     """Tool that searches the Wikipedia API for chemical and environmental toxicology-related information."""
 
-    name: str = "Wikipedia"
-    description: str = (
-        "A specialized wrapper around Wikipedia for retrieving detailed information about chemicals, their properties, "
-        "uses, environmental behavior, and toxicity. "
-        "Useful for answering questions about chemical substances relevant to environmental monitoring, their potential "
-        "toxicity to aquatic species (e.g., algae, daphnia/crustaceans, and fish), and their environmental impact. "
-        "Input should be a search query related to a chemical or its associated properties."
-    )
+    name: str = ToolDescriptions.get("WikipediaSearch", "name")
+    description: str = ToolDescriptions.get("WikipediaSearch", "description")
     api_wrapper: WikipediaAPIWrapper = Field(default_factory=WikipediaAPIWrapper)
 
-    args_schema: Type[BaseModel] = WikipediaToolInput
+    args_schema: Type[BaseModel] = WikipediaSearchInput
 
 
     def _run(

@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import os
 import re
-from typing import List, Iterable
+from typing import List, Iterable, Type
 from langchain_core.prompts import PromptTemplate
 
 import yaml
+from pydantic import BaseModel
 from sqlalchemy.util import classproperty
 
 current_file_path = os.path.abspath(__file__)
@@ -13,6 +14,17 @@ current_directory = os.path.dirname(current_file_path)
 prompts_directory = os.path.join(current_directory, 'prompts')
 
 graph_metadata_file = os.path.join(prompts_directory, "graph_schema_metadata.yml")
+
+
+class ToolDescriptions:
+    _yaml_content = None
+
+    @classmethod
+    def get(cls, model_class: str, field_name: str) -> str:
+        if cls._yaml_content is None:
+            with open(os.path.join(prompts_directory, "tool_descriptions.yml")) as file:
+                cls._yaml_content = yaml.safe_load(file)
+        return cls._yaml_content[model_class][field_name]
 
 
 class DefaultDict(dict):
@@ -99,72 +111,65 @@ class Prompts:
         Provides the prompt for the agent that orchestrates all tools and delivers the final answers.
         """
         if "agent" not in cls._cached_prompts.keys():
-            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
+            basic_intro = Prompt(os.path.join(prompts_directory, "agent_prompt.yml"))
             cls._cached_prompts["agent"] = basic_intro
         return cls._cached_prompts["agent"]
 
     @classproperty
-    def cypher_general(cls) -> Prompt:
+    def cypher_search(cls) -> Prompt:
         """
         Provides the prompt used for general graph database queries.
         This is used with a Cypher QA chain, and the agent relies on it when it wants to provide a text answer.
         """
-        if "cypher_general" not in cls._cached_prompts.keys():
-            prompt_cypher_general = Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
-            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
-            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
-            cypher_instructions_general = Prompt(os.path.join(prompts_directory, "cypher_instructions_general.yml"))
-            prompt_cypher_general.partial_apply_prompt(basic_intro)
-            prompt_cypher_general.partial_apply_prompt(cypher_intro)
-            prompt_cypher_general.partial_apply_prompt(cypher_instructions_general)
-            prompt_cypher_general.inject_examples(CypherExampleCollections.general_cypher_queries)
-            prompt_cypher_general.partial_apply({"meta": get_graph_meta_data()})
-            cls._cached_prompts["cypher_general"] = prompt_cypher_general
-        return cls._cached_prompts["cypher_general"]
+        if "cypher_search" not in cls._cached_prompts.keys():
+            # create plotmap specific prompt with injected few-shot examples
+            csearch_prompt = Prompt(os.path.join(prompts_directory, "cyphersearch_prompt.yml"))
+            csearch_prompt.inject_examples(CypherExampleCollections.general_cypher_queries)
+            # create general cypher prompt with included schema metadata
+            prompt_cypher_search = Prompt(os.path.join(prompts_directory, "cypher_prompt.yml"))
+            prompt_cypher_search.partial_apply({"meta": get_graph_meta_data()})
+            # combine general cypher prompt with cypher search prompt
+            prompt_cypher_search.append(csearch_prompt)
+            cls._cached_prompts["cypher_search"] = prompt_cypher_search
+        return cls._cached_prompts["cypher_search"]
 
     @classproperty
-    def cypher_map(cls) -> Prompt:
+    def geographic_map(cls) -> Prompt:
         """
         Provides the prompt used for graph database queries that access data for plotting on a map.
         The agent relies on it when it wants to provide an image of a map with annotated points.
         """
-        if "cypher_map" not in cls._cached_prompts.keys():
-            prompt_cypher_map = Prompt(os.path.join(prompts_directory, "prompt_cypher_map.yml"))
-            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
-            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
-            cypher_instructions = Prompt(os.path.join(prompts_directory, "cypher_instructions.yml"))
-            cypher_instructions_map = Prompt(os.path.join(prompts_directory, "cypher_instructions_map.yml"))
-            cypher_instructions_map.partial_apply_prompt(cypher_instructions)
-            prompt_cypher_map.partial_apply_prompt(basic_intro)
-            prompt_cypher_map.partial_apply_prompt(cypher_intro)
-            prompt_cypher_map.partial_apply_prompt(cypher_instructions_map)
-            prompt_cypher_map.inject_examples(CypherExampleCollections.map_cypher_queries)
-            prompt_cypher_map.partial_apply({"meta": get_graph_meta_data()})
-            cls._cached_prompts["cypher_map"] = prompt_cypher_map
-        return cls._cached_prompts["cypher_map"]
+        if "geographic_map" not in cls._cached_prompts.keys():
+            # create plotmap specific prompt with injected few-shot examples
+            map_prompt = Prompt(os.path.join(prompts_directory, "geographicmap_prompt.yml"))
+            map_prompt.inject_examples(CypherExampleCollections.map_cypher_queries)
+            # create general cypher prompt with included schema metadata
+            prompt_geographic_map = Prompt(os.path.join(prompts_directory, "cypher_prompt.yml"))
+            prompt_geographic_map.partial_apply({"meta": get_graph_meta_data()})
+            # combine general cypher prompt with plotmap prompt
+            prompt_geographic_map.append(map_prompt)
+            cls._cached_prompts["geographic_map"] = prompt_geographic_map
+        return cls._cached_prompts["geographic_map"]
 
     @classproperty
-    def cypher_plot(cls) -> Prompt:
+    def scientific_plot(cls) -> Prompt:
         """
         Provides the prompt used for graph database queries that access data for plotting a two-dimensional scatter
         plot. The agent relies on it when it wants to provide an image of scientific two-dimensional plot with time
         or site names on the x-axis and any kind of numeric values on the y-axis. Numeric values can be mean or
         median concentrations, toxic units or summarized toxic units ([sum,ratio,max]TU), or driver importance values.
         """
-        if "cypher_plot" not in cls._cached_prompts.keys():
-            prompt_cypher_plot = Prompt(os.path.join(prompts_directory, "prompt_cypher_plot.yml"))
-            basic_intro = Prompt(os.path.join(prompts_directory, "basic_intro.yml"))
-            cypher_intro = Prompt(os.path.join(prompts_directory, "cypher_intro.yml"))
-            cypher_instructions = Prompt(os.path.join(prompts_directory, "cypher_instructions.yml"))
-            cypher_instructions_plot = Prompt(os.path.join(prompts_directory, "cypher_instructions_plot.yml"))
-            cypher_instructions_plot.partial_apply_prompt(cypher_instructions)
-            prompt_cypher_plot.partial_apply_prompt(basic_intro)
-            prompt_cypher_plot.partial_apply_prompt(cypher_intro)
-            prompt_cypher_plot.partial_apply_prompt(cypher_instructions_plot)
-            prompt_cypher_plot.inject_examples(CypherExampleCollections.plot_cypher_queries)
-            prompt_cypher_plot.partial_apply({"meta": get_graph_meta_data()})
-            cls._cached_prompts["cypher_plot"] = prompt_cypher_plot
-        return cls._cached_prompts["cypher_plot"]
+        if "scientific_plot" not in cls._cached_prompts.keys():
+            # create sciplot specific prompt with injected few-shot examples
+            plot_prompt = Prompt(os.path.join(prompts_directory, "scientificplot_prompt.yml"))
+            plot_prompt.inject_examples(CypherExampleCollections.plot_cypher_queries)
+            # create general cypher prompt with included schema metadata, again???
+            prompt_scientific_plot = Prompt(os.path.join(prompts_directory, "cypher_prompt.yml"))
+            prompt_scientific_plot.partial_apply({"meta": get_graph_meta_data()})
+            # combine general cypher prompt with plotmap prompt
+            prompt_scientific_plot.append(plot_prompt)
+            cls._cached_prompts["scientific_plot"] = prompt_scientific_plot
+        return cls._cached_prompts["scientific_plot"]
 
 
 class CypherExampleCollection:
@@ -206,8 +211,8 @@ class CypherExampleCollection:
             result_lines.append(f"{i}. {self.examples[i]['information']}")
             result_lines.append("```cypher")
             result_lines.append(self.examples[i]['cypher'])
-            if i < len(self.examples) - 1:
-                result_lines.append("```\n")
+            # if i < len(self.examples) - 1: # todo: @PS why did you do this? resulted in the omission of backticks for the last example
+            result_lines.append("```\n")
         return "\n".join(result_lines)
 
     def read_cypher_file(self, file_path):
@@ -250,7 +255,7 @@ class CypherExampleCollections:
         Provides a collection of Cypher examples for the general case typically used to access a limited number of
         results that can be presented in text form.
         """
-        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_general.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "cyphersearch_examples.cypher"))
 
     @classproperty
     def map_cypher_queries(self) -> CypherExampleCollection:
@@ -258,7 +263,7 @@ class CypherExampleCollections:
         Provides a collection of Cypher examples for drawing points on a map.
         This can give in a large number of results.
         """
-        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_map.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "geographicmap_examples.cypher"))
 
     @classproperty
     def plot_cypher_queries(self) -> CypherExampleCollection:
@@ -266,7 +271,7 @@ class CypherExampleCollections:
         Provides a collection of Cypher examples used for drawing charts.
         This can give in a large number of results.
         """
-        return CypherExampleCollection(os.path.join(prompts_directory, "cypher_fewshot_examples_plot.cypher"))
+        return CypherExampleCollection(os.path.join(prompts_directory, "scientificplot_examples.cypher"))
 
 
 def get_graph_meta_data() -> str:
@@ -278,19 +283,3 @@ def get_graph_meta_data() -> str:
     with open(graph_metadata_file) as f:
         meta = f.read()
     return meta
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

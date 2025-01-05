@@ -1,0 +1,13 @@
+parameters:
+  - scientificplot_examples
+  - question
+prompt: |+
+  <examples>
+  {scientificplot_examples}
+  </examples>
+  
+  <question>
+  {question}
+  </question>
+
+  Cypher Query:

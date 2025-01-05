@@ -1,8 +1,8 @@
 parameters:
-  - basic_intro # prompts/basic_intro.yml
+  - basic_intro # prompts/agent_prompt.yml
   - cypher_intro # prompts/cypher_intro.yml
   - cypher_instructions_plot # prompts/cypher_instructions_plot.yml
-  - cypher_fewshot_examples_plot # prompts/cypher_fewshot_examples_plot.cypher
+  - cypher_fewshot_examples_plot # prompts/scientificplot_examples.cypher
   - question
 prompt: |+
   {basic_intro}

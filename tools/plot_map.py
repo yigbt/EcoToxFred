@@ -25,7 +25,7 @@ class PlotMap(BaseModel):
     @classmethod
     def validate_environment(cls, values: Dict) -> Any:
         values["chat_llm"] = get_chat_llm()
-        values["prompt"] = Prompts.cypher_map
+        values["prompt"] = Prompts.geographic_map
         values["graph"] = connect_to_neo4j()
         values["cypher_chain"] = GraphCypherQAChain.from_llm(
             values["chat_llm"],
@@ -67,7 +67,10 @@ class PlotMap(BaseModel):
 
 class PlotMapInput(BaseModel):
     query: str = Field(
-        description="Human readable question that asks about chemical substances and where or when they have been measured in European surface water.")
+        description="Human readable question that asks about where a specific substance (e.g., Atrazine) has been "
+                    "measured or detected, optionally at a certain time frame (e.g., in the year 2011) and/or with "
+                    "toxicity information for a certain species (e.g., algae) to generate a map showing relevant "
+                    "sampling sites and data either for entire Europe or a provided lake, river, or country.")
 
 
 class PlotMapTool(BaseTool):

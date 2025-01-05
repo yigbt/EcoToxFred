@@ -2,14 +2,14 @@ from prompts import *
 
 
 def test_prompt_loading():
-    prompt = Prompts.cypher_general
+    prompt = Prompts.cypher_search
     assert len(prompt.prompt) > 100
-    assert prompt.parameters == {"question", "toolnames", "schema", "tools"}
+    assert prompt.parameters == {"cyphersearch_examples"}
 
 
 def test_prompt_merging():
-    prompt_1 = Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
-    prompt_2 = Prompt(os.path.join(prompts_directory, "prompt_cypher_map.yml"))
+    prompt_1 = Prompt(os.path.join(prompts_directory, "cypher_prompt.yml"))
+    prompt_2 = Prompt(os.path.join(prompts_directory, "cyphersearch_prompt.yml"))
     len_2 = len(prompt_2.prompt)
     prompt_string_2 = str(prompt_2.prompt)
     params_2 = prompt_2.parameters
@@ -20,19 +20,16 @@ def test_prompt_merging():
 
 
 def test_prompt_parameter_injection():
-    prompt = Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
-    prompt.partial_apply({"question": "What is the capital of Germany?"})
-    assert "What is the capital of Germany?" in prompt.prompt
-    assert "question" not in prompt.parameters
-    assert "basic_intro" in prompt.parameters
-    assert "cypher_intro" in prompt.parameters
-    assert "cypher_instructions_general" in prompt.parameters
-    assert "cypher_fewshot_examples_general" in prompt.parameters
+    prompt = Prompt(os.path.join(prompts_directory, "cypher_prompt.yml"))
+    prompt.partial_apply({"meta": "Test meta data for schema"})
+    assert "Test meta data for schema" in prompt.prompt
+    assert "meta" not in prompt.parameters
+    assert "schema" in prompt.parameters
 
 
 # This is also an example of how to inject a whole example section into a prompt.
 def test_cypher_example_injection():
-    prompt = Prompt(os.path.join(prompts_directory, "prompt_cypher_general.yml"))
+    prompt = Prompt(os.path.join(prompts_directory, "cyphersearch_prompt.yml"))
     old_prompt_len = len(prompt.prompt)
     cypher_examples : CypherExampleCollection = CypherExampleCollections.general_cypher_queries
     prompt.inject_examples(cypher_examples)

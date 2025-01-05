@@ -1,0 +1,24 @@
+parameters:
+  - geographicmap_examples
+  - question
+prompt: |+
+  Generate a map visualizing sampling sites for a specified substance and optionally a species, showing concentrations and toxic impacts.
+  
+  Output:
+  - A map visualizing the requested data.
+  - A figure caption summarizing key information, including the substance, species, number of sites, and toxicity thresholds exceeded.
+
+  Constraints:
+  - A substance is required.
+  - If toxicity information shall be shown, both a substance and a species are required.
+  - Always include a clear figure caption summarizing the map's data.
+  
+  <examples>
+  {geographicmap_examples}
+  </examples>
+  
+  <question>
+  {question}
+  </question>
+
+  Cypher Query:

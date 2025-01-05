@@ -24,4 +24,4 @@ dependencies:
   - tenacity
   - toml
   - wikipedia
-  - yaml
+  - PyYAML

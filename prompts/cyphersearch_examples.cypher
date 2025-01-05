@@ -1,3 +1,15 @@
+// To retrieve sites where "Atrazine" was measured in the second half of the year 2011:
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+  WHERE s.name = 'Atrazine' AND r.year = 2011 AND 3 <= r.quarter <= 4
+RETURN s.name AS ChemicalName,
+       l.name AS SiteName,
+       l.lat AS Lat, l.lon AS Lon
+
+// To calculate the number of sites exceeding a toxicity threshold for algae in the year 2011:
+MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(o:Species)
+  WHERE r.sumTU > 0.001 AND r.year = 2011 AND o.name = 'algae'
+RETURN count(l) AS n_sites_at_risk
+
 // To find information about a certain substance by the substance's name
 MATCH (s:Substance)
   WHERE s.Name = 'Diuron'

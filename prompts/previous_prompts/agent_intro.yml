@@ -1,5 +1,5 @@
 parameters:
-  - basic_intro  # prompts/basic_intro.yml
+  - basic_intro  # prompts/agent_prompt.yml
   - tools
   - tool_names
 prompt: |+
