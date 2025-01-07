@@ -1,4 +1,11 @@
-image:
-  # The Dockerimage-Tag, which should be deployed
-  tag: "2024.1.1"
-  
+# The Dockerimage-Tags, which should be deployed
+
+ecotoxfred:
+  image:
+    repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred
+    tag: "2024.1.2-alpha1"
+
+neo4j:
+  image:
+    repository: triet20/neo4j-cheos
+    tag: "latest"
