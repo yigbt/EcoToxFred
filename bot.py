@@ -45,11 +45,19 @@ def generate_response(query: str):
     with st.chat_message("assistant", avatar="figures/assistant.png"):
         # create a placeholder container for streaming and any other events to visually render here
         placeholder = st.container()
-        response = asyncio.run(invoke_our_graph(
-            st.session_state.chat_agent,
-            st.session_state.messages,
-            placeholder))
-        st.session_state.messages.append(response)
+        try:
+            response = asyncio.run(invoke_our_graph(
+                st.session_state.chat_agent,
+                st.session_state.messages,
+                placeholder))
+            st.session_state.messages.append(response)
+        except Exception as e:
+            print(f'[OpenAI API] {e}')
+            st.session_state.messages.append(AIMessage(
+                content=f"There was an OpenAI API connection error: {e}. "
+                        f"This may happen if you hit OpenAI API's rate limit "
+                        f"(the number of request send in a specific time interval)."
+                        f"Please try again in a few seconds."))
 
 
 def handle_example_question(example_question):

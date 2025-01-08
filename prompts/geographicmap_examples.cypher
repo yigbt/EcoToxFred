@@ -1,7 +1,7 @@
 // Show sites where Diuron has been measured on the European map.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron'
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron'
+RETURN s.Name AS ChemicalName, // plot title
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
        l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
@@ -9,8 +9,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // Show Diuron's measured concentrations on the European map.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron'
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron'
+RETURN s.Name AS ChemicalName, // plot title
        r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
@@ -20,8 +20,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // Show Diuron's measured concentrations between 2010 and 2020 on the European map.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron' AND r.year >= 2010 AND r.year <= 2020
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND r.year >= 2010 AND r.year <= 2020
+RETURN s.Name AS ChemicalName, // plot title
        r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover
@@ -31,8 +31,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // Show Diuron's driver importance distribution in France between January 2010 and December 2012.
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE s.name = 'Diuron' AND l.country = 'France' AND r.year >= 2010 AND r.year <= 2012
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND l.country = 'France' AND r.year >= 2010 AND r.year <= 2012
+RETURN s.Name AS ChemicalName, // plot title
        r.driver_importance AS DriverImportance, // [0,1], continuous point color from blue to red, with midpoint at 0.5
        r.species AS Species, // add to point hover
        r.year AS Year, r.quarter AS Quarter, // add to point hover
@@ -43,8 +43,8 @@ RETURN s.name AS ChemicalName, // plot title
 
 // Show Diuron's toxic unit (TU) distribution for algae (unicellular) since 2010.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-  WHERE s.name = 'Diuron' AND r.year >= 2010
-RETURN s.name AS ChemicalName, // plot title
+  WHERE s.Name = 'Diuron' AND r.year >= 2010
+RETURN s.Name AS ChemicalName, // plot title
        r.TU_algae AS TU, // >=0, continuous point color from yellow to red, with midpoint orange at 1
        r.year AS Year, r.quarter AS Quarter, // add to point hover
        l.name AS SiteName, // point hover

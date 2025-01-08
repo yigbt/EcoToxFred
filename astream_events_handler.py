@@ -1,6 +1,7 @@
 from langchain_core.messages import AIMessage
 import streamlit as st
 
+
 async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     """
     Asynchronously processes a stream of events from the graph_runnable and updates the Streamlit interface.
@@ -16,7 +17,7 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     # Set up placeholders for displaying updates in the Streamlit app
     container = st_placeholder  # This container will hold the dynamic Streamlit UI components
     thoughts_placeholder = container.container()  # Container for displaying status messages
-    image_placeholder = container.empty() # Container for showing an image
+    image_placeholder = container.empty()  # Container for showing an image
     token_placeholder = container.empty()  # Placeholder for displaying progressive token updates
     final_text = ""  # Will store the accumulated text from the model's response
 

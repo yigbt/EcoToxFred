@@ -4,6 +4,23 @@ from typing import Any
 
 
 def render_concentration_map(df: pd.DataFrame, meta_info: dict) -> Any:
+    target_color = {
+        "TU": px.colors.sequential.Bluered,
+        "sumTU": px.colors.sequential.Bluered,
+        "maxTU": px.colors.sequential.Bluered,
+        "ratioTU": px.colors.sequential.Plasma,
+        "DriverImportance": px.colors.sequential.Reds,
+        "Concentration": ["blue", "darkred"]
+    }
+    target_midpoint = {
+        "TU": 0.5,
+        "sumTU": 0.001,
+        "maxTU": 0.001,
+        "ratioTU": 0.5,
+        "DriverImportance": 0.5,
+        "Concentration": None
+
+    }
     fig = px.scatter_geo(
         df,
         lat="Lat",
@@ -12,7 +29,8 @@ def render_concentration_map(df: pd.DataFrame, meta_info: dict) -> Any:
         hover_data=df[meta_info["meta_data_columns"]],
         size=meta_info["target_column"],
         color=meta_info["target_column"],
-        color_continuous_scale=px.colors.sequential.YlOrRd
+        color_continuous_scale=target_color[meta_info["target_column"]],
+        color_continuous_midpoint=target_midpoint[meta_info["target_column"]]
     )
 
     fig.update_layout(
