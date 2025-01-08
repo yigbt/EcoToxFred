@@ -7,10 +7,10 @@ langchain-openai==0.2.3
 neo4j-driver==5.25.0
 streamlit==1.39.0
 langchainhub==0.1.21
-langchain-core==0.3.12
-langchain-community==0.3.3
-networkx~=3.3
-matplotlib~=3.9.1
+langchain-core==0.3.25
+langchain-community==0.3.11
+networkx~=3.4
+matplotlib~=3.10.0
 wikipedia~=1.4.0
 requests~=2.32.3
 pillow~=10.4.0
