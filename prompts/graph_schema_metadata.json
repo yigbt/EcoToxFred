@@ -98,7 +98,7 @@
           },
           {
             "name": "time_point",
-            "description": "Timestamp of the measurement event."
+            "description": "Timestamp of the measurement event. If this is queried, always transform this value using date(time_point)"
           },
           {
             "name": "year",

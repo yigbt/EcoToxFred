@@ -22,7 +22,7 @@ example_questions = [
     "What is Triclosan? Has it been measured in European freshwater?",
     "Find the 10 most frequent driver chemicals above a driver importance of 0.6",
     "For Citalopram, provide the name of the sampling site and the measurement time point as a table?",
-    "Show the distribution of the summarized toxic unit (sumTU) for algae since 2010."
+    "Show the distribution of the summarized toxic unit (sumTU) for the species fish in 2018."
 ]
 
 # Set up the session state and initialize the LLM agent

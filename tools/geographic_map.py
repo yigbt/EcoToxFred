@@ -47,7 +47,7 @@ class PlotMap(BaseModel):
         generated_cypher = results["intermediate_steps"][-1]["query"]
         if "result" in results and len(results["result"]) > 0:
             df = pd.DataFrame(results["result"])
-            df_description = df.describe(include='all').to_json()
+            df_description = df.describe(include='all').to_json(default_handler=str)
             try:
                 artifact = create_plotly_map(results["result"])
             except Exception as e:

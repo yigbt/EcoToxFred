@@ -7,6 +7,13 @@ CypherSearch:
     Avoid for queries requiring maps or plots.
     Best for precise, non-visual responses.
 
+CypherSearchInput:
+  query: |+
+    Human readable question that asks about if, where, or when specific substances (e.g., Atrazine) have been
+    measured or detected, optionally at a certain time frame (e.g., in the year 2011) and/or with
+    toxicity information for a certain species (e.g., algae) to generate tables of the data and summarized statistics.
+
+
 GeographicMap:
   description: |+
     Use this tool to generate a map of sampling sites.

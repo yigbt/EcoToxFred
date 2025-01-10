@@ -1,134 +1,105 @@
-from tools import cypher_utils
-from langchain.prompts.prompt import PromptTemplate
+from typing import Any, Type, Optional, Dict
+
+import pandas as pd
+from langchain_neo4j import GraphCypherQAChain
+from langchain_community.tools import BaseTool
+from langchain_core.callbacks import CallbackManagerForToolRun
+from langchain_core.tools import ToolException
+from pydantic import BaseModel, Field, model_validator
+
+from graph import connect_to_neo4j
+from llm import get_chat_llm
+from prompts import Prompts, ToolDescriptions
 
 
-def create_cypher_prompt_template():
-    """
-    Creates a prompt template for Cypher queries.
+class CypherSearchCore(BaseModel):
+    prompt: Any
+    chat_llm: Any
+    graph: Any
+    cypher_chain: Any
 
-    Returns:
-        PromptTemplate: The Cypher prompt template
-    """
-    return PromptTemplate.from_template("""
-        You are an expert Neo4j Developer translating user questions into Cypher to answer questions about chemicals, 
-        and their measured concentrations in European surface waters like rivers and lakes. 
-        Convert the user's question based on the schema.
-        
-        Use only the provided relationship types and properties in the schema.
-        Do not use any other relationship types or properties that are not provided.
-        
-        Do not return entire nodes or embedding properties.
-        
-        Schema:
-        {schema}
-        
-        Context:
-        Chemicals are substances.
-        The chemical name is stored in the name property of the Substance nodes. 
-        The sampling site's name is stored in the name property of the Site nodes.
-        Chemical concentrations are stored as mean_concentration and median_concentrations, which are the quarterly 
-        summarized concentrations of multiple measurements. 
-        Rivers and lakes are water bodies. 
-        Water body names are stored in the water_body property.
-        Larger areas around rivers and lake including smaller streams are collected in river basins.
-        The DTXSID referes to the CompTox Dashboard ID of the U.S. EPA.
-        The verb detected in the context of chemical monitoring referes to a measured concentration above 0.
-        
-        Instructions:
-        Ignore water_body and country in case you are only asked about finding information on a certain chemical.
-        If you cannot find the requested chemical name, ask the user to provide the Comptox Dashboard ID of the 
-        requested chemical which is the DTXSID.
-        For questions that involve time or the interrogative 'when' refer to the node and relation properties year 
-        and quarter.
-        If you cannot find the requested river name in water_body search in river_basin and vice versa.
-        For questions that involve geographic or location information or the interrogative 'where' search in the 
-        properties of the Site nodes.
-        For questions that involve European rivers, lakes or water bodies search in the properties of the Site nodes.
-        For questions that involve toxicity information use the toxic unit properties 'TU' or 'sumTU' of the relations
-        measured_at and summarized_impact_on.
-        In case the result contains multiple values, return introductory sentences followed by a list of the values.
-    
-        
-        Example Cypher Queries:
-        0. To find information about a certain substance
-        ```
-        MATCH (s:Substance) 
-        WHERE s.name = 'Diuron'
-        return s.DTXSID as DTXSID, s.name as Name
-        ```
-        1. To find sites where a certain substance has been measured
-        ```
-        MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-        WHERE s.name='Diuron'
-        RETURN s.name as ChemicalName, s.DTXSID as DTXSID, r.concentration_value as Concentration, 
-        r.concentration_unit as ConcentrationUnit, r.year as Year, r.quarter as Quarter, l.name as SiteName, 
-        l.country as Country, l.river_basin as RiverBasin, l.water_body as WaterBody
-        ```
-        
-        2. To find sites where a certain substance has been measured with a mean concentration above a threshold:
-        ```
-        MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
-        WHERE s.name='Diuron' AND r.mean_concentration > 0.001
-        RETURN s.name as ChemicalName, s.DTXSID as DTXSID, r.concentration_value as Concentration, 
-        r.concentration_unit as ConcentrationUnit, r.year as Year, r.quarter as Quarter, l.name as SiteName, 
-        l.country as Country, l.river_basin as RiverBasin, l.water_body as WaterBody
-        ```
-        
-        3. To find all chemicals measured in a certain river:
-        ```
-        MATCH (c:Substance)-[r:MEASURED_AT]->(s:Site)
-        WHERE s.water_body = 'seine' AND r.mean_concentration > 0.001
-        RETURN c.DTXSID AS DTXSID, c.name AS Name
-        ```
-        
-        4. To find all substances measured in France
-        ```
-        MATCH (c:Substance)-[r:MEASURED_AT]->(s:Site)
-        WHERE s.country = 'France'
-        RETURN DISTINCT c.DTXSID AS DTXSID, c.name AS Name
-        ```
-        
-        5. To find the 10 most frequent driver chemicals above a driver importance of 0.6 
-        ```
-        MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-        WHERE r.driver_importance > 0.6
-        RETURN s.name AS substance, COUNT(r) AS frequency
-        ORDER BY frequency DESC
-        LIMIT 10
-        ```
-        
-        6. To find the substances with highest driver importance, provide the first 10
-        ```
-        MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site) 
-        WHERE r.driver_importance>0.8 
-        RETURN DISTINCT s.name, s.DTXSID, r.driver_importance 
-        ORDER BY r.driver_importance
-        LIMIT 10
-        ```
-        
-        Question:
-        {question}
-        
-        Cypher Query:""")
+    @model_validator(mode="before")
+    @classmethod
+    def validate_environment(cls, values: Dict) -> Any:
+        values["chat_llm"] = get_chat_llm()
+        values["prompt"] = Prompts.cypher_search
+        values["graph"] = connect_to_neo4j()
+        values["cypher_chain"] = GraphCypherQAChain.from_llm(
+            values["chat_llm"],
+            graph=values["graph"],
+            verbose=True,
+            cypher_prompt=values["prompt"].get_prompt_template(),
+            return_intermediate_steps=True,
+            allow_dangerous_requests=True
+        )
+        values["cypher_chain"].return_direct = True
+        values["cypher_chain"].top_k = 1000
+        return values
 
+    def run(self, query: str) -> str:
+        results = self.cypher_chain.invoke({"query": query})
+        max_results_shown = 5
+        results_cropped = False
 
-def invoke_cypher_tool(arg, **kwargs):
-    max_k = 20
-    chain = cypher_utils.create_direct_cypher_chain(
-        prompt_template=create_cypher_prompt_template(),
-        number_max_results=max_k
-    )
-    query_result = chain.invoke(arg, **kwargs)
-    answer = f"Unfortunately, the database request failed."
-    if "result" in query_result:
-        data = query_result["result"]
-        answer = \
-            f"""
-            The following search query returned exactly {len(data)} results.
-            Note that results are limited to {max_k} because of token constraints, which helps optimize performance and costs.
-            
-            Data:
-            {data}
+        # We store the generated Cypher query and return it in the tool's exception in
+        # case we did not receive the data we needed. The agent might be able to understand
+        # the missing pieces, refine the question and run the tool again.
+        generated_cypher = results["intermediate_steps"][-1]["query"]
+        if "result" in results and len(results["result"]) > 0:
+            df = pd.DataFrame(results["result"])
+            df_description = df.describe(include='all').to_json(default_handler=str)
+            if df.shape[0] > max_results_shown:
+                df = df[:max_results_shown]
+                results_cropped = True
+            df_json = df.to_json(default_handler=str)
+
+        else:
+            raise ToolException(f"No data was found for the following cypher: {generated_cypher}")
+
+        cropping_message = ""
+        if results_cropped:
+            cropping_message = f"""
+            The full results cropped to {max_results_shown} rows:
+            """
+        else:
+            cropping_message = f"""
+            The results comprise {df.shape[0]} rows:
             """
 
-    return answer
+        answer = f"""
+            {cropping_message}
+            <data>
+            {df_json}
+            </data>
+            
+            Provide the user with a Markdown formatted table of the data and a textual summary.
+            <summary>
+            {df_description}
+            </summary>
+            
+            Always provide the following cypher query as code to the user
+            ``` 
+            {generated_cypher}
+            ```
+            
+            Always provide the Zenodo link `https://zenodo.org/records/14616124` of the docker container holding
+            the full Neo4J graph database where the user can access the complete result with the cypher query.
+            """
+
+        return answer
+
+
+class CypherSearchInput(BaseModel):
+    query: str = Field(description=ToolDescriptions.get("CypherSearchInput", "query"))
+
+
+class CypherSearch(BaseTool):
+    name: str = "CypherSearch"
+    description: str = ToolDescriptions.get("CypherSearch", "description")
+    args_schema: Type[BaseModel] = CypherSearchInput
+    response_format: str = "content"
+    search_core: CypherSearchCore = Field(default_factory=CypherSearchCore)
+
+    def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
+        result = self.search_core.run(query)
+        return result
