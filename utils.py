@@ -1,13 +1,15 @@
 from typing import TextIO
 
 import streamlit as st
+import yaml
 # from streamlit.runtime.scriptrunner.script_run_context import get_script_run_ctx
 from streamlit.runtime.scriptrunner.script_runner import get_script_run_ctx
 
 
 def get_version() -> str:
-    with open("VERSION", "r") as f:
-        return f.read().strip()
+    with open("values.yaml") as f:
+        data = yaml.safe_load(f)
+        return data["image"]["tag"]
 
 def get_langsmith_API_keys():
     return {
