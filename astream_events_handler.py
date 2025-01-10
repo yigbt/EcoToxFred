@@ -1,3 +1,4 @@
+import plotly
 from langchain_core.messages import AIMessage
 import streamlit as st
 
@@ -27,11 +28,12 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
         kind = event["event"]  # Determine the type of event received
 
         if kind == "on_chat_model_stream":
-            # The event corresponding to a stream of new content (tokens or chunks of text)
-            addition = event["data"]["chunk"].content  # Extract the new content chunk
-            final_text += addition  # Append the new content to the accumulated text
-            if addition:
-                token_placeholder.write(final_text)  # Update the st placeholder with the progressive response
+            if  event["metadata"]["langgraph_node"] == "agent":
+                # The event corresponding to a stream of new content (tokens or chunks of text)
+                addition = event["data"]["chunk"].content  # Extract the new content chunk
+                final_text += addition  # Append the new content to the accumulated text
+                if addition:
+                    token_placeholder.write(final_text)  # Update the st placeholder with the progressive response
 
         elif kind == "on_tool_start":
             # The event signals that a tool is about to be called
@@ -59,8 +61,9 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
                     if hasattr(event_output, "artifact") and event_output.artifact is not None:
                         artifact = event_output.artifact
                         with image_placeholder:
+                            fig = plotly.io.from_json(artifact)
                             st.plotly_chart(
-                                artifact,
+                                fig,
                                 key=f"plotly_chart_temporary",
                                 use_container_width=True,
                                 config={'displayModeBar': False})

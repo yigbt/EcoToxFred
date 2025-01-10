@@ -1,3 +1,4 @@
+import plotly
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
@@ -88,8 +89,9 @@ for msg in st.session_state.messages:
         with st.chat_message("assistant", avatar="figures/assistant.png"):
             if "artifact" in msg.model_extra.keys():
                 st.session_state.figure_numbers += 1
+                fig = plotly.io.from_json(msg.artifact)
                 st.plotly_chart(
-                    msg.artifact,
+                    fig,
                     key=f"plotly_chart_{st.session_state.figure_numbers:04d}",
                     use_container_width=True,
                     config={'displayModeBar': False})

@@ -1,7 +1,8 @@
 from typing import Any, Type, Optional, Dict
 
 import pandas as pd
-from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
+import plotly.io
+from langchain_neo4j import GraphCypherQAChain
 from langchain_community.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.tools import ToolException
@@ -80,4 +81,4 @@ class GeographicMap(BaseTool):
 
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
         result = self.plot_map.run(query)
-        return result["content"], result["artifact"]
+        return result["content"], plotly.io.to_json(result["artifact"])
