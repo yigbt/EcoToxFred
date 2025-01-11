@@ -11,7 +11,9 @@ dependencies:
       - langgraph==0.2.62
       - langsmith==0.2.10
       - langchainhub==0.1.21
+      - langchain-neo4j==0.2.0
       - matplotlib==3.10.0
+      - neo4j==5.27.0
       - neo4j-driver==5.27.0
       - networkx==3.4.2
       - openai==1.59.6
