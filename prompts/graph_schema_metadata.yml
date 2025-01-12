@@ -39,8 +39,8 @@ schema:
       name: Species
       primary_key: name
       properties:
-        - description: Common name of the species. Available values are algae, crustacean,
-            and fish.
+        - description: Common name of the species. Available values are the aquatic species algae, crustacean also 
+            called daphnia (magna), and fish.
           name: name
         - description: Taxonomic classification of the species. Available values are unicelluar
             with algae as representative, invertebrate with crustacean as representative,
@@ -145,6 +145,8 @@ schema:
           name: quarter
         - description: Driver importance score for the substance.
           name: driver_importance
+        - description: Whether the substance belongs to the risk driver chemicals at this site. True values refer to drivers, false values say that the substance does not belong to the risk drivers.
+          name: is_driver
     - description: Connects a Site to a Species, summarizing the cumulative toxic impact
         of all substances on that species at the site. All individual toxic unit (TU)
         values are summed up to form the sumTU. Properties include the sum of Toxic

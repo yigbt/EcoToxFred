@@ -83,7 +83,7 @@ class CypherSearchCore(BaseModel):
             ```
             
             Always provide the Zenodo link `https://zenodo.org/records/14616124` of the docker container holding
-            the full Neo4J graph database where the user can access the complete result with the cypher query.
+            the full Neo4j graph database where the user can access the complete result with the cypher query.
             """
 
         return answer

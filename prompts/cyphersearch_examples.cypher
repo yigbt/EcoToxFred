@@ -59,9 +59,9 @@ MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
 RETURN DISTINCT s.DTXSID AS DTXSID, s.Name  AS ChemicalName
   ORDER BY ChemicalName
 
-// Find the most frequent driver chemicals above a driver importance of 0.6, provide the top 10 records
+// Find the most frequent multiple risk drivers
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE r.driver_importance > 0.6
+  WHERE r.is_driver = TRUE AND r.driver_importance < 1
 RETURN DISTINCT s.Name AS ChemicalName, count(r) AS frequency
   ORDER BY frequency DESC
 
@@ -91,3 +91,4 @@ MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
 RETURN l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin,
        s.Name AS SpeciesName,
        r.sumTU AS sumTU, r.year AS Year, r.quarter AS Quarter
+

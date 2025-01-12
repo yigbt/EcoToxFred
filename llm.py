@@ -14,7 +14,8 @@ def get_chat_llm() -> ChatOpenAI:
     return ChatOpenAI(
         openai_api_key=st.secrets["OPENAI_API_KEY"],
         model_name=st.secrets["OPENAI_MODEL"],
-        streaming=True
+        streaming=True,
+        temperature=0
     )
 
 

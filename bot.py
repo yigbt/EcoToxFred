@@ -7,22 +7,28 @@ from utils import get_version
 from graph_agent import GraphEcoToxFredAgent
 from astream_events_handler import invoke_our_graph
 
+disclaimer = """
+EcoToxFred may occasionally provide incorrect or incomplete information.\n
+Always carefully verify the returned results before relying on them.
+"""
+
 # Page Config
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
                    layout='centered',
                    menu_items={
                        'about': f'''**EcoToxFred v{get_version()}**        
-        A Neo4j-backed Chatbot discussing environmental monitoring data
-        contact: Jana Schor jana.schor@ufz.de, Patrick Scheibe pscheibe@cbs.mpg.de'''
-                   }
-                   )
+        A Neo4j-backed Chatbot discussing environmental monitoring and hazard data
+        contact: Jana Schor jana.schor@ufz.de, Patrick Scheibe pscheibe@cbs.mpg.de
+        
+        {disclaimer}'''})
 
 example_questions = [
+    "EcoToxFred, what is your expertise? Structure your response in bullet points.",
     "What is Diuron and where has it been measured?",
     "What is Triclosan? Has it been measured in European freshwater?",
-    "Find the 10 most frequent driver chemicals above a driver importance of 0.6",
-    "For Citalopram, provide the name of the sampling site and the measurement time point as a table?",
-    "Show the distribution of the summarized toxic unit (sumTU) for the species fish in 2018."
+    "Show the ratioTU distribution for algae along the Danube (2010–2015).",
+    "Find the 10 most frequent multiple risk drivers.",
+    "For Citalopram, provide the name of the sampling site and the measurement time point as a table?"
 ]
 
 # Set up the session state and initialize the LLM agent
@@ -69,7 +75,7 @@ with st.sidebar:
     st.image("figures/UFZ_MPG_Logo.svg")
     st.header(f"EcoToxFred (v{get_version()})", divider=True)
     st.markdown(
-        "A Chatbot for discussing environmental monitoring "
+        "A Chatbot for discussing environmental monitoring and hazard "
         "data collected in a large knowledge graph and stored in a Neo4j Graph Database."
     )
     st.header("Example Questions", divider=True)

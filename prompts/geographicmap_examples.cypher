@@ -18,6 +18,17 @@ RETURN s.Name AS ChemicalName, // plot title
        l.lat AS Lat, l.lon AS Lon // x,y coordinates
   ORDER BY r.median_concentration DESC
 
+// Show Diuron's detected concentrations on the European map.
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+  WHERE s.Name = 'Diuron' AND r.median_concentration > 0
+RETURN s.Name AS ChemicalName, // plot title
+       r.median_concentration AS Concentration, // >=0, continuous point color from yellow to red
+       r.year AS Year, r.quarter AS Quarter, // add to point hover
+       l.name AS SiteName, // point hover
+       l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
+       l.lat AS Lat, l.lon AS Lon // x,y coordinates
+  ORDER BY r.median_concentration DESC
+
 // Show Diuron's measured concentrations between 2010 and 2020 on the European map.
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.Name = 'Diuron' AND r.year >= 2010 AND r.year <= 2020
@@ -84,3 +95,14 @@ RETURN s.name AS SpeciesName, // plot title
        l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
        l.lat AS Lat, l.lon AS Lon // x,y coordinates
   ORDER BY r.sumTU DESC
+
+// Show ratioTU distribution for algae along the Danube (2010–2015).
+MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE r.year >= 2010 AND r.year <= 2015 AND s.name = 'algae' AND l.water_body = 'danube'
+RETURN s.name AS SpeciesName, // plot title
+r.ratioTU AS ratioTU, // [0,1] - continuous point color from blue to red, with midpoint at 0.5
+r.year AS Year, r.quarter AS Quarter, // add to point hover
+l.name AS SiteName, // point hover
+l.water_body AS WaterBody, l.river_basin AS RiverBasin, // point hover
+l.lat AS Lat, l.lon AS Lon // x,y coordinates
+ORDER BY r.ratioTU DESC
