@@ -7,20 +7,20 @@ from utils import get_version
 from graph_agent import GraphEcoToxFredAgent
 from astream_events_handler import invoke_our_graph
 
-disclaimer = """
-EcoToxFred may occasionally provide incorrect or incomplete information.\n
+about_text = f"""
+**EcoToxFred v{get_version()}** — a Neo4j-backed Chatbot discussing environmental monitoring and hazard data.
+
+Contact:
+  - Jana Schor jana.schor@ufz.de
+  - Patrick Scheibe pscheibe@cbs.mpg.de
+
+EcoToxFred may occasionally provide incorrect or incomplete information.
 Always carefully verify the returned results before relying on them.
 """
 
-# Page Config
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
                    layout='centered',
-                   menu_items={
-                       'about': f'''**EcoToxFred v{get_version()}**        
-        A Neo4j-backed Chatbot discussing environmental monitoring and hazard data
-        contact: Jana Schor jana.schor@ufz.de, Patrick Scheibe pscheibe@cbs.mpg.de
-        
-        {disclaimer}'''})
+                   menu_items={"about": about_text})
 
 example_questions = [
     "EcoToxFred, what is your expertise? Structure your response in bullet points.",
