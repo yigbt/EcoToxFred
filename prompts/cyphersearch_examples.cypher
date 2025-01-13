@@ -94,7 +94,7 @@ RETURN l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.ri
 
 // Find pairs of substances that were detected together most often
 MATCH (s1:Substance)-[r1:MEASURED_AT]->(l:Site)<-[r2:MEASURED_AT]-(s2:Substance)
-  WHERE s1 <> s2 AND r1.median_concentration > 0 AND r2.median_concentration > 0
+  WHERE s1 <> s2 AND s1.Name < s2.Name AND r1.median_concentration > 0 AND r2.median_concentration > 0
 RETURN s1.Name AS Compound1, s2.Name AS Compound2, count(l) AS Frequency
   ORDER BY Frequency DESC
 
