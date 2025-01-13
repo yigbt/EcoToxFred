@@ -3,9 +3,9 @@
 ecotoxfred:
   image:
     repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred
-    tag: "2024.1.2-alpha1"
+    tag: "2025.0.1"
 
 neo4j:
   image:
-    repository: triet20/neo4j-cheos
-    tag: "latest"
+    repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred/neo4j-cheos
+    tag: "2025.0.0"

@@ -43,6 +43,7 @@ COPY --chown=ecotoxfred:ecotoxfred *.py .
 COPY --chown=ecotoxfred:ecotoxfred figures/ figures/
 COPY --chown=ecotoxfred:ecotoxfred tools/ tools/
 COPY --chown=ecotoxfred:ecotoxfred prompts/ prompts/
+COPY --chown=ecotoxfred:ecotoxfred values.yaml .
 
 
 # indicates the container port, which is exposed to the host
