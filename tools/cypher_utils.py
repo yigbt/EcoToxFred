@@ -1,6 +1,6 @@
 from llm import llm
 from graph import graph
-from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
+from langchain_neo4j import GraphCypherQAChain
 from langchain.prompts.prompt import PromptTemplate
 
 def create_direct_cypher_chain(

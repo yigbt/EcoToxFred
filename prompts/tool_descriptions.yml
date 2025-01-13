@@ -1,0 +1,67 @@
+CypherSearch:
+  description: |+
+    Use this tool to query the knowledge graph for specific text-based answers.
+    Trigger when the question involves measured concentrations, relationships, or specific facts about the graph’s entities.
+    Example triggers: "How many", "List", "Show relationships", or "Which species".
+    Outputs text-based answers directly from the graph database.
+    Avoid for queries requiring maps or plots.
+    Best for precise, non-visual responses.
+
+CypherSearchInput:
+  query: |+
+    Human readable question that asks about if, where, or when specific substances (e.g., Atrazine) have been
+    measured or detected, optionally at a certain time frame (e.g., in the year 2011) and/or with
+    toxicity information for a certain species (e.g., algae) to generate tables of the data and summarized statistics.
+
+
+GeographicMap:
+  description: |+
+    Use this tool to generate a map of sampling sites.
+    Trigger when the user asks for locations of measured or detected substances, their concentrations, or toxic impacts.
+    Example triggers: "Where", "Show", "Show map", "Visualize sites", or "Map of", or geographical regions like river or country names. 
+    Requires specific substance from the user.
+    Requires specific species form the user in case toxicity information shall be shown.
+    Outputs a spatial visualization on a map along with a figure caption summarizing the displayed data.
+    Avoid for purely textual or non-geographic questions.
+    Best for questions where the user needs a geographical overview or site-specific data visualized.
+    
+    Example inputs:
+    
+    Show sites where Diuron has been measured in Europe.
+    Show Diuron's measured concentrations on the European map.
+    Show Diuron's toxic unit (TU) distribution since 2010 for the species algae (unicellular).
+    Show Diuron's driver importance distribution in France between January 2010 and December 2012.
+
+GeographicMapInput:
+  query: |+
+    Human readable question that asks about where a specific substance (e.g., Atrazine) has been
+    measured or detected, optionally at a certain time frame (e.g., in the year 2011) and/or with
+    toxicity information for a certain species (e.g., algae) to generate a map showing relevant
+    sampling sites and data either for entire Europe or a provided lake, river, or country.
+
+
+ScientificPlot:
+  description: |+
+    Use this tool to create 2D plots to visualize relationships or concentration trends.
+    Trigger when the user asks to compare, trend, or analyze data visually.
+    Example triggers: "Plot", "Trend", "Graph", "Compare", or "Visualize".
+    Outputs a graph or chart based on the specific query.
+    Avoid for questions needing text-based answers or maps.
+    Best for numeric or relationship-based visualizations.
+
+WikipediaSearch:
+  name: WikipediaSearch
+  description: |+
+    Use this tool to search Wikipedia for general knowledge in environmental research, toxicology, and chemistry.
+    Trigger when the question involves broad inquiries or background information on toxicology, species, substances, or sites without specifics.
+    Example triggers: "What is", "Explain", "Overview", or "General info".
+    Outputs textual answers based on the query.
+    Avoid using this tool for questions requiring data-specific visualizations.
+    Avoid using this tool for questions outside of the fields environmental research, toxicology, and chemistry.
+    Best when the user expects a detailed description or contextual information.
+
+WikipediaSearchInput:
+  query: |+
+    A concise search query related to a chemical substance, its properties,
+    environmental behavior, toxicity, or relevance to aquatic ecosystems.
+    The query should be specific enough to retrieve relevant Wikipedia information    

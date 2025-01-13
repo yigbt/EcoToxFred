@@ -1,6 +1,6 @@
 from llm import llm
 from graph import graph
-from langchain_community.chains.graph_qa.cypher import GraphCypherQAChain
+from langchain_neo4j import GraphCypherQAChain
 from langchain.prompts.prompt import PromptTemplate
 import networkx as nx
 import matplotlib.pyplot as plt

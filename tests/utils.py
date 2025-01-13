@@ -1,6 +1,6 @@
 import os
 import toml
-from langchain_community.graphs import Neo4jGraph
+from langchain_neo4j import Neo4jGraph
 
 def get_project_directory() -> str:
     current_file_path = os.path.abspath(__file__)

@@ -47,7 +47,7 @@
         "properties": [
           {
             "name": "name",
-            "description": "Common name of the species. Available values are algae, crustacean, and fish."
+            "description": "Common name of the species. Available values are the aquatic species algae, crustacean also called daphnia, and fish."
           },
           {
             "name": "classification",
@@ -98,7 +98,7 @@
           },
           {
             "name": "time_point",
-            "description": "Timestamp of the measurement event."
+            "description": "Timestamp of the measurement event. If this is queried, always transform this value using date(time_point)"
           },
           {
             "name": "year",
@@ -179,6 +179,10 @@
           {
             "name": "driver_importance",
             "description": "Driver importance score for the substance."
+          },
+          {
+            "name": "is_driver",
+            "description": "Whether the substance belongs to the risk driver chemicals at this site. True values refer to drivers, false values say that the substance does not belong to the risk drivers."
           }
         ]
       },

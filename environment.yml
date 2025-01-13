@@ -1,24 +1,30 @@
-name: edt_env
+name: etf_env
 channels:
   - conda-forge
 dependencies:
-  - python=3.10.*
-  - langchain-openai
-  - langchain
-  - langchain-core
-  - langchain-community
-  - langchainhub
-  - matplotlib
-  - neo4j-python-driver
-  - networkx
-  - openai
-  - pandas
-  - pillow
-  - plotly
-  - pytest
-  - requests
-  - streamlit
-  - tenacity
-  - toml
-  - wikipedia
-  - yaml
+  - python=3.13.*
+  - pip
+  - pip:
+      - langchain-openai==0.3.0
+      - langchain-core==0.3.29
+      - langchain-community==0.3.14
+      - langgraph==0.2.62
+      - langsmith==0.2.10
+      - langchainhub==0.1.21
+      - langchain-neo4j==0.2.0
+      - matplotlib==3.10.0
+      - neo4j==5.27.0
+      - neo4j-driver==5.27.0
+      - networkx==3.4.2
+      - openai==1.59.6
+      - pandas==2.2.3
+      - pillow==11.1.0
+      - plotly==5.24.1
+      - pytest==8.3.4
+      - pydantic==2.10.5
+      - requests==2.32.3
+      - streamlit==1.41.1
+      - tenacity==9.0.0
+      - toml==0.10.2
+      - wikipedia==1.4.0
+      - PyYAML==6.0.2

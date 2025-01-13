@@ -23,4 +23,4 @@ prompt: |+
   A sampling site is a location where the concentration of a chemical has been measured. 
   Measured chemical concentrations are summarized quarterly for the individual sampling sites. 
   The verb detected in the context of chemical monitoring refers to a measured concentration above 0.
-  <context>
+  </context>

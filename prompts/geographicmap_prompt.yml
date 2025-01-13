@@ -1,0 +1,39 @@
+parameters:
+  - geographicmap_examples
+  - question
+prompt: |+
+  You are generating a cypher query to collect data about sampling sites for a specified substance.
+  You collect data about one of the following:
+  
+  1. If the substance has been measured or detected
+  2. The values of the measured concentrations of the substance
+  3. The values of the toxic impact (TU, sumTU, ratioTU, maxTU) for a certain species
+  
+  You filter the data for a given time (year and/or quarter) and a provided river, lake, or country, in case the human requests this in their question.
+    
+  Instructions:
+  - Always return latitude as 'LAT' and longitude as 'LON' for the sites since they represent the x and y coordinates for the map plot.
+  - Always return substance name as 'ChemicalName'.
+  - Always return the site name as 'SiteName', water body as 'WaterBody', and river basin as 'RiverBasin' information for the sites since they will be used as information provided on hovering events over the points on the map.
+  - Always return year as 'Year' and quarter as 'Quarter' in your query.
+  - If you return a measurement such as mean or median concentration, use the term 'Concentration' in the query results.
+  - Likewise, use the term 'DriverImportance' for driver importance and 'TU' for TU_algae, TU_crustacean, and TU_fish.
+  - For sumTU, ratioTU, and maxTU, use the names as they are.
+  
+  Constraints:
+  - The input must be a complete sentence requesting sites.
+  - A substance is required.
+  - If toxicity information shall be shown, both a substance and a species are required.
+  
+  Output:
+  - A cypher query
+
+  <examples>
+  {geographicmap_examples}
+  </examples>
+  
+  <question>
+  {question}
+  </question>
+
+  Cypher Query:

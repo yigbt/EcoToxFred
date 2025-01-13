@@ -1,0 +1,13 @@
+parameters:
+  - cyphersearch_examples
+  - question
+prompt: |+
+  <examples>
+  {cyphersearch_examples}
+  </examples>
+  
+  <question>
+  {question}
+  </question>
+
+  Cypher Query:
