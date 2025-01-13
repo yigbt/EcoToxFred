@@ -2,7 +2,7 @@ CypherSearch:
   description: |+
     Use this tool to query the knowledge graph for specific text-based answers.
     Trigger when the question involves measured concentrations, relationships, or specific facts about the graph’s entities.
-    Example triggers: “How many,” “List,” “Show relationships,” or “Which species.”
+    Example triggers: "How many", "List", "Show relationships", or "Which species".
     Outputs text-based answers directly from the graph database.
     Avoid for queries requiring maps or plots.
     Best for precise, non-visual responses.
@@ -18,7 +18,7 @@ GeographicMap:
   description: |+
     Use this tool to generate a map of sampling sites.
     Trigger when the user asks for locations of measured or detected substances, their concentrations, or toxic impacts.
-    Example triggers: “Where,” “Show,” “Show map,” “Visualize sites,” or “Map of”, or geographical regions like river or country names. 
+    Example triggers: "Where", "Show", "Show map", "Visualize sites", or "Map of", or geographical regions like river or country names. 
     Requires specific substance from the user.
     Requires specific species form the user in case toxicity information shall be shown.
     Outputs a spatial visualization on a map along with a figure caption summarizing the displayed data.
@@ -44,7 +44,7 @@ ScientificPlot:
   description: |+
     Use this tool to create 2D plots to visualize relationships or concentration trends.
     Trigger when the user asks to compare, trend, or analyze data visually.
-    Example triggers: “Plot,” “Trend,” “Graph,” “Compare,” or “Visualize.”
+    Example triggers: "Plot", "Trend", "Graph", "Compare", or "Visualize".
     Outputs a graph or chart based on the specific query.
     Avoid for questions needing text-based answers or maps.
     Best for numeric or relationship-based visualizations.
@@ -54,7 +54,7 @@ WikipediaSearch:
   description: |+
     Use this tool to search Wikipedia for general knowledge in environmental research, toxicology, and chemistry.
     Trigger when the question involves broad inquiries or background information on toxicology, species, substances, or sites without specifics.
-    Example triggers: “What is,” “Explain,” “Overview,” or “General info.”
+    Example triggers: "What is", "Explain", "Overview", or "General info".
     Outputs textual answers based on the query.
     Avoid using this tool for questions requiring data-specific visualizations.
     Avoid using this tool for questions outside of the fields environmental research, toxicology, and chemistry.
