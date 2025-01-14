@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Helmholtz Centre for Environmental Research (UFZ)
+# SPDX-FileCopyrightText: 2025 Helmholtz Centre for Environmental Research (UFZ)
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
@@ -7,23 +7,28 @@ services:
   web:
     image: "ecotoxfred:dev"
     build: ./
+    container_name: ecotoxfred-web
     ports:
       - "8501:8501"
     user: ecotoxfred
+    restart: unless-stopped
     volumes:
       - "./.streamlit:/app/.streamlit"
 
   neo4j:
     image: triet20/neo4j-cheos
     container_name: neo4j-cheos
+    restart: unless-stopped
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - ./data:/data
-      - ./plugins:/plugins
+      - /data
+      - /plugins
     environment:
-      NEO4J_AUTH: "neo4j/Phaewahjoh7IeS{ai4phaesh"
+      # Default-Password (see also secrets.toml)
+      NEO4J_AUTH: "neo4j/ChangeMe"
       NEO4J_PLUGINS: "[\"apoc\"]"
       NEO4J_apoc_export_file_enabled: "true"
       NEO4J_apoc_import_file_use__neo4j__config: "true"
+      NEO4J_dbms_usage__report_enabled: "false"

@@ -42,6 +42,14 @@ Then run the `streamlit run` command to start the app on [localhost:8501](http:/
 streamlit run bot.py
 ```
 
+### Quick-Start with Docker
+
+If you prefer to use Docker, you just can run the app including the Neo4j-Database with:
+
+```shell
+docker compose up --renew-anon-volumes --build
+```
+
 ## Contributing
 
 You may experience that *EcoToxFred* does not provide appropriate responses.
