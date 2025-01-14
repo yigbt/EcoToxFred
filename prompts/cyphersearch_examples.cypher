@@ -98,6 +98,11 @@ MATCH (s1:Substance)-[r1:MEASURED_AT]->(l:Site)<-[r2:MEASURED_AT]-(s2:Substance)
 RETURN s1.Name AS Compound1, s2.Name AS Compound2, count(l) AS Frequency
   ORDER BY Frequency DESC
 
+// Find pairs of drivers that were detected together most often at same site and same time point
+MATCH p = (s1:Substance)-[r:JOINT_DRIVER_WITH]->(s2:Substance)
+RETURN s1.Name AS Substance1, s2.Name AS Substance2, r.frequency AS Frequency
+  ORDER BY Frequency DESC
+
 
 
 
