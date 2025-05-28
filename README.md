@@ -1,8 +1,11 @@
 # EcoToxFred - Dialogues with a Knowledge Keeper
 
-This is EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring data collected in a large knowledge graph and stored in a Neo4j Graph Database.
+This is EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring data collected in a large
+knowledge graph and stored in a Neo4j Graph Database.
 
-**EcoToxFred is a prototype** that demonstrates how domain-specific knowledge can be combined with LLMs to 
+See the **[first official EcoToxFred Poster](figures/2025_01_27_EcoToxFred.pdf)** for details and examples.
+
+**EcoToxFred** is a prototype that demonstrates how domain-specific knowledge can be combined with LLMs to
 facilitate the interaction between users and (domain-specific) knowledge.
 
 <p><img align="left" width="100" src="figures/assistant.png" />
@@ -61,3 +64,9 @@ and if necessary even make improvements or adjustments to our Neo4j database
 ## Contact
 
 Jana Schor - jana.schor@ufz.de
+Patrick Scheibe - pscheibe@cbs.mpg.de
+
+## References
+
+[1] Patrick Scheibe and Jana Schor, _AI-Driven Science Communication: Leveraging LLMs and Knowledge Graphs for Seamless
+Knowledge Exchange_ (in preparation)
