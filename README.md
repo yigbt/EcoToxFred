@@ -33,6 +33,10 @@ Upcoming skills are
 
 ## Running the application
 
+To run the application, you must start the Neo4j database in advance.
+It is available as a [Docker image at Zenodo](https://zenodo.org/records/14616124).
+Download and follow the instructions there before installing and running EcoToxFred locally.
+
 To run the application, you must install the libraries listed in `requirements.txt`.
 
 ```{sh}
