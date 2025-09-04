@@ -8,6 +8,8 @@ See the **[first official EcoToxFred Poster](figures/2025_01_27_EcoToxFred.pdf)*
 **EcoToxFred** is a prototype that demonstrates how domain-specific knowledge can be combined with LLMs to
 facilitate the interaction between users and (domain-specific) knowledge.
 
+[&rarr; Try it via our WebApp!](https://ecotoxfred.web.app.ufz.de/)
+
 <p><img align="left" width="100" src="figures/assistant.png" />
 EcoToxFred can answer questions about chemicals and their measured concentrations in European surface waters like rivers and lakes.
 EcoToxFred is a friendly and intuitive chatbot designed to help researchers, stakeholders, and users explore and analyze chemical concentrations and toxicity data in European surface waters.
