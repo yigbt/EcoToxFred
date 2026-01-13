@@ -82,9 +82,8 @@ def test_integrity(database_connection):
             RETURN count(r) as count
         """,
         "total_drivers": """
-            MATCH ()-[r:IS_DRIVER]->()
-            WHERE r.is_driver = true
-            RETURN count(r) as count
+            MATCH p=(s:Substance)-[r:IS_DRIVER]->() 
+            RETURN count(DISTINCT s) as count
         """,
         "total_summarized_impacts": """
             MATCH ()-[r:SUMMARIZED_IMPACT_ON]->()
@@ -132,7 +131,6 @@ def test_integrity(database_connection):
         """,
         "driver_importance_stats": """
             MATCH ()-[r:IS_DRIVER]->()
-            WHERE r.is_driver = true
             RETURN min(r.driver_importance) as min_importance,
                    max(r.driver_importance) as max_importance,
                    avg(r.driver_importance) as avg_importance
@@ -170,7 +168,7 @@ def test_integrity(database_connection):
         "top_measured_substances": """
             MATCH (s:Substance)-[r:MEASURED_AT]->()
             WHERE r.median_concentration > 0
-            RETURN s.name as substance, count(r) as measurement_count
+            RETURN s.Name as substance, count(r) as measurement_count
             ORDER BY measurement_count DESC
             LIMIT 5
         """,
