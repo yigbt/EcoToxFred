@@ -16,6 +16,8 @@ Contact:
 
 EcoToxFred may occasionally provide incorrect or incomplete information.
 Always carefully verify the returned results before relying on them.
+
+The repository is available at https://github.com/yigbt/EcoToxFred.
 """
 
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
