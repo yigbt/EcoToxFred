@@ -24,7 +24,7 @@ services:
       - "7687:7687"
     volumes:
       - /data
-      - /plugins
+#      - /plugins
     environment:
       # Default-Password (see also secrets.toml)
       NEO4J_AUTH: "neo4j/ChangeMe"

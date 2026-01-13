@@ -52,3 +52,7 @@ MATCH (p1:Person {id:row.id_from}), (p2:Person {id:row.id_to})
 CREATE (p1)-[:KNOWS]->(p2);
 
 
+MATCH (s1:Substance)-[r1:MEASURED_AT]->(l:Site)<-[r2:MEASURED_AT]-(s2:Substance)
+WHERE s1 <> s2 AND s1.Name < s2.Name AND r1.median_concentration > 0 AND r2.median_concentration > 0
+RETURN s1.Name AS Compound1, s2.Name AS Compound2, count(l) AS Frequency
+ORDER BY Frequency DESC
