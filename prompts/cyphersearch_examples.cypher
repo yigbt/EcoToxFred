@@ -1,3 +1,12 @@
+// Count number of sites
+MATCH (n:Site) RETURN count(n)
+
+// Count number of species or taxons
+MATCH (n:Species) RETURN count(n)
+
+// Count number of substances
+MATCH (n:Substance) RETURN count(n)
+
 // Retrieve the sampling sites and time points where Fentanyl was measured:
 MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
   WHERE s.Name = 'Fentanyl'
@@ -102,6 +111,53 @@ RETURN s1.Name AS Compound1, s2.Name AS Compound2, count(l) AS Frequency
 MATCH p = (s1:Substance)-[r:JOINT_DRIVER_WITH]->(s2:Substance)
 RETURN s1.Name AS Substance1, s2.Name AS Substance2, r.frequency AS Frequency
   ORDER BY Frequency DESC
+
+// Identify substances and their respective sensitivities (TUs) for fish, algae, and invertebrates at various sites.
+MATCH (sub:Substance)-[m:MEASURED_AT]->(site:Site)
+  WHERE m.TU_fish > 0 AND m.TU_algae > 0 AND m.TU_crustacean > 0
+RETURN sub.name AS Substance,
+       site.name AS Site,
+       m.time_point AS TimePoint,
+       m.TU_fish AS TU_Fish,
+       m.TU_algae AS TU_Algae,
+       m.TU_crustacean AS TU_Invertebrates
+  LIMIT 100
+
+// Finds substances where one taxon is significantly more sensitive (e.g., 10x higher TU) than the others across multiple measurements
+MATCH (sub:Substance)-[m:MEASURED_AT]->(site:Site)
+WITH sub,
+     avg(m.TU_fish) AS avgFish,
+     avg(m.TU_algae) AS avgAlgae,
+     avg(m.TU_crustacean) AS avgInverts
+  WHERE (avgFish > 10 * avgAlgae AND avgFish > 10 * avgInverts) // Fish most sensitive
+  OR (avgAlgae > 10 * avgFish AND avgAlgae > 10 * avgInverts) // Algae most sensitive
+  OR (avgInverts > 10 * avgFish AND avgInverts > 10 * avgAlgae) // Invertebrates most sensitive
+RETURN sub.Name AS Substance, sub.DTXSID AS DTXSID, avgFish, avgAlgae, avgInverts
+  ORDER BY Substance
+
+// Find asymmetries regarding taxon-specific sensitivity which are detectable for the same sites and time points.
+MATCH (sub:Substance)-[m:MEASURED_AT]->(site:Site)
+MATCH (site)-[s:SUMMARIZED_IMPACT_ON]->(spec:Species)
+  WHERE m.time_point = s.time_point
+RETURN sub.Name AS Substance,
+       sub.DTXSID AS DTXSID,
+       site.name AS Site,
+       spec.name AS Taxon,
+       m.TU_fish AS Sub_TU_Fish,
+       m.TU_algae AS Sub_TU_Algae,
+       m.TU_crustacean AS Sub_TU_Inverts,
+       s.sumTU AS Total_Taxon_sumTU,
+       s.maxTU AS Total_Taxon_maxTU
+  LIMIT 100
+
+// Evaluate detectability via the `ratioTU` metric. If `ratioTU` (maxTU/sumTU) indicates if the risk is driven by a single substance. If a substance has high asymmetry (dominates risk for one taxon but not others), the `ratioTU` will vary significantly between species at the same site.
+MATCH (site:Site)-[s:SUMMARIZED_IMPACT_ON]->(spec:Species)
+WITH site, s.time_point AS tp,
+     collect({taxon: spec.name, ratio: s.ratioTU, max: s.maxTU, sum: s.sumTU}) AS metrics
+  WHERE size(metrics) >= 3
+RETURN site.name AS Site, tp AS TimePoint, metrics
+  ORDER BY Site, TimePoint
+  LIMIT 50
 
 
 

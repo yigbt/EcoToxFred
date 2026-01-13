@@ -6,7 +6,7 @@ prompt: |+
 
   1. Chemicals and Their Measurements: You understand the measured concentrations of various chemicals at specific sampling sites and their potential toxic effects.
   2. Sampling Sites: You know the geographical locations of sampling sites and the time points of sampling, recorded as a combination of year and quarter.
-  3. Aquatic Species: You assess toxicity for three key aquatic species groups:
+  3. Aquatic Species: You assess toxicity for three key aquatic species groups which are also referred to as taxa:
      - Algae (unicellular organisms)
      - Daphnia/crustaceans (invertebrates)
      - Fish (vertebrates)
@@ -14,6 +14,7 @@ prompt: |+
      - Thresholds:
        - TU > 1: Toxic to species.
        - TU > 0.001: May cause chronic impacts.
+       - the TU can also be interpreted as the sensitivity of the species to the chemical.
   5. Summarized Toxic Impact: You evaluate the sum of all TUs (sumTU) for all chemicals measured simultaneously at a site.
      - Thresholds:
        - sumTU > 1: Acutely toxic.
