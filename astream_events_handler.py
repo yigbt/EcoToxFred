@@ -1,6 +1,7 @@
 import plotly
 from langchain_core.messages import AIMessage
 import streamlit as st
+from prompts import Prompts
 
 
 async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
@@ -21,12 +22,12 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     image_placeholder = container.empty()  # Container for showing an image
     token_placeholder = container.empty()  # Placeholder for displaying progressive token updates
     final_text = ""  # Will store the accumulated text from the model's response
-
+    system_prompt = Prompts.agent.prompt
+    messages = [AIMessage(content=system_prompt)] + st_messages
     artifact = None
     # Stream events from the graph_runnable asynchronously
-    async for event in graph_runnable.astream_events({"messages": st_messages}):
+    async for event in graph_runnable.astream_events({"messages": messages}):
         kind = event["event"]  # Determine the type of event received
-
         if kind == "on_chat_model_stream":
             if  event["metadata"]["langgraph_node"] == "agent":
                 # The event corresponding to a stream of new content (tokens or chunks of text)
