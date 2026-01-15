@@ -1,5 +1,5 @@
 import plotly
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, SystemMessage
 import streamlit as st
 from prompts import Prompts
 
@@ -22,8 +22,9 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     image_placeholder = container.empty()  # Container for showing an image
     token_placeholder = container.empty()  # Placeholder for displaying progressive token updates
     final_text = ""  # Will store the accumulated text from the model's response
+    from prompts import Prompts
     system_prompt = Prompts.agent.prompt
-    messages = [AIMessage(content=system_prompt)] + st_messages
+    messages = [SystemMessage(content=system_prompt)] + st_messages
     artifact = None
     # Stream events from the graph_runnable asynchronously
     async for event in graph_runnable.astream_events({"messages": messages}):
