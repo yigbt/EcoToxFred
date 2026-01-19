@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
 from utils import get_version
-from graph_agent import GraphEcoToxFredAgent
+from try_out_lc_v1 import UpdatedEcoToxFredAgent as GraphEcoToxFredAgent
 from astream_events_handler import invoke_our_graph
 
 about_text = f"""
