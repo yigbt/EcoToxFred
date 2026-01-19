@@ -24,13 +24,13 @@ async def invoke_our_graph(graph_runnable, st_messages, st_placeholder):
     final_text = ""  # Will store the accumulated text from the model's response
     from prompts import Prompts
     system_prompt = Prompts.agent.prompt
-    messages = [SystemMessage(content=system_prompt)] + st_messages
+    #st_messages = [SystemMessage(content=system_prompt)] + st_messages
     artifact = None
     # Stream events from the graph_runnable asynchronously
-    async for event in graph_runnable.astream_events({"messages": messages}):
+    async for event in graph_runnable.astream_events({"messages": st_messages}):
         kind = event["event"]  # Determine the type of event received
         if kind == "on_chat_model_stream":
-            if  event["metadata"]["langgraph_node"] == "agent":
+            if  event["metadata"]["langgraph_node"] == "model":
                 # The event corresponding to a stream of new content (tokens or chunks of text)
                 addition = event["data"]["chunk"].content  # Extract the new content chunk
                 final_text += addition  # Append the new content to the accumulated text
