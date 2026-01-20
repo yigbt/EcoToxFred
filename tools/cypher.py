@@ -1,7 +1,7 @@
 from typing import Any, Type, Optional, Dict
 
 import pandas as pd
-from langchain_neo4j import GraphCypherQAChain
+from tools.forked_cypherQA_chain import GraphCypherQAChain
 from langchain_community.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.tools import ToolException
@@ -99,6 +99,7 @@ class CypherSearch(BaseTool):
     args_schema: Type[BaseModel] = CypherSearchInput
     response_format: str = "content"
     search_core: CypherSearchCore = Field(default_factory=CypherSearchCore)
+    handle_tool_error:bool = True
 
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
         result = self.search_core.run(query)
