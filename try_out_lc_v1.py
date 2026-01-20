@@ -18,7 +18,7 @@ class UpdatedEcoToxFredAgent:
         self.wiki_tool = WikipediaSearch()
         self.cypher_tool = CypherSearch()
         self.tools = [self.pm_tool, self.cypher_tool, self.wiki_tool]
-        self.llm = get_chat_llm().bind_tools(self.tools, parallel_tool_calls=False)
+        self.llm = get_chat_llm()
         self.agent = create_agent(model=self.llm,
                                   tools=self.tools,
                                   system_prompt=Prompts.agent.prompt,
