@@ -19,6 +19,7 @@ services:
     image: triet20/neo4j-cheos
     container_name: neo4j-cheos
     restart: unless-stopped
+    user: "${UID}:${GID}"
     ports:
       - "7474:7474"
       - "7687:7687"
