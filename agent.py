@@ -1,6 +1,5 @@
 from llm import get_chat_llm
 from prompts import Prompts
-from dotenv import load_dotenv
 from tools.geographic_map import GeographicMap
 from tools.wikipedia import WikipediaSearch
 from tools.cypher import CypherSearch
@@ -9,9 +8,7 @@ from langchain.agents.middleware import TodoListMiddleware
 import asyncio
 from langchain_core.runnables import RunnableConfig
 
-load_dotenv()
-
-class UpdatedEcoToxFredAgent:
+class EcoToxFred:
 
 
     def __init__(self):
@@ -25,11 +22,14 @@ class UpdatedEcoToxFredAgent:
                                   system_prompt=Prompts.agent.prompt,
                                   middleware=[TodoListMiddleware()])
 
+    def invoke(self, messages):
+        return self.agent.invoke(messages)
+
     def astream_events(self, messages):
         return self.agent.astream_events(messages, config=RunnableConfig(recursion_limit=50),version="v2")
 
 if __name__ == "__main__":
-    agent = UpdatedEcoToxFredAgent()
+    agent = EcoToxFred()
 
     async def main():
         current_node = ""

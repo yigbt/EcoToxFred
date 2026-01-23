@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
 from utils import get_version
-from try_out_lc_v1 import UpdatedEcoToxFredAgent as GraphEcoToxFredAgent
+from agent import EcoToxFred
 from astream_events_handler import invoke_our_graph
 
 about_text = f"""
@@ -36,7 +36,7 @@ example_questions = [
 # Set up the session state and initialize the LLM agent
 if "initialized" not in st.session_state:
     st.session_state.initialized = True
-    st.session_state.chat_agent = GraphEcoToxFredAgent()
+    st.session_state.chat_agent = EcoToxFred()
     st.session_state.messages = [AIMessage(content="Hi, I'm EcoToxFred!  How can I help you?")]
     st.session_state.figure_numbers = 0
     st.session_state.example_question = None
