@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
 from utils import get_version
-from graph_agent import GraphEcoToxFredAgent
+from try_out_lc_v1 import UpdatedEcoToxFredAgent as GraphEcoToxFredAgent
 from astream_events_handler import invoke_our_graph
 
 about_text = f"""
@@ -16,6 +16,8 @@ Contact:
 
 EcoToxFred may occasionally provide incorrect or incomplete information.
 Always carefully verify the returned results before relying on them.
+
+The repository is available at https://github.com/yigbt/EcoToxFred.
 """
 
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",

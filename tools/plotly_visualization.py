@@ -5,27 +5,27 @@ from typing import Any
 
 def render_concentration_map(df: pd.DataFrame, meta_info: dict) -> Any:
     target_color = {
-        "TU": px.colors.sequential.Bluered,
-        "sumTU": px.colors.sequential.Bluered,
-        "maxTU": px.colors.sequential.Bluered,
-        "ratioTU": px.colors.sequential.Plasma,
-        "DriverImportance": px.colors.sequential.Reds,
-        "Concentration": ["blue", "darkred"]
+        "tu": px.colors.sequential.Bluered,
+        "sumtu": px.colors.sequential.Bluered,
+        "maxtu": px.colors.sequential.Bluered,
+        "ratiotu": px.colors.sequential.Plasma,
+        "driverimportance": px.colors.sequential.Reds,
+        "concentration": ["blue", "darkred"]
     }
     target_midpoint = {
-        "TU": 0.5,
-        "sumTU": 0.001,
-        "maxTU": 0.001,
-        "ratioTU": 0.5,
-        "DriverImportance": 0.5,
-        "Concentration": None
+        "tu": 0.5,
+        "sumtu": 0.001,
+        "maxtu": 0.001,
+        "ratiotu": 0.5,
+        "driverimportance": 0.5,
+        "concentration": None
 
     }
     fig = px.scatter_geo(
         df,
-        lat="Lat",
-        lon="Lon",
-        hover_name="SiteName",
+        lat="lat",
+        lon="lon",
+        hover_name="sitename",
         hover_data=df[meta_info["meta_data_columns"]],
         size=meta_info["target_column"],
         color=meta_info["target_column"],
@@ -65,9 +65,9 @@ def render_concentration_map(df: pd.DataFrame, meta_info: dict) -> Any:
 def render_occurrence_map(df: pd.DataFrame, meta_info: dict) -> Any:
     fig = px.scatter_geo(
         df,
-        lat="Lat",
-        lon="Lon",
-        hover_name="SiteName",
+        lat="lat",
+        lon="lon",
+        hover_name="sitename",
         hover_data=df[meta_info["meta_data_columns"]],
         # TODO: Jana, fix what you want here
         # size=0.25,
@@ -105,40 +105,39 @@ def render_occurrence_map(df: pd.DataFrame, meta_info: dict) -> Any:
 
 def create_plotly_map(result) -> Any:
     df = pd.DataFrame(result)
+    # Check if dataframe has keys sitename, Lat, and Lon
 
-    # Check if dataframe has keys SiteName, Lat, and Lon
-    required_columns = ["SiteName", "Lat", "Lon"]
+    required_columns = ["sitename", "lat", "lon"]
     missing_columns = [col for col in required_columns if col not in df.columns]
 
     if missing_columns:
         raise ValueError(f"Returned database result is missing the required columns: {missing_columns}")
 
-    value_columns = ["Concentration", "DriverImportance", "TU", "ratioTU", "sumTU", "maxTU"]
+    value_columns = ["concentration", "driverimportance", "tu", "ratiotu", "sumtu", "maxtu"]
     selected_target_column = None
     for v in value_columns:
         if v in df.columns:
             selected_target_column = v
             break
 
-    optional_meta_data_columns = ["WaterBody", "RiverBasin", "Country", "Year", "Quarter"]
+    optional_meta_data_columns = ["waterbody", "riverbasin", "country", "year", "quarter"]
     meta_data_columns = [col for col in optional_meta_data_columns if col in df.columns]
-
     if selected_target_column is not None:
-        if selected_target_column in ['sumTU', 'ratioTU', 'maxTU']:
-            # Group by 'SiteName', 'Lat', 'Lon' and average the aggregated TU for each site
-            result_df = df.groupby(['SiteName', 'Lat', 'Lon'] + meta_data_columns).agg({
+        if selected_target_column in ['sumtu', 'ratiotu', 'maxtu']:
+            # Group by 'sitename', 'Lat', 'Lon' and average the aggregated TU for each site
+            result_df = df.groupby(['sitename', 'lat', 'lon'] + meta_data_columns).agg({
                 selected_target_column: 'median'
             }).reset_index()
         else:
-            # Group by 'SiteName', 'Lat', 'Lon' and average the concentration for each substance
-            result_df = df.groupby(['SiteName', 'Lat', 'Lon'] + meta_data_columns).agg({
+            # Group by 'sitename', 'Lat', 'Lon' and average the concentration for each substance
+            result_df = df.groupby(['sitename', 'lat', 'lon'] + meta_data_columns).agg({
                 selected_target_column: 'median',
-                'ChemicalName': 'first'  # Keep the first non-null value of ChemicalName
+                'chemicalname': 'first'  # Keep the first non-null value of ChemicalName
             }).reset_index()
         return render_concentration_map(result_df,
                                         {"target_column": selected_target_column,
                                          "meta_data_columns": meta_data_columns})
     else:
-        result_df = df[['SiteName', 'Lat', 'Lon', "ChemicalName"] + meta_data_columns].drop_duplicates()
-        result_df["Occurrence"] = 1
+        result_df = df[['sitename', 'lat', 'lon', "chemicalname"] + meta_data_columns].drop_duplicates()
+        #result_df["Occurrence"] = 1
         return render_occurrence_map(result_df, {"meta_data_columns": meta_data_columns})
