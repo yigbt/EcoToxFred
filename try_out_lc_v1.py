@@ -7,6 +7,7 @@ from tools.cypher import CypherSearch
 from langchain.agents import create_agent
 from langchain.agents.middleware import TodoListMiddleware
 import asyncio
+from langchain_core.runnables import RunnableConfig
 
 load_dotenv()
 
@@ -25,7 +26,7 @@ class UpdatedEcoToxFredAgent:
                                   middleware=[TodoListMiddleware()])
 
     def astream_events(self, messages):
-        return self.agent.astream_events(messages, version="v2")
+        return self.agent.astream_events(messages, config=RunnableConfig(recursion_limit=50),version="v2")
 
 if __name__ == "__main__":
     agent = UpdatedEcoToxFredAgent()
