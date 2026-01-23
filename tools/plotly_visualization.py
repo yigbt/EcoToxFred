@@ -106,6 +106,7 @@ def render_occurrence_map(df: pd.DataFrame, meta_info: dict) -> Any:
 def create_plotly_map(result) -> Any:
     df = pd.DataFrame(result)
     # Check if dataframe has keys sitename, Lat, and Lon
+    df.columns = df.columns.str.lower()
 
     required_columns = ["sitename", "lat", "lon"]
     missing_columns = [col for col in required_columns if col not in df.columns]
