@@ -2,13 +2,13 @@ import pytest
 
 from prompts import CypherExampleCollections
 from typing import List
-from utils import connect_to_neo4j_for_test
+from graph import connect_to_neo4j
 
 
 @pytest.fixture(scope="session")
 def database_connection():
     try:
-        db = connect_to_neo4j_for_test()
+        db = connect_to_neo4j()
         assert db is not None
         yield db
     except:
