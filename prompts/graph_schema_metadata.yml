@@ -132,8 +132,6 @@ schema:
         of the substance as a driver.
       name: IS_DRIVER
       properties:
-        - description: Unique key for the driver relation.
-          name: key
         - description: Species affected by the substance.
           name: species
         - description: Time point for when the substance was determined as a driver. This
@@ -145,8 +143,6 @@ schema:
           name: quarter
         - description: Driver importance score for the substance.
           name: driver_importance
-        - description: Whether the substance belongs to the risk driver chemicals at this site. True values refer to drivers, false values say that the substance does not belong to the risk drivers.
-          name: is_driver
     - description: Connects a Site to a Species, summarizing the cumulative toxic impact
         of all substances on that species at the site. All individual toxic unit (TU)
         values are summed up to form the sumTU. Properties include the sum of Toxic
