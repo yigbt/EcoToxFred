@@ -111,7 +111,7 @@ WHERE size(substance_set) > 1  // Only look at cases where there is more than on
 // Step 2: Sort the names within each set to ensure consistency
 WITH site_name, time, species, apoc.coll.sort(substance_set) AS sorted_set
 // Step 3: Count the occurrences of each unique set
-WITH sorted_set, count(*) AS frequency, collect(site_name) AS sites
+WITH sorted_set, species, count(*) AS frequency, collect(site_name) AS sites
 WHERE frequency > 1  // Filter for sets that appear together more than once
-RETURN sorted_set AS substances, frequency
+RETURN sorted_set AS substances, frequency, species
 ORDER BY frequency DESC
