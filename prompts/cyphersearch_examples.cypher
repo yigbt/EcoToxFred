@@ -92,19 +92,26 @@ RETURN l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.ri
        s.Name AS SpeciesName,
        r.sumTU AS sumTU, r.year AS Year, r.quarter AS Quarter
 
-// Find pairs of drivers that were detected together most often at same site and same time point
-MATCH p = (s1:Substance)-[r:JOINT_DRIVER_WITH]->(s2:Substance)
-RETURN s1.Name AS Substance1, s2.Name AS Substance2, r.frequency AS Frequency
-  ORDER BY Frequency DESC
-
 // Find pairs of substances that were detected together most often
 MATCH (s1:Substance)-[r1:MEASURED_AT]->(l:Site)<-[r2:MEASURED_AT]-(s2:Substance)
   WHERE s1 <> s2 AND s1.Name < s2.Name AND r1.median_concentration > 0 AND r2.median_concentration > 0
 RETURN s1.Name AS Compound1, s2.Name AS Compound2, count(l) AS Frequency
   ORDER BY Frequency DESC
 
+// Find pairs of drivers that were detected together most often at same site and same time point
+MATCH p = (s1:Substance)-[r:JOINT_DRIVER_WITH]->(s2:Substance)
+RETURN s1.Name AS Substance1, s2.Name AS Substance2, r.frequency AS Frequency
+  ORDER BY Frequency DESC
 
-
-
-
-
+// Find substances that frequently occur together as drivers
+// Step 2: Sort the names within each set to ensure consistency
+MATCH (substance:Substance)-[d:IS_DRIVER]->(site:Site)
+WITH site.name AS site_name, d.time_point AS time, d.species AS species, collect(DISTINCT substance.Name) AS substance_set
+WHERE size(substance_set) > 1  // Only look at cases where there is more than one driver
+// Step 2: Sort the names within each set to ensure consistency
+WITH site_name, time, species, apoc.coll.sort(substance_set) AS sorted_set
+// Step 3: Count the occurrences of each unique set
+WITH sorted_set, species, count(*) AS frequency, collect(site_name) AS sites
+WHERE frequency > 1  // Filter for sets that appear together more than once
+RETURN sorted_set AS substances, frequency, species
+ORDER BY frequency DESC
