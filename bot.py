@@ -29,7 +29,8 @@ example_questions = [
     "What is Diuron and where has it been measured?",
     "What is Triclosan? Has it been measured in European freshwater?",
     "Show the ratioTU distribution for algae along the Danube (2010–2015).",
-    "Find the 10 most frequent multiple risk drivers.",
+    "Find the most frequent multiple risk drivers.",
+    "Find substances that most frequently occur together as drivers.",
     "For Citalopram, provide the name of the sampling site and the measurement time point as a table?"
 ]
 
