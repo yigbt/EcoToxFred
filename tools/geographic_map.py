@@ -47,13 +47,16 @@ class PlotMap(BaseModel):
         generated_cypher = results["intermediate_steps"][-1]["query"]
         if "result" in results and len(results["result"]) > 0:
             df = pd.DataFrame(results["result"])
+            df.columns = [column.lower() for column in df.columns]
             df_description = df.describe(include='all').to_json(default_handler=str)
             try:
                 artifact = create_plotly_map(results["result"])
             except Exception as e:
+                print(f"Error while creating plotly: {e}")
                 raise ToolException(f"Could not create plotly from data from the following cypher: {generated_cypher}"
                                     f"The plotly error was: {e}")
         else:
+            print("No data was found for the following cypher: ", generated_cypher)
             raise ToolException(f"No data was found for the following cypher: {generated_cypher}")
         answer = f"""
             A map with annotated sites is shown to the user.
@@ -80,5 +83,9 @@ class GeographicMap(BaseTool):
     plot_map: PlotMap = Field(default_factory=PlotMap)
 
     def _run(self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None) -> Any:
-        result = self.plot_map.run(query)
-        return result["content"], plotly.io.to_json(result["artifact"])
+        try:
+            result = self.plot_map.run(query)
+            return result["content"], plotly.io.to_json(result["artifact"])
+        except Exception as e:
+            raise ToolException(f"Error while running GeographicMap: {e}")
+

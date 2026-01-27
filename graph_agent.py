@@ -9,7 +9,6 @@ from prompts import Prompts
 
 class GraphEcoToxFredAgent:
 
-    system_prompt = Prompts.agent.prompt
 
     def __init__(self):
         self.pm_tool = GeographicMap()
