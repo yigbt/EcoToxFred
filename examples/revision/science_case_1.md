@@ -19,25 +19,16 @@ For each year × species group, report:
 
 Aggregate site–time records by year.
 
+> Interpret the huge difference between the median, p99, and max values that are observed for each species group.
+
 ### Expected output
 
-- Table with strong skew: median ≪ p99 ≪ max.
-- Confirms that mean is pulled by extremes.
+- [x] Table with strong skew: median ≪ p99 ≪ max.
+- [x] Requested interpretation confirms that median is pulled by extremes.
 
 ## prompt 2
 
-For European rivers and lakes, calculate exceedance frequencies of summed toxic units (sumTU)
-by year and species group.
-
-Use the following thresholds:
-- chronic concern: sumTU ≥ 0.001
-- acute concern: sumTU ≥ 0.01
-
-For each year × species group, report:
-- number of site–time records,
-- proportion of records with sumTU ≥ 0.001,
-- proportion of records with sumTU ≥ 0.01.
-
+ 
 ### Expected output
 
 - Chronic exceedance proportions often substantial.
