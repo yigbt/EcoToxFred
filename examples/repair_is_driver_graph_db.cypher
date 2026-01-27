@@ -1,8 +1,7 @@
 // Delete the old (wrongly created) relations
-MATCH ()-[r:IS_DRIVER]->()
-DELETE r
-MATCH ()-[r:JOINT_DRIVER_WITH]->()
-DELETE r
+MATCH ()-[r]->()
+WHERE type(r) IN ['IS_DRIVER', 'JOINT_DRIVER_WITH']
+DELETE r;
 
 // Add the correct ones:
 // ALGAE
@@ -25,7 +24,7 @@ WITH site, time_point, year, quarter, sumTU, TU_data[idx] AS entry
 MATCH (substance:Substance) WHERE substance.DTXSID = entry.substance.DTXSID
 MATCH (site_node:Site) WHERE site_node.name = site.name
 MERGE (substance)-[driver:IS_DRIVER {time_point: time_point, year: year, quarter: quarter, species: 'algae'}]->(site_node)
-SET driver.driver_importance = entry.TU / sumTU
+SET driver.driver_importance = entry.TU / sumTU;
 
 // FISH
 // Step 1: Match the relationships and collect the required data
@@ -47,7 +46,7 @@ WITH site, time_point, year, quarter, sumTU, TU_data[idx] AS entry
 MATCH (substance:Substance) WHERE substance.DTXSID = entry.substance.DTXSID
 MATCH (site_node:Site) WHERE site_node.name = site.name
 MERGE (substance)-[driver:IS_DRIVER {time_point: time_point, year: year, quarter: quarter, species: 'fish'}]->(site_node)
-SET driver.driver_importance = entry.TU / sumTU
+SET driver.driver_importance = entry.TU / sumTU;
 
 // CRUSTACEAN
 // Step 1: Match the relationships and collect the required data
@@ -69,4 +68,4 @@ WITH site, time_point, year, quarter, sumTU, TU_data[idx] AS entry
 MATCH (substance:Substance) WHERE substance.DTXSID = entry.substance.DTXSID
 MATCH (site_node:Site) WHERE site_node.name = site.name
 MERGE (substance)-[driver:IS_DRIVER {time_point: time_point, year: year, quarter: quarter, species: 'crustacean'}]->(site_node)
-SET driver.driver_importance = entry.TU / sumTU
+SET driver.driver_importance = entry.TU / sumTU;
