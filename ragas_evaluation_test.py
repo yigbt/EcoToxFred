@@ -8,7 +8,7 @@ from ragas.messages import ToolCall, HumanMessage, AIMessage, ToolMessage
 from agent import EcoToxFred
 from typing import List
 import langchain_core.messages as m
-from forked_convert_langgraph_to_ragas import convert_to_ragas_messages
+from forked_convert_langchain_to_ragas import convert_to_ragas_messages
 from config import config
 
 ragas = pytest.importorskip("ragas")
