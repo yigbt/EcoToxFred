@@ -10,9 +10,8 @@ from typing import List
 import langchain_core.messages as m
 from forked_convert_langchain_to_ragas import convert_to_ragas_messages
 from config import config
-
+import json
 ragas = pytest.importorskip("ragas")
-pytest.importorskip("datasets")
 
 
 
@@ -50,6 +49,7 @@ async def evaluate(ragas_messages:List[HumanMessage | AIMessage | ToolMessage], 
             user_input=ragas_messages,
             reference_tool_calls=[ToolCall(name=call["name"], args=call["args"]) for call in reference_tool_calls],
         )
+        print(ragas_messages)
 
     if reference_answer:
         goal_metric = AgentGoalAccuracyWithReference(llm=llm)
@@ -93,10 +93,8 @@ async def test_ragas_toolcall_accuracy_and_answer_correctness(dataset):
 
 
 if __name__ == "__main__":
-    dataset = [{
-        "question": "What is DDT and why is it harmful to the environment?",
-        "tool_calls": [{"name": "WikipediaSearch", "args": {"query": "DDT"}}],
-        "desired_outcome": "Find out what DDT is and why it is harmful to the environment."
-    }]
+    with open("test_set.json", "r") as f:
+        dataset = json.load(f)["tests"]
+    print(dataset)
     results = asyncio.run(test_ragas_toolcall_accuracy_and_answer_correctness(dataset))
 

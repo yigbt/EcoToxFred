@@ -1,0 +1,128 @@
+{
+  "tests": [
+    {
+      "question": "What is DDT and why is it harmful to the environment?",
+      "tool_calls": [
+        {
+          "name": "WikipediaSearch",
+          "args": {
+            "query": "DDT"
+          }
+        }
+      ],
+      "desired_outcome": "Find out what DDT is and why it is harmful to the environment."
+    },
+    {
+      "question": "Find the 10 most frequent multiple risk drivers",
+      "tool_calls": [
+        {
+          "name": "CypherSearch",
+          "args": {
+            "query": "Find the 10 most frequent multiple risk drivers"
+          }
+        }
+      ],
+      "desired_outcome": "Provide a list of the most frequent multiple risk drivers, ordered by frequency cropped to 5 results and the cypher query used to obtain the results."
+    },
+    {
+      "question": "Which countries have the highest number of sampling sites in the dataset, and how many sites does each of the top 10 countries contain?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "What is the temporal coverage (min/max year) of the monitoring data stored on MEASURED_AT relationships?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "What is the temporal coverage (min/max year) of mixture toxicity summaries stored on SUMMARIZED_IMPACT_ON relationships?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For a given chemical (Substance), at how many sites was it detected (defined as `median_concentration > 0`) across all years/quarters?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Which sites have the highest number of distinct detected substances (unique Substance nodes with `median_concentration > 0`) aggregated over all sampled year-quarters?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each species group (algae, crustacean, fish), which site-year-quarter events have sumTU > 1 (acute mixture toxicity), and how many such events occur per country?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each species group, which site-year-quarter events have sumTU > 0.001 (potential chronic mixture impact), and how do event counts compare across countries?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Across all site-year-quarter events, which substances most frequently have `is_driver = true` on IS_DRIVER relationships (overall “most common risk drivers”)?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each species, which substances are most often mixture risk drivers, defined here as `is_driver = true AND driver_importance < 1`, and how do rankings differ by species?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "At site-year-quarter resolution, what fraction of driver substances (IS_DRIVER) are also detected in the same event (`median_concentration > 0` on MEASURED_AT), and does this fraction differ by species?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each species, which substances reach TU > 1 most often (acute toxicity at the single-substance TU level via `TU_algae/TU_crustacean/TU_fish` on MEASURED_AT), and at how many distinct sites do these exceedances occur?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each species, which substances most often exceed TU > 0.001 (potential chronic impacts), and how does the list differ among algae vs crustacean vs fish?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "When sumTU is high at an event (e.g., top 1% of sumTU for a species), how many substances typically contribute TU > 0.001 at that same site-year-quarter?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For each site-year-quarter and species, what is the relationship between maxTU and sumTU (both on SUMMARIZED_IMPACT_ON), and which events show unusually low/high ratioTU?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Which pairs of substances have the highest co-driver frequency (via JOINT_DRIVER_WITH relationship `frequency`), and do those substances also tend to be detected at the same sites?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Are there countries/river basins where the driver network (substances linked by JOINT_DRIVER_WITH) is denser (more high-frequency co-driver edges), compared to others?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "For a given substance, how do median concentrations (`median_concentration` on MEASURED_AT) and TU values (TU_algae/crustacean/fish on MEASURED_AT) co-vary across sites and time—i.e., do higher concentrations consistently correspond to higher TU in observed data?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Which sites have the largest inter-species disagreement in mixture risk (e.g., events where sumTU indicates chronic/acute risk for fish but not for algae, or vice versa)?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Using TESTED_FOR_TOXICITY relationships (`tox_value_mg_L`) and measured concentrations (MEASURED_AT), which substances have the smallest margin between measured levels and toxicity values (i.e., highest implied risk), and does this align with them being labeled drivers (IS_DRIVER)?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    },
+    {
+      "question": "Spatial pattern question grounded in site attributes: which river basins (Site.river_basin) show the highest rates of (a) detected substances, (b) driver substances, and (c) sumTU exceedances, and how do these metrics compare across basins?",
+      "tool_calls": [],
+      "desired_outcome": ""
+    }
+  ]
+}
