@@ -12,3 +12,4 @@ streamlit==1.53.0
 toml==0.10.2
 wikipedia==1.4.0
 pytest==9.0.2
+ragas==0.4.3
