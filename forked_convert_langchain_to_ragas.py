@@ -11,6 +11,7 @@ def convert_to_ragas_messages(
     metadata: bool = False,
 ) -> List[Union[r.HumanMessage, r.AIMessage, r.ToolMessage]]:
     """
+    This code is modified from the RAGAS 0.4.3 sourcecode.
     Convert LangChain messages into Ragas messages with metadata for agent evaluation.
 
     Parameters
