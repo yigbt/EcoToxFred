@@ -78,3 +78,5 @@ If you use EcoToxFred in your work, please cite our preprint:
 
 Schor & Scheibe (2025). AI-Driven Science Communication: Leveraging LLMs and Knowledge Graphs for Seamless Knowledge Exchange.
 [Schor & Scheibe (2025)](https://www.biorxiv.org/content/10.1101/2025.07.04.663152v1)
+
+Find EcoToxFred in the Helmholtz Research Software repository: [EcoToxFred](https://helmholtz.software/software/ecotoxfred)
