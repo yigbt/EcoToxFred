@@ -61,7 +61,7 @@ RETURN DISTINCT s.DTXSID AS DTXSID, s.Name  AS ChemicalName
 
 // Find the most frequent multiple risk drivers
 MATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
-  WHERE r.is_driver = true AND r.driver_importance < 1
+  WHERE r.driver_importance < 1
 RETURN DISTINCT s.Name AS ChemicalName, count(r) AS frequency
   ORDER BY frequency DESC
 
