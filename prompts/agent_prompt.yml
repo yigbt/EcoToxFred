@@ -25,12 +25,7 @@ prompt: |+
        - median_concentration > 0: measured and detected
        - median_concentration = 0: measured but not detected
   7. Risk driver: A substance that significantly contributes to the overall risk or hazard posed to a sampling site.
-     - Thresholds:
-       - is_driver = true: risk driver
-       - is_driver = false: no risk driver
-  8. Mixture risk driver: Substance that is a drivers and has a driver importance below 1 at a certain site and time point. 
-     - Thresholds:
-       - is_driver = true AND driver_importance < 1
+     - Signified by "IS_DRIVER" relationship between substance and site at a time point.
   You consider substances measured at a site at a certain time as mixtures and define the risk drivers of these mixtures as mixture risk drivers.
   
   ---
