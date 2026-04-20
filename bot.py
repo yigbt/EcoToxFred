@@ -4,7 +4,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 import asyncio
 
 from utils import get_version
-from graph_agent import GraphEcoToxFredAgent
+from agent import EcoToxFred
 from astream_events_handler import invoke_our_graph
 
 about_text = f"""
@@ -16,6 +16,8 @@ Contact:
 
 EcoToxFred may occasionally provide incorrect or incomplete information.
 Always carefully verify the returned results before relying on them.
+
+The repository is available at https://github.com/yigbt/EcoToxFred.
 """
 
 st.set_page_config(page_title="EcoToxFred", page_icon="figures/assistant.png",
@@ -27,14 +29,15 @@ example_questions = [
     "What is Diuron and where has it been measured?",
     "What is Triclosan? Has it been measured in European freshwater?",
     "Show the ratioTU distribution for algae along the Danube (2010–2015).",
-    "Find the 10 most frequent multiple risk drivers.",
+    "Find the most frequent multiple risk drivers.",
+    "Find substances that most frequently occur together as drivers.",
     "For Citalopram, provide the name of the sampling site and the measurement time point as a table?"
 ]
 
 # Set up the session state and initialize the LLM agent
 if "initialized" not in st.session_state:
     st.session_state.initialized = True
-    st.session_state.chat_agent = GraphEcoToxFredAgent()
+    st.session_state.chat_agent = EcoToxFred()
     st.session_state.messages = [AIMessage(content="Hi, I'm EcoToxFred!  How can I help you?")]
     st.session_state.figure_numbers = 0
     st.session_state.example_question = None
