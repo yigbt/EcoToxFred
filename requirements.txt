@@ -12,7 +12,7 @@ pandas==2.3.3
 plotly==6.5.2
 pydantic==2.12.5
 PyYAML==6.0.3
-streamlit==1.53.0
+streamlit==1.54.0
 toml==0.10.2
 wikipedia==1.4.0
 pytest==9.0.2
