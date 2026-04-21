@@ -1,9 +1,14 @@
 # EcoToxFred - Dialogues with a Knowledge Keeper
 
-This is EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring data collected in a large knowledge graph and stored in a Neo4j Graph Database.
+This is EcoToxFred, a Neo4j-backed Chatbot with whom you can discuss environmental monitoring data collected in a large
+knowledge graph and stored in a Neo4j Graph Database.
 
-**EcoToxFred is a prototype** that demonstrates how domain-specific knowledge can be combined with LLMs to 
+See the **[first official EcoToxFred Poster](figures/2025_01_27_EcoToxFred.pdf)** for details and examples.
+
+**EcoToxFred** is a prototype that demonstrates how domain-specific knowledge can be combined with LLMs to
 facilitate the interaction between users and (domain-specific) knowledge.
+
+[&rarr; Try it via our WebApp!](https://ecotoxfred.web.app.ufz.de/)
 
 <p><img align="left" width="100" src="figures/assistant.png" />
 EcoToxFred can answer questions about chemicals and their measured concentrations in European surface waters like rivers and lakes.
@@ -29,6 +34,10 @@ Upcoming skills are
 - provide subgraphs of graph database results, ready to be used in Cytoscape or else
 
 ## Running the application
+
+To run the application, you must start the Neo4j database in advance.
+It is available as a [Docker image at Zenodo](https://zenodo.org/records/14616124).
+Download and follow the instructions there before installing and running EcoToxFred locally.
 
 To run the application, you must install the libraries listed in `requirements.txt`.
 
@@ -61,3 +70,13 @@ and if necessary even make improvements or adjustments to our Neo4j database
 ## Contact
 
 Jana Schor - jana.schor@ufz.de
+Patrick Scheibe - pscheibe@cbs.mpg.de
+
+## References
+
+If you use EcoToxFred in your work, please cite our preprint:
+
+Schor & Scheibe (2025). AI-Driven Science Communication: Leveraging LLMs and Knowledge Graphs for Seamless Knowledge Exchange.
+[Schor & Scheibe (2025)](https://www.biorxiv.org/content/10.1101/2025.07.04.663152v1)
+
+Find EcoToxFred in the Helmholtz Research Software repository: [EcoToxFred](https://helmholtz.software/software/ecotoxfred)

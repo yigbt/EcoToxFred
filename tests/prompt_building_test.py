@@ -4,7 +4,7 @@ from prompts import *
 def test_prompt_loading():
     prompt = Prompts.cypher_search
     assert len(prompt.prompt) > 100
-    assert prompt.parameters == {"cyphersearch_examples"}
+    assert prompt.parameters == {'schema', 'question'}
 
 
 def test_prompt_merging():

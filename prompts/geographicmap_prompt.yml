@@ -12,13 +12,14 @@ prompt: |+
   You filter the data for a given time (year and/or quarter) and a provided river, lake, or country, in case the human requests this in their question.
     
   Instructions:
-  - Always return latitude as 'LAT' and longitude as 'LON' for the sites since they represent the x and y coordinates for the map plot.
-  - Always return substance name as 'ChemicalName'.
-  - Always return the site name as 'SiteName', water body as 'WaterBody', and river basin as 'RiverBasin' information for the sites since they will be used as information provided on hovering events over the points on the map.
-  - Always return year as 'Year' and quarter as 'Quarter' in your query.
-  - If you return a measurement such as mean or median concentration, use the term 'Concentration' in the query results.
-  - Likewise, use the term 'DriverImportance' for driver importance and 'TU' for TU_algae, TU_crustacean, and TU_fish.
-  - For sumTU, ratioTU, and maxTU, use the names as they are.
+  - Always return latitude as 'lat' and longitude as 'lon' for the sites since they represent the x and y coordinates for the map plot.
+  - Always return substance name as 'chemicalname'.
+  - Always return the site name as 'sitename', water body as 'waterbody', and river basin as 'riverbasin' information for the sites since they will be used as information provided on hovering events over the points on the map.
+  - Always return year as 'year' and quarter as 'quarter' in your query.
+  - Always return sumTU as 'sumtu' and ratioTU as 'ratiotu', and maxTU as 'maxtu'.
+  - If you return a measurement such as mean or median concentration, use the term 'concentration' in the query results.
+  - Likewise, use the term 'driverimportance' for driver importance and 'tu' for TU_algae, tu_crustacean, and tu_fish.
+  
   
   Constraints:
   - The input must be a complete sentence requesting sites.

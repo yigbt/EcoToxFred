@@ -1,7 +1,7 @@
 import os
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-import streamlit as st
+from config import config
 
 
 def get_chat_llm() -> ChatOpenAI:
@@ -12,10 +12,10 @@ def get_chat_llm() -> ChatOpenAI:
         ChatOpenAI: The ChatOpenAI LLM
     """
     return ChatOpenAI(
-        openai_api_key=st.secrets["OPENAI_API_KEY"],
-        model_name=st.secrets["OPENAI_MODEL"],
+        openai_api_key=config["OPENAI_API_KEY"],
+        model_name=config["OPENAI_MODEL"],
         streaming=True,
-        temperature=0
+        temperature=0,
     )
 
 
@@ -26,7 +26,7 @@ def create_embeddings() -> OpenAIEmbeddings:
     Returns:
         OpenAIEmbeddings: The OpenAIEmbeddings model
     """
-    return OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
+    return OpenAIEmbeddings(openai_api_key=config["OPENAI_API_KEY"])
 
 
 # create the llm, and the embeddings

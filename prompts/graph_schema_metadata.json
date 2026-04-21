@@ -154,15 +154,11 @@
       },
       {
         "name": "IS_DRIVER",
-        "description": "Connects a Substance to a Site, indicating that the substance is a key driver of risk for a particular species at that site. In particular, we consider a substance as driver if its toxic unit (TU) contributes to the upper 75 % of the cumulative risk, the sum of the TUs of all measured substances at at site. Includes information on the species affected, time of the original measurement which was used to compute the individual TU, and the importance of the substance as a driver.",
+        "description": "Connects a Substance to a Site, indicating that the substance is a key driver of risk for a particular species at that site and time point. In particular, we consider a substance as driver if its toxic unit (TU) contributes to the upper 75 % of the cumulative risk, the sum of the TUs of all measured substances at at site. Includes information on the species affected, time of the original measurement which was used to compute the individual TU, and the importance of the substance as a driver.",
         "properties": [
           {
-            "name": "key",
-            "description": "Unique key for the driver relation."
-          },
-          {
             "name": "species",
-            "description": "Species affected by the substance."
+            "description": "Species for which substance is driver."
           },
           {
             "name": "time_point",
@@ -179,10 +175,6 @@
           {
             "name": "driver_importance",
             "description": "Driver importance score for the substance."
-          },
-          {
-            "name": "is_driver",
-            "description": "Whether the substance belongs to the risk driver chemicals at this site. True values refer to drivers, false values say that the substance does not belong to the risk drivers."
           }
         ]
       },
