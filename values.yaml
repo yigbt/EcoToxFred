@@ -7,5 +7,5 @@ ecotoxfred:
 
 neo4j:
   image:
-    repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred/neo4j-cheos:2026.0.0 
+    repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred/neo4j-cheos
     tag: "2026.0.0"
