@@ -3,6 +3,7 @@ import os
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from config import config
 
+os.environ["OPENAI_API_BASE"] = "https://api.blablador.fz-juelich.de/v1"
 
 def get_chat_llm() -> ChatOpenAI:
     """
