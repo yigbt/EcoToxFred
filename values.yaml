@@ -3,7 +3,7 @@
 ecotoxfred:
   image:
     repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred
-    tag: "2026.0.1"
+    tag: "2026.0.2"
 
 neo4j:
   image:
