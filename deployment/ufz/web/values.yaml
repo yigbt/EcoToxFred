@@ -10,5 +10,5 @@ controllers:
       neo4j:
         image:
           repository: registry.hzdr.de/ufz/tb3-cite/cbc/ecotoxfred/neo4j-cheos
-          tag: "2026.0.0"
+          tag: "2026.0.1"
           pullPolicy: Always
