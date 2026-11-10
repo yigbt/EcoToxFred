@@ -1,7 +1,5 @@
 // Delete the old (wrongly created) relations
-MATCH ()-[r:IS_DRIVER]->()
-DELETE r
-MATCH ()-[r:JOINT_DRIVER_WITH]->()
+MATCH ()-[r:IS_DRIVER|JOINT_DRIVER_WITH]->()
 DELETE r
 
 // Add the correct ones:
