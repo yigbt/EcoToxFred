@@ -1,0 +1,16 @@
+{
+  "title": "EcoToxFred: a knowledge-graph-grounded conversational agent for ecotoxicological monitoring and hazard data",
+  "description": "EcoToxFred is a conversational agent that provides natural language access to a Neo4j knowledge graph of chemical monitoring and hazard data for European surface waters. This release includes the benchmark (questions, reference queries, evaluation code, and results) described in the accompanying manuscript.",
+  "upload_type": "software",
+  "license": "AGPL-3.0-only",
+  "creators": [
+    {"name": "Scheibe, Patrick"},
+    {"name": "Schmid, Thilo Simon", "affiliation": "Helmholtz Centre for Environmental Research – UFZ"},
+    {"name": "Schor, Jana", "affiliation": "Helmholtz Centre for Environmental Research – UFZ"}
+  ],
+  "keywords": ["ecotoxicology", "knowledge graph", "large language model", "retrieval-augmented generation", "Neo4j", "benchmark"],
+  "related_identifiers": [
+    {"identifier": "10.1101/2025.07.04.663152", "relation": "isSupplementTo", "scheme": "doi"},
+    {"identifier": "10.5281/zenodo.14616124", "relation": "requires", "scheme": "doi"}
+  ]
+}
