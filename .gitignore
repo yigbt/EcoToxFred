@@ -5,4 +5,6 @@ secrets/.env
 .vscode
 tmp_data
 .idea
-*.iml
+*.iml.venv/
+.venv-bench/
+benchmark/pilot_results/
