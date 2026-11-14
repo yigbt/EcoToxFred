@@ -1,6 +1,8 @@
 from langchain_neo4j import Neo4jGraph
 from config import config
 
+QUERY_TIMEOUT_SECONDS = 120
+
 
 def connect_to_neo4j() -> Neo4jGraph:
     """
@@ -15,6 +17,8 @@ def connect_to_neo4j() -> Neo4jGraph:
         url=config["NEO4J_URI"],
         username=config["NEO4J_USERNAME"],
         password=config["NEO4J_PASSWORD"],
+        # Terminate queries that would block the database, e.g. unintended cartesian products
+        timeout=float(config.get("NEO4J_QUERY_TIMEOUT", QUERY_TIMEOUT_SECONDS)),
     )
 
 

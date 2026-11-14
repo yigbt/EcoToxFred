@@ -5,6 +5,7 @@ from tools.forked_cypherQA_chain import GraphCypherQAChain
 from langchain_community.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.tools import ToolException
+from neo4j.exceptions import Neo4jError
 from pydantic import BaseModel, Field, model_validator
 
 from graph import connect_to_neo4j
@@ -37,7 +38,12 @@ class CypherSearchCore(BaseModel):
         return values
 
     def run(self, query: str) -> str:
-        results = self.cypher_chain.invoke({"query": query})
+        try:
+            results = self.cypher_chain.invoke({"query": query})
+        except (Neo4jError, ValueError) as e:
+            # Report database errors, including timeouts, to the agent so that it can simplify the query
+            raise ToolException(f"The database query failed or exceeded the time limit: {e}. "
+                                f"Try a simpler query, e.g. with fewer joins or a narrower filter.")
         max_results_shown = 5
         results_cropped = False
 
