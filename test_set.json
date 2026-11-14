@@ -10,7 +10,14 @@
           }
         }
       ],
-      "desired_outcome": "Find out what DDT is and why it is harmful to the environment."
+      "desired_outcome": "Find out what DDT is and why it is harmful to the environment.",
+      "id": "D00",
+      "source": "developer",
+      "expected_tools": [
+        "WikipediaSearch"
+      ],
+      "check": "none",
+      "category": "general_knowledge"
     },
     {
       "question": "Find the 10 most frequent multiple risk drivers",
@@ -22,106 +29,383 @@
           }
         }
       ],
-      "desired_outcome": "Provide a list of the most frequent multiple risk drivers, ordered by frequency cropped to 5 results and the cypher query used to obtain the results."
+      "desired_outcome": "List the 10 substance pairs that most frequently act jointly as mixture risk drivers (JOINT_DRIVER_WITH), with their frequency.",
+      "id": "D01",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "cypher": "MATCH (a:Substance)-[r:JOINT_DRIVER_WITH]->(b:Substance) WHERE r.frequency >= 40 RETURN a.Name AS substance_1, b.Name AS substance_2, r.frequency AS frequency ORDER BY frequency DESC",
+      "answer_columns": [
+        "substance_1",
+        "substance_2",
+        "frequency"
+      ]
     },
     {
       "question": "Which countries have the highest number of sampling sites in the dataset, and how many sites does each of the top 10 countries contain?",
       "tool_calls": [],
       "desired_outcome": "Return a list of the top 10 countries with the highest number of sampling sites, and the number of sites they contain.",
-      "cypher": "MATCH (s:Site) WHERE s.country IS NOT NULL RETURN s.country AS country, count(*) AS frequency ORDER BY frequency DESC LIMIT 10"
+      "cypher": "MATCH (s:Site) WHERE s.country IS NOT NULL RETURN s.country AS country, count(*) AS frequency ORDER BY frequency DESC LIMIT 10",
+      "id": "D02",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "lookup",
+      "answer_columns": [
+        "country",
+        "frequency"
+      ]
     },
     {
       "question": "What is the temporal coverage (min/max year) of the monitoring data stored on MEASURED_AT relationships?",
       "tool_calls": [],
-      "desired_outcome": "Return earliest and latest time stamps of monitoring data with the following values: earliest_time_point: 1998-01-01T00:00:00Z, latest_time_point: 2020-10-01T00:00:00Z",
-      "cypher": "MATCH ()-[r:MEASURED_AT]->() RETURN min(r.time_point) AS earliest_time_point, max(r.time_point) AS latest_time_point"
+      "desired_outcome": "Return the earliest and latest year of the monitoring data: 1998 and 2020.",
+      "cypher": "MATCH ()-[r:MEASURED_AT]->() RETURN min(r.year) AS earliest_year, max(r.year) AS latest_year",
+      "id": "D03",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "lookup",
+      "answer_columns": [
+        "earliest_year",
+        "latest_year"
+      ]
     },
     {
       "question": "What is the temporal coverage (min/max year) of mixture toxicity summaries stored on SUMMARIZED_IMPACT_ON relationships?",
       "tool_calls": [],
-      "desired_outcome": "Return earliest and latest time stamps of SUMMARIZED_IMPACT_ON relationship with the following values: earliest_time_point: 1998-01-01T00:00:00Z, latest_time_point: 2020-10-01T00:00:00Z",
-      "cypher": "MATCH ()-[r:SUMMARIZED_IMPACT_ON]->() RETURN min(r.time_point) AS earliest_time_point, max(r.time_point) AS latest_time_point"
+      "desired_outcome": "Return the earliest and latest year of the mixture toxicity summaries: 1998 and 2020.",
+      "cypher": "MATCH ()-[r:SUMMARIZED_IMPACT_ON]->() RETURN min(r.year) AS earliest_year, max(r.year) AS latest_year",
+      "id": "D04",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "lookup",
+      "answer_columns": [
+        "earliest_year",
+        "latest_year"
+      ]
     },
     {
       "question": "For Diuron, at how many sites was it detected (defined as `median_concentration > 0`) across all years/quarters?",
       "tool_calls": [],
-      "desired_outcome": "Return the number of sites where Diuron was detected and the total number of distinct sites where it was detected.",
-      "cypher": "MATCH (n:Substance {Name: 'Diuron'})-[r:MEASURED_AT]->(s:Site) WHERE r.median_concentration > 0 RETURN count(s) AS TOTAL_SITES, count(DISTINCT s) AS DISTINCT_SITES LIMIT 10"
+      "desired_outcome": "Return the number of distinct sites at which Diuron was detected (median_concentration > 0).",
+      "cypher": "MATCH (n:Substance {Name: 'Diuron'})-[r:MEASURED_AT]->(s:Site) WHERE r.median_concentration > 0 RETURN count(DISTINCT s) AS distinct_sites",
+      "id": "D05",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "lookup",
+      "answer_columns": [
+        "distinct_sites"
+      ]
     },
     {
       "question": "Which sites have the highest number of distinct detected substances (unique Substance nodes with `median_concentration > 0`) aggregated over all sampled year-quarters?",
       "tool_calls": [],
-      "desired_outcome": "RETURN a list containing the top sites with highest number of distinct substances detected.",
-      "cypher": "MATCH (sub:Substance)-[:MEASURED_AT]->(s:Site) RETURN s.name AS SITE_NAME, s.country AS SITE_COUNTRY, count(DISTINCT sub) AS DISTINCT_SUBSTANCES LIMIT 10"
+      "desired_outcome": "Return the sites with the highest number of distinct detected substances, with these numbers.",
+      "cypher": "MATCH (sub:Substance)-[m:MEASURED_AT]->(s:Site) WHERE m.median_concentration > 0 RETURN s.name AS site_name, count(DISTINCT sub) AS distinct_substances ORDER BY distinct_substances DESC LIMIT 5",
+      "id": "D06",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "lookup",
+      "answer_columns": [
+        "site_name",
+        "distinct_substances"
+      ]
     },
     {
       "question": "For each species group (algae, crustacean, fish), which countries have the highest number of site-year-quarter events with a  sumTU > 1 (acute mixture toxicity)?",
       "tool_calls": [],
-      "desired_outcome": "RETURN a list of event frequencies, where an event is the exceedance of the sumTU threshold, stratified by species and country",
-      "cypher": "MATCH (s:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WHERE r.sumTU > 1 RETURN spec.name AS species, s.country AS country, count(r) AS impact_count ORDER BY species DESC, impact_count DESC\n"
+      "desired_outcome": "For each species group, return the countries with the most site-year-quarter events with sumTU > 1, with the number of events.",
+      "cypher": "MATCH (s:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WHERE r.sumTU > 1 WITH spec.name AS species, s.country AS country, count(r) AS impact_count ORDER BY species, impact_count DESC WITH species, collect({country: country, impact_count: impact_count})[0..3] AS top UNWIND top AS t RETURN species, t.country AS country, t.impact_count AS impact_count ORDER BY species, impact_count DESC",
+      "id": "D07",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "country",
+        "impact_count"
+      ]
     },
     {
       "question": "For each species group (algae, crustacean, fish), which country has the highest number of site-year-quarter events with a sumTU > 0.001 (chronic mixture toxicity)?",
       "tool_calls": [],
-      "desired_outcome": "Return a list of event frequencies, stratified by species and country.",
-      "cypher": "MATCH (s:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WHERE r.sumTU > 0.001 WITH spec.name AS species, s.country AS country, count(r) AS impact_count ORDER BY species, impact_count DESC WITH species, collect({country: country, impact_count: impact_count})[0] AS top_countries RETURN species AS SPECIES, top_countries['country'] AS COUNTRY, top_countries['impact_count'] AS FREQUENCY ORDER BY species"
+      "desired_outcome": "For each species group, return the country with the most site-year-quarter events with sumTU > 0.001, with the number of events.",
+      "cypher": "MATCH (s:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WHERE r.sumTU > 0.001 WITH spec.name AS species, s.country AS country, count(r) AS impact_count ORDER BY species, impact_count DESC WITH species, collect({country: country, impact_count: impact_count})[0] AS top_countries RETURN species AS SPECIES, top_countries['country'] AS COUNTRY, top_countries['impact_count'] AS FREQUENCY ORDER BY species",
+      "id": "D08",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "COUNTRY",
+        "FREQUENCY"
+      ]
     },
     {
-      "question": "At site-year-quarter resolution, what fraction of driver substances (IS_DRIVER) are also detected in the same event (`median_concentration > 0` on MEASURED_AT), and does this fraction differ by species?",
+      "question": "At site-year-quarter resolution, what fraction of driver events (IS_DRIVER with is_driver = true) coincide with a detection of the same substance (median_concentration > 0 on MEASURED_AT) at the same site, year and quarter, and does this fraction differ by species?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "MATCH (sub:Substance)-[m:MEASURED_AT]->(sit:Site) WHERE m.median_concentration > 0 WITH sub, sit, m.year AS year, m.quarter AS quarter, m OPTIONAL MATCH (sub)-[d:IS_DRIVER]->(sit) WHERE d.year = year AND d.quarter = quarter WITH count(DISTINCT m) AS total_driver_events, count(DISTINCT d) AS detected_driver_events RETURN total_driver_events, detected_driver_events, toFloat(detected_driver_events) / total_driver_events AS fraction_detected ORDER BY fraction_detected DESC"
+      "desired_outcome": "Return the fraction of driver events that coincide with a detection, per species, and state whether it differs between species.",
+      "cypher": "MATCH (sub:Substance)-[d:IS_DRIVER]->(sit:Site) WHERE d.is_driver OPTIONAL MATCH (sub)-[m:MEASURED_AT]->(sit) WHERE m.year = d.year AND m.quarter = d.quarter AND m.median_concentration > 0 WITH d.species AS species, d, count(m) > 0 AS detected RETURN species, count(d) AS driver_events, sum(CASE WHEN detected THEN 1 ELSE 0 END) AS detected_driver_events, toFloat(sum(CASE WHEN detected THEN 1 ELSE 0 END)) / count(d) AS fraction_detected ORDER BY species",
+      "id": "D09",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "species",
+        "fraction_detected"
+      ]
     },
     {
       "question": "For each species, which substance reaches TU > 1 most often (acute toxicity at the single-substance TU level via `TU_algae/TU_crustacean/TU_fish` on MEASURED_AT), and at how many distinct sites do these exceedances occur?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "UNWIND [{species: 'algae', field: 'TU_algae'},{species: 'crustacean',  field: 'TU_crustacean'},{species: 'fish',field: 'TU_fish'}] AS sp MATCH (sub:Substance)-[r:MEASURED_AT]->(sit:Site) WHERE (sp.field = 'TU_algae' AND r.TU_algae > 1) OR (sp.field = 'TU_crustacean' AND r.TU_crustacean > 1) OR (sp.field = 'TU_fish' AND r.TU_fish > 1) WITH sp.species AS species, sub.Name AS substance, count(r) AS impact_count, count(DISTINCT sit) AS distinct_sites ORDER BY species, impact_count DESC WITH species, collect({substance: substance, impact_count: impact_count, distinct_sites: distinct_sites}) AS impacts  WITH species, impacts[0..1] AS top_substances UNWIND top_substances AS t RETURN t.substance AS substance, t.distinct_sites as distinct_sites, t.impact_count as frequency, species ORDER BY substance, species"
+      "desired_outcome": "For each species, return the substance that most often reaches TU > 1 and the number of distinct sites with these exceedances.",
+      "cypher": "UNWIND [{species: 'algae', field: 'TU_algae'},{species: 'crustacean',  field: 'TU_crustacean'},{species: 'fish',field: 'TU_fish'}] AS sp MATCH (sub:Substance)-[r:MEASURED_AT]->(sit:Site) WHERE (sp.field = 'TU_algae' AND r.TU_algae > 1) OR (sp.field = 'TU_crustacean' AND r.TU_crustacean > 1) OR (sp.field = 'TU_fish' AND r.TU_fish > 1) WITH sp.species AS species, sub.Name AS substance, count(r) AS impact_count, count(DISTINCT sit) AS distinct_sites ORDER BY species, impact_count DESC WITH species, collect({substance: substance, impact_count: impact_count, distinct_sites: distinct_sites}) AS impacts  WITH species, impacts[0..1] AS top_substances UNWIND top_substances AS t RETURN t.substance AS substance, t.distinct_sites as distinct_sites, t.impact_count as frequency, species ORDER BY substance, species",
+      "id": "D10",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "species",
+        "substance",
+        "distinct_sites"
+      ]
     },
     {
       "question": "For each species, which substances most often exceeds TU > 0.001 (potential chronic impacts), which substances are in the top 1% for all three species?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "UNWIND [{species: 'algae', field: 'TU_algae'},{species: 'crustacean', field: 'TU_crustacean'},{species: 'fish', field: 'TU_fish'}] AS sp MATCH (sub:Substance)-[r:MEASURED_AT]->(sit:Site) WHERE (sp.field = 'TU_algae' AND r.TU_algae > 0.001) OR (sp.field = 'TU_crustacean' AND r.TU_crustacean > 0.001) OR (sp.field = 'TU_fish' AND r.TU_fish > 0.001) WITH sp.species AS species, sub.Name AS substance, count(r) AS impact_count, count(DISTINCT sit) AS distinct_sites ORDER BY species, impact_count DESC WITH species, collect({substance: substance, impact_count: impact_count, distinct_sites: distinct_sites}) AS impacts,  CASE WHEN toInteger(count(DISTINCT substance) * 0.01) >= 1 THEN toInteger(count(DISTINCT substance) * 0.01) ELSE 1 END AS top_1_count WITH species, impacts[0..top_1_count] AS top_substances UNWIND top_substances AS t RETURN t.substance AS substance, t.distinct_sites as distinct_sites, t.impact_count as frequency, species ORDER BY substance, species"
+      "desired_outcome": "For each species, list the substances that most often exceed TU > 0.001, and identify the substances that are among the top 1% for all three species.",
+      "cypher": "UNWIND [{species: 'algae', field: 'TU_algae'},{species: 'crustacean', field: 'TU_crustacean'},{species: 'fish', field: 'TU_fish'}] AS sp MATCH (sub:Substance)-[r:MEASURED_AT]->(sit:Site) WHERE (sp.field = 'TU_algae' AND r.TU_algae > 0.001) OR (sp.field = 'TU_crustacean' AND r.TU_crustacean > 0.001) OR (sp.field = 'TU_fish' AND r.TU_fish > 0.001) WITH sp.species AS species, sub.Name AS substance, count(r) AS impact_count, count(DISTINCT sit) AS distinct_sites ORDER BY species, impact_count DESC WITH species, collect({substance: substance, impact_count: impact_count, distinct_sites: distinct_sites}) AS impacts,  CASE WHEN toInteger(count(DISTINCT substance) * 0.01) >= 1 THEN toInteger(count(DISTINCT substance) * 0.01) ELSE 1 END AS top_1_count WITH species, impacts[0..top_1_count] AS top_substances UNWIND top_substances AS t RETURN t.substance AS substance, t.distinct_sites as distinct_sites, t.impact_count as frequency, species ORDER BY substance, species",
+      "id": "D11",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "none",
+      "category": "analytical"
     },
     {
       "question": "For Algae: at events with sumTU > 1, how many substances typically contribute TU > 0.001 at that same site-year-quarter?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "MATCH (sit:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species {name: 'algae'}) WHERE r.sumTU > 1 WITH sit, r.year AS year, r.quarter AS quarter MATCH (sub:Substance)-[m:MEASURED_AT]->(sit) WHERE m.TU_algae > 0.001 AND m.year = year AND m.quarter = quarter WITH sit, year, quarter, count(DISTINCT sub) AS n_substances,r RETURN avg(n_substances) AS avg_contributing_substances"
+      "desired_outcome": "Return the typical (average or median) number of substances with TU_algae > 0.001 at algae events with sumTU > 1.",
+      "cypher": "MATCH (sit:Site)-[r:SUMMARIZED_IMPACT_ON]->(:Species {name: 'algae'}) WHERE r.sumTU > 1 WITH sit, r.year AS year, r.quarter AS quarter MATCH (sub:Substance)-[m:MEASURED_AT]->(sit) WHERE m.TU_algae > 0.001 AND m.year = year AND m.quarter = quarter WITH sit, year, quarter, count(DISTINCT sub) AS n_substances RETURN avg(n_substances) AS avg_contributing_substances, percentileCont(n_substances, 0.5) AS median_contributing_substances",
+      "id": "D12",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "any_value",
+      "category": "analytical",
+      "answer_columns": [
+        "avg_contributing_substances",
+        "median_contributing_substances"
+      ]
     },
     {
       "question": "For each species return the avg ratioTU and the 25th and 75th percentile of ratios across all sites?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "MATCH (sit:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WITH spec.name AS species, r.ratioTU AS ratio RETURN species, avg(ratio) as average, percentileCont(ratio, 0.25) AS p25, percentileCont(ratio, 0.75) AS p75"
+      "desired_outcome": "For each species, return the average ratioTU and its 25th and 75th percentiles.",
+      "cypher": "MATCH (sit:Site)-[r:SUMMARIZED_IMPACT_ON]->(spec:Species) WITH spec.name AS species, r.ratioTU AS ratio RETURN species, avg(ratio) as average, percentileCont(ratio, 0.25) AS p25, percentileCont(ratio, 0.75) AS p75",
+      "id": "D13",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "species",
+        "average",
+        "p25",
+        "p75"
+      ]
     },
     {
-      "question": "For site-year-quarter resolution with sites with sumTUs for algae and fish both exceeding 0.0001, what is the average ratio of sumTUs for algae and fish across sites, what are the bounds of the 95% confidence interval?",
+      "question": "For site-year-quarter events where the sumTU for both algae and fish exceeds 0.0001, what is the average ratio of the fish sumTU to the algae sumTU, and what are the 2.5th and 97.5th percentiles of this ratio?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "MATCH (sit:Site)-[r1:SUMMARIZED_IMPACT_ON]->(spec1:Species {name: 'algae'}) WHERE r1.sumTU IS NOT NULL AND r1.sumTU > 0.0001 WITH r1.quarter as quarter, r1.year as year, r1.sumTU as algae_tu, sit MATCH (sit)-[r2:SUMMARIZED_IMPACT_ON]->(spec2:Species {name: 'fish'}) WHERE r2.quarter = quarter and r2.year = year and r2.sumTU > 0.0001 WITH toFloat(r2.sumTU) / toFloat(algae_tu) as ratio RETURN avg(ratio) as avg_ratio, percentileCont(ratio, 0.025) AS ci_top, percentileCont(ratio, 0.975) AS ci_low"
+      "desired_outcome": "Return the average ratio of fish sumTU to algae sumTU and its 2.5th and 97.5th percentiles.",
+      "cypher": "MATCH (sit:Site)-[r1:SUMMARIZED_IMPACT_ON]->(:Species {name: 'algae'}) WHERE r1.sumTU > 0.0001 MATCH (sit)-[r2:SUMMARIZED_IMPACT_ON]->(:Species {name: 'fish'}) WHERE r2.year = r1.year AND r2.quarter = r1.quarter AND r2.sumTU > 0.0001 WITH toFloat(r2.sumTU) / toFloat(r1.sumTU) AS ratio RETURN avg(ratio) AS avg_ratio_fish_to_algae, percentileCont(ratio, 0.025) AS p2_5, percentileCont(ratio, 0.975) AS p97_5",
+      "id": "D14",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "category": "analytical",
+      "answer_columns": [
+        "avg_ratio_fish_to_algae",
+        "p2_5",
+        "p97_5"
+      ]
     },
     {
       "question": "Which river basins (Site.river_basin) show the highest rates of (a) detected substances, (b) driver substances, and (c) per species sumTU exceedances, and how do these metrics compare across basins?",
       "tool_calls": [],
-      "desired_outcome": "",
-      "cypher": "MATCH (:Substance)-[m:MEASURED_AT]->(sit:Site) WHERE sit.river_basin <> \"NA\" WITH count(m) AS MEASUREMENT_COUNTS, sit.river_basin as BASIN_NAME MATCH (sub:Substance)-[r:IS_DRIVER]->(:Site {river_basin: BASIN_NAME}) WITH count(DISTINCT sub) AS DISTINCT_DRIVERS, BASIN_NAME, MEASUREMENT_COUNTS, avg(r.driver_importance) AS AVG_DRIVER_IMPORTANCE MATCH (:Site {river_basin: BASIN_NAME})-[i:SUMMARIZED_IMPACT_ON]->(s:Species) WHERE i.sumTU > 1 RETURN BASIN_NAME, MEASUREMENT_COUNTS, DISTINCT_DRIVERS, AVG_DRIVER_IMPORTANCE, s.name, count(i) AS EXCEEDANCES ORDER BY MEASUREMENT_COUNTS DESC"
+      "desired_outcome": "Compare river basins with respect to detected substances, driver substances, and per-species sumTU exceedances.",
+      "cypher": "MATCH (:Substance)-[m:MEASURED_AT]->(sit:Site) WHERE sit.river_basin <> \"NA\" WITH count(m) AS MEASUREMENT_COUNTS, sit.river_basin as BASIN_NAME MATCH (sub:Substance)-[r:IS_DRIVER]->(:Site {river_basin: BASIN_NAME}) WITH count(DISTINCT sub) AS DISTINCT_DRIVERS, BASIN_NAME, MEASUREMENT_COUNTS, avg(r.driver_importance) AS AVG_DRIVER_IMPORTANCE MATCH (:Site {river_basin: BASIN_NAME})-[i:SUMMARIZED_IMPACT_ON]->(s:Species) WHERE i.sumTU > 1 RETURN BASIN_NAME, MEASUREMENT_COUNTS, DISTINCT_DRIVERS, AVG_DRIVER_IMPORTANCE, s.name, count(i) AS EXCEEDANCES ORDER BY MEASUREMENT_COUNTS DESC",
+      "id": "D15",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "none",
+      "category": "analytical"
     },
     {
       "question": "Which pairs of substances have the highest co-driver frequency (via JOINT_DRIVER_WITH relationship `frequency`), and do those substances also tend to be detected at the same sites?",
       "tool_calls": [],
-      "desired_outcome": ""
+      "desired_outcome": "Return the substance pairs with the highest JOINT_DRIVER_WITH frequency and assess whether these substances are also detected at the same sites.",
+      "id": "D16",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "none",
+      "category": "analytical"
     },
     {
       "question": "Are there countries/river basins where the driver network (substances linked by JOINT_DRIVER_WITH) is denser (more high-frequency co-driver edges), compared to others?",
       "tool_calls": [],
-      "desired_outcome": ""
+      "desired_outcome": "Compare countries or river basins with respect to the density of high-frequency co-driver edges.",
+      "id": "D17",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "none",
+      "category": "analytical"
     },
     {
       "question": "Using TESTED_FOR_TOXICITY relationships (`tox_value_mg_L`) and measured concentrations (MEASURED_AT), which substances have the smallest margin between measured levels and toxicity values (i.e., highest implied risk), and does this align with them being labeled drivers (IS_DRIVER)?",
       "tool_calls": [],
-      "desired_outcome": ""
+      "desired_outcome": "Return the substances with the smallest margin between measured concentrations and toxicity values and assess whether they are labelled as drivers.",
+      "id": "D18",
+      "source": "developer",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "none",
+      "category": "analytical"
+    },
+    {
+      "id": "W01",
+      "question": "In which sites was Iomeprol found to be a risk driver in Germany in 2010?",
+      "cypher": "MATCH (:Substance {Name: 'Iomeprol'})-[d:IS_DRIVER]->(s:Site) WHERE d.is_driver AND d.year = 2010 AND s.country = 'Germany' RETURN DISTINCT s.name AS site_name ORDER BY site_name",
+      "desired_outcome": "Return the list of sites in Germany where Iomeprol was a risk driver in 2010.",
+      "expected_tools": [
+        "CypherSearch",
+        "GeographicMap"
+      ],
+      "check": "contains_gold",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": [],
+      "answer_columns": [
+        "site_name"
+      ]
+    },
+    {
+      "id": "W02",
+      "question": "In which sites was Iomeprol found to be a risk driver in France in 2010?",
+      "cypher": "",
+      "desired_outcome": "State that there are no sites in France where Iomeprol was a risk driver in 2010, without inventing sites.",
+      "expected_tools": [
+        "CypherSearch",
+        "GeographicMap"
+      ],
+      "check": "abstain",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": []
+    },
+    {
+      "id": "W03",
+      "question": "What are the most frequent risk drivers for species algae that fall into the use class of pharmaceuticals?",
+      "cypher": "MATCH (sub:Substance)-[d:IS_DRIVER]->(:Site) WHERE d.is_driver AND d.species = 'algae' AND sub.use_groups CONTAINS 'Pharmaceutical' RETURN sub.Name AS substance, count(d) AS frequency ORDER BY frequency DESC LIMIT 5",
+      "desired_outcome": "Return pharmaceuticals ranked by how often they are risk drivers for algae.",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": [],
+      "answer_columns": [
+        "substance",
+        "frequency"
+      ]
+    },
+    {
+      "id": "W04",
+      "question": "List me 20 chemicals which are more than 10x more toxic in fish than in algae and daphnia.",
+      "cypher": "MATCH (sub:Substance)-[f:TESTED_FOR_TOXICITY]->(:Species {name: 'fish'}) MATCH (sub)-[a:TESTED_FOR_TOXICITY]->(:Species {name: 'algae'}) MATCH (sub)-[c:TESTED_FOR_TOXICITY]->(:Species {name: 'crustacean'}) WHERE f.tox_value_mg_L * 10 < a.tox_value_mg_L AND f.tox_value_mg_L * 10 < c.tox_value_mg_L RETURN sub.Name AS substance ORDER BY substance",
+      "desired_outcome": "Return up to 20 substances whose fish toxicity value is more than ten times lower than both the algae and the crustacean (daphnia) toxicity values.",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "subset_of_gold",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": [],
+      "answer_columns": [
+        "substance"
+      ]
+    },
+    {
+      "id": "W05",
+      "question": "Which estrogenic compounds have been measured, and where?",
+      "cypher": "",
+      "desired_outcome": "Explain that mode-of-action (e.g. estrogenic activity) is not annotated in the knowledge graph, and either name known estrogenic compounds that were measured (e.g. Bisphenol A, 17beta-Estradiol, 17alpha-Ethinylestradiol) or ask the user to name specific compounds. It must not claim that no estrogenic compounds were measured.",
+      "expected_tools": [
+        "CypherSearch",
+        "WikipediaSearch"
+      ],
+      "check": "none",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": []
+    },
+    {
+      "id": "W06",
+      "question": "At how many sites has DDT been measured?",
+      "cypher": "MATCH (:Substance {Name: 'DDT'})-[m:MEASURED_AT]->(s:Site) RETURN count(DISTINCT s) AS distinct_sites",
+      "desired_outcome": "Return the number of distinct sites where DDT was measured.",
+      "expected_tools": [
+        "CypherSearch"
+      ],
+      "check": "contains_gold",
+      "source": "workshop",
+      "category": "workshop",
+      "tool_calls": [],
+      "answer_columns": [
+        "distinct_sites"
+      ]
     }
   ]
 }
