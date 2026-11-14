@@ -25,3 +25,16 @@ python benchmark/summarize.py benchmark/results/<run>                     # tabl
 
 Each run directory contains `meta.json`, `runs.jsonl` (one record per question and repetition),
 `messages/` (full conversations), and the summary tables.
+
+## Results (14 November 2026, release 2026.1.0)
+
+| Agent model | Judge | Tool selection | Execution accuracy | Goal accuracy (o3) | Median latency |
+|---|---|---|---|---|---|
+| GPT-4.1 | GPT-5 (twice), o3 | 96% | 74% (40/54) | 52% | 16 s |
+| GPT-5 | GPT-4.1 (twice), o3 | 92% | 74% (40/54) | 63% | 52 s |
+
+- `results/gpt-4.1_20261114/`, `results/gpt-5_20261114/`: runs, conversations, and judgements
+  (`goal_<judge>.jsonl`); `summarize.py` reproduces the tables.
+- `results/logs/`: console output of the runs and judgements. The benchmark ran before the 120 s query
+  timeout was added; queries that blocked the database were terminated externally (`watchdog.log`).
+- A pilot run used to correct reference queries and the scoring procedure is not included.

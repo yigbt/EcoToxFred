@@ -1,0 +1,1519 @@
+{"agent_model": "gpt-4.1", "judge_model": "gpt-5", "repetitions": 3, "concurrency": 5, "n_items": 25, "started": "2026-11-14T11:40:44.179318"}
+/home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py:389: GuessedAtParserWarning: No parser was explicitly specified, so I'm using the best available HTML parser for this system ("html.parser"). This usually isn't a problem, but if you run this code on another system, or in a different virtual environment, it may use a different parser and behave differently.
+
+The code that caused this warning is on line 389 of the file /home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py. To get rid of this warning, pass the additional argument 'features="html.parser"' to the BeautifulSoup constructor.
+
+  lis = BeautifulSoup(html).find_all('li')
+/home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py:389: GuessedAtParserWarning: No parser was explicitly specified, so I'm using the best available HTML parser for this system ("html.parser"). This usually isn't a problem, but if you run this code on another system, or in a different virtual environment, it may use a different parser and behave differently.
+
+The code that caused this warning is on line 389 of the file /home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py. To get rid of this warning, pass the additional argument 'features="html.parser"' to the BeautifulSoup constructor.
+
+  lis = BeautifulSoup(html).find_all('li')
+/home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py:389: GuessedAtParserWarning: No parser was explicitly specified, so I'm using the best available HTML parser for this system ("html.parser"). This usually isn't a problem, but if you run this code on another system, or in a different virtual environment, it may use a different parser and behave differently.
+
+The code that caused this warning is on line 389 of the file /home/hertelj/PycharmProjects/ETF/EcoToxFred_code/.venv-bench/lib/python3.13/site-packages/wikipedia/wikipedia.py. To get rid of this warning, pass the additional argument 'features="html.parser"' to the BeautifulSoup constructor.
+
+  lis = BeautifulSoup(html).find_all('li')
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (substance:Substance)-[d:IS_DRIVER]->(site:Site)
+WITH site.name AS site_name, d.time_point AS time, d.species AS species, collect(DISTINCT substance.Name) AS substance_set
+WHERE size(substance_set) > 1  // Only look at cases where there is more than one driver
+WITH apoc.coll.sort(substance_set) AS sorted_set
+WITH sorted_set, count(*) AS frequency
+ORDER BY frequency DESC
+LIMIT 10
+RETURN sorted_set AS Substances, frequency AS Occurrences
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (substance:Substance)-[d:IS_DRIVER]->(site:Site)
+WITH site.name AS site_name, d.time_point AS time, d.species AS species, collect(DISTINCT substance.Name) AS substance_set
+WHERE size(substance_set) > 1  // Only consider cases with multiple drivers
+WITH apoc.coll.sort(substance_set) AS sorted_set
+WITH sorted_set, count(*) AS frequency
+ORDER BY frequency DESC
+LIMIT 10
+RETURN sorted_set AS Substances, frequency AS Occurrences
+[0m
+
+[1m> Finished chain.[0m
+D00 rep3: tool=True ex=None goal=1.0 15.3s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D00 rep1: tool=True ex=None goal=1.0 25.4s 
+D00 rep2: tool=True ex=None goal=1.0 20.3s 
+D01 rep1: tool=True ex=False goal=0.0 10.3s 
+Generated Cypher:
+[32;1m[1;3mMATCH (substance:Substance)-[d:IS_DRIVER]->(site:Site)
+WITH site.name AS site_name, d.time_point AS time, d.species AS species, collect(DISTINCT substance.Name) AS substance_set
+WHERE size(substance_set) > 1
+WITH apoc.coll.sort(substance_set) AS sorted_set
+WITH sorted_set, count(*) AS frequency
+ORDER BY frequency DESC
+LIMIT 10
+RETURN sorted_set AS Substances, frequency AS Occurrences
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)
+RETURN l.country AS Country, count(l) AS SiteCount
+ORDER BY SiteCount DESC
+LIMIT 10
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)
+RETURN l.country AS Country, count(l) AS SiteCount
+ORDER BY SiteCount DESC
+LIMIT 10
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)
+RETURN l.country AS Country, count(l) AS NumberOfSites
+ORDER BY NumberOfSites DESC
+LIMIT 10
+[0m
+
+[1m> Finished chain.[0m
+D01 rep2: tool=True ex=False goal=0.0 9.0s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH ()-[r:MEASURED_AT]->()
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+D02 rep3: tool=True ex=True goal=0.0 10.2s 
+D01 rep3: tool=True ex=False goal=0.0 25.3s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D02 rep1: tool=True ex=True goal=1.0 15.4s 
+Generated Cypher:
+[32;1m[1;3mMATCH ()-[r:MEASURED_AT]->()
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH ()-[r:MEASURED_AT]->()
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+D02 rep2: tool=True ex=True goal=1.0 10.3s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (:Site)-[r:SUMMARIZED_IMPACT_ON]->(:Species)
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+D03 rep1: tool=True ex=True goal=1.0 9.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (:Site)-[r:SUMMARIZED_IMPACT_ON]->(:Species)
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (:Site)-[r:SUMMARIZED_IMPACT_ON]->(:Species)
+RETURN min(r.year) AS MinYear, max(r.year) AS MaxYear
+[0m
+
+[1m> Finished chain.[0m
+D03 rep3: tool=True ex=True goal=1.0 9.8s 
+D04 rep2: tool=True ex=True goal=1.0 11.3s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D04 rep1: tool=True ex=True goal=1.0 10.9s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'Diuron' AND r.median_concentration > 0
+RETURN count(DISTINCT l.name) AS n_sites_with_Diuron_detected
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'Diuron' AND r.median_concentration > 0
+RETURN count(DISTINCT l) AS n_sites_with_Diuron_detected
+[0m
+
+[1m> Finished chain.[0m
+D03 rep2: tool=True ex=True goal=1.0 16.5s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'Diuron' AND r.median_concentration > 0
+RETURN count(DISTINCT l) AS n_sites_with_Diuron_detected
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+WITH l.name AS SiteName, count(DISTINCT s.DTXSID) AS DetectedSubstanceCount
+RETURN SiteName, DetectedSubstanceCount
+ORDER BY DetectedSubstanceCount DESC
+[0m
+D04 rep3: tool=True ex=True goal=1.0 11.7s 
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+WITH l.name AS SiteName, count(DISTINCT s.DTXSID) AS DetectedSubstances
+RETURN SiteName, DetectedSubstances
+ORDER BY DetectedSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+D05 rep2: tool=True ex=True goal=1.0 10.0s 
+D05 rep3: tool=True ex=True goal=1.0 10.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D05 rep1: tool=True ex=True goal=1.0 16.9s 
+API call failed on attempt 1: Request timed out.
+Max retries exceeded. Total attempts: 1, Last error: Request timed out.
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+WITH l.name AS SiteName, count(DISTINCT s.DTXSID) AS DetectedSubstances
+RETURN SiteName, DetectedSubstances
+ORDER BY DetectedSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'algae' AND r.sumTU > 1
+RETURN l.country AS Country, count(*) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+
+[1m> Finished chain.[0m
+D06 rep2: tool=True ex=True goal=None 16.3s 
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'crustacean' AND r.sumTU > 1
+RETURN l.country AS Country, count(*) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'fish' AND r.sumTU > 1
+RETURN l.country AS Country, count(DISTINCT l.name + '_' + r.year + '_' + r.quarter) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE r.sumTU > 1 AND s.name = 'crustacean'
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE r.sumTU > 1 AND s.name = 'algae'
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+[0m
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE r.sumTU > 1 AND s.name = 'fish'
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+D06 rep1: tool=True ex=True goal=1.0 13.8s 
+API call failed on attempt 1: Request timed out.
+Max retries exceeded. Total attempts: 1, Last error: Request timed out.
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'algae' AND r.sumTU > 1
+RETURN l.country AS Country, count(*) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'crustacean' AND r.sumTU > 1
+RETURN l.country AS Country, count(*) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'fish' AND r.sumTU > 1
+RETURN l.country AS Country, count(*) AS SiteYearQuarterEvents
+ORDER BY SiteYearQuarterEvents DESC
+[0m
+
+[1m> Finished chain.[0m
+D06 rep3: tool=True ex=True goal=None 17.2s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'algae' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'fish' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'crustacean' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(DISTINCT l.name + '-' + r.year + '-' + r.quarter) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'algae' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(DISTINCT l.name + '-' + r.year + '-' + r.quarter) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'crustacean' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(DISTINCT l.name + '-' + r.year + '-' + r.quarter) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'fish' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+D08 rep1: tool=True ex=True goal=1.0 10.2s 
+D07 rep3: tool=True ex=True goal=0.0 15.9s 
+D07 rep2: tool=True ex=True goal=1.0 33.6s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D08 rep2: tool=True ex=True goal=1.0 10.5s 
+D07 rep1: tool=True ex=True goal=0.0 39.2s 
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'algae' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(DISTINCT l.name + '-' + r.year + '-' + r.quarter) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'fish' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(*) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name = 'crustacean' AND r.sumTU > 0.001
+RETURN l.country AS Country, count(DISTINCT l.name + '-' + r.year + '-' + r.quarter) AS n_site_year_quarter_events
+ORDER BY n_site_year_quarter_events DESC
+LIMIT 1
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m// Step 1: Match IS_DRIVER events where is_driver = true and collect relevant info
+MATCH (s:Substance)-[d:IS_DRIVER]->(site:Site)
+WHERE d.is_driver = true
+WITH s, d, site
+
+// Step 2: Try to match a corresponding MEASURED_AT event at the same site, year, and quarter with median_concentration > 0
+OPTIONAL MATCH (s)-[m:MEASURED_AT]->(site)
+WHERE m.year = d.year AND m.quarter = d.quarter AND m.median_concentration > 0
+
+// Step 3: For each IS_DRIVER event, determine if there was a detection (1 if yes, 0 if no)
+WITH d.species AS Species, 
+     CASE WHEN m IS NOT NULL THEN 1 ELSE 0 END AS Detected
+
+// Step 4: Aggregate by species to compute the fraction of driver events with detection
+WITH Species, 
+     sum(Detected) AS n_detected, 
+     count(*) AS n_total
+RETURN Species, 
+       toFloat(n_detected) / n_total AS FractionWithDetection,
+       n_detected AS DriverEventsWithDetection,
+       n_total AS TotalDriverEvents
+ORDER BY Species
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m// Step 1: Match IS_DRIVER events where is_driver = true and collect relevant info
+MATCH (s:Substance)-[d:IS_DRIVER]->(site:Site)
+WHERE d.is_driver = true
+WITH s, site, d.year AS year, d.quarter AS quarter, d.species AS species, d.time_point AS time_point
+
+// Step 2: For each IS_DRIVER event, check if there is a corresponding MEASURED_AT with median_concentration > 0 at same site, year, quarter
+OPTIONAL MATCH (s)-[m:MEASURED_AT]->(site)
+WHERE m.year = year AND m.quarter = quarter AND m.median_concentration > 0
+
+// Step 3: Mark if detection occurred
+WITH species,
+     count(*) AS total_driver_events,
+     count(m) AS detected_driver_events
+
+// Step 4: Calculate fraction for each species
+RETURN species AS Species,
+       toFloat(detected_driver_events) / total_driver_events AS FractionWithDetection
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m// Step 1: Match IS_DRIVER relationships where is_driver = true and get relevant properties
+MATCH (s:Substance)-[d:IS_DRIVER]->(l:Site)
+WHERE d.is_driver = true
+
+// Step 2: For each IS_DRIVER event, attempt to find a matching MEASURED_AT relationship at the same site, year, and quarter
+OPTIONAL MATCH (s)-[m:MEASURED_AT]->(l)
+WHERE m.year = d.year AND m.quarter = d.quarter
+
+// Step 3: For each species, count total driver events and those with detection (median_concentration > 0)
+WITH d.species AS species,
+     count(d) AS total_driver_events,
+     count(CASE WHEN m.median_concentration > 0 THEN 1 END) AS detected_driver_events
+
+// Step 4: Calculate the fraction for each species
+RETURN species,
+       toFloat(detected_driver_events) / total_driver_events AS fraction_with_detection
+ORDER BY species
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m// Algae
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_algae > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'algae' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+
+UNION
+
+// Crustacean (Daphnia)
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_crustacean > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'crustacean' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+
+UNION
+
+// Fish
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_fish > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'fish' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+
+ORDER BY Species[0m
+
+[1m> Finished chain.[0m
+D08 rep3: tool=True ex=True goal=1.0 27.5s 
+D09 rep3: tool=True ex=True goal=1.0 12.7s 
+D09 rep2: tool=True ex=True goal=1.0 15.4s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_algae > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS n_sites
+ORDER BY n_sites DESC
+LIMIT 1
+RETURN ChemicalName, n_sites
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_fish > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS n_sites
+ORDER BY n_sites DESC
+LIMIT 1
+RETURN ChemicalName, n_sites AS NumberOfSitesWithTU_fishAbove1
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_crustacean > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS n_sites, count(r) AS n_exceedances
+ORDER BY n_exceedances DESC
+LIMIT 1
+RETURN ChemicalName, n_sites AS NumberOfSitesWithExceedance, n_exceedances AS NumberOfExceedances
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m// Algae
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_algae > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'algae' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+
+UNION
+
+// Crustacean (daphnia)
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_crustacean > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'crustacean' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+
+UNION
+
+// Fish
+MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.TU_fish > 1
+WITH s.Name AS ChemicalName, count(DISTINCT l.name) AS ExceedanceSites, 'fish' AS Species
+ORDER BY ExceedanceSites DESC
+LIMIT 1
+RETURN Species, ChemicalName, ExceedanceSites
+[0m
+D09 rep1: tool=True ex=True goal=0.0 20.5s 
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is now deprecated. Use CALL () { ... }', position=<SummaryInputPosition line=2, column=1, offset=120>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 120, 'line': 2, 'column': 1}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "EXPLAIN // Step 1: For each species, count how often each substance exceeds TU > 0.001 across all sites and time points\nCALL {\n  // Algae\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_algae > 0.001\n  RETURN s.Name AS ChemicalName, 'algae' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Crustacean (daphnia)\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_crustacean > 0.001\n  RETURN s.Name AS ChemicalName, 'crustacean' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Fish\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_fish > 0.001\n  RETURN s.Name AS ChemicalName, 'fish' AS Species, count(*) AS ExceedanceCount\n}\nWITH ChemicalName, Species, ExceedanceCount\n\n// Step 2: For each species, collect all counts to determine the top 1% threshold\nORDER BY Species, ExceedanceCount DESC\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS SubstanceCounts\n\nWITH Species, SubstanceCounts,\n     toInteger(ceil(size(SubstanceCounts) * 0.01)) AS TopN\n\n// Step 3: Extract top 1% substances for each species\nWITH Species, SubstanceCounts, TopN\nUNWIND range(0, TopN-1) AS idx\nWITH Species, SubstanceCounts[idx] AS TopSubstance\nWHERE TopSubstance IS NOT NULL\nWITH Species, TopSubstance.ChemicalName AS ChemicalName, TopSubstance.ExceedanceCount AS ExceedanceCount\n\n// Step 4: Collect top substances per species into lists for intersection\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS TopList\nWITH collect({Species: Species, TopList: TopList}) AS SpeciesTopLists\n\n// Step 5: Prepare lists for intersection\nWITH\n  [x IN SpeciesTopLists WHERE x.Species = 'algae' | x.TopList] AS AlgaeList,\n  [x IN SpeciesTopLists WHERE x.Species = 'crustacean' | x.TopList] AS CrustaceanList,\n  [x IN SpeciesTopLists WHERE x.Species = 'fish' | x.TopList] AS FishList\n\n// Step 6: Find intersection of chemical names in all three lists\nWITH\n  [x IN coalesce(head(AlgaeList), []) | x.ChemicalName] AS AlgaeNames,\n  [x IN coalesce(head(CrustaceanList), []) | x.ChemicalName] AS CrustaceanNames,\n  [x IN coalesce(head(FishList), []) | x.ChemicalName] AS FishNames\n\nWITH apoc.coll.intersection(apoc.coll.intersection(AlgaeNames, CrustaceanNames), FishNames) AS TopAcrossAllSpecies,\n     AlgaeNames, CrustaceanNames, FishNames\n\nRETURN\n  AlgaeNames AS Top1Percent_Algae,\n  CrustaceanNames AS Top1Percent_Crustacean,\n  FishNames AS Top1Percent_Fish,\n  TopAcrossAllSpecies AS Top1Percent_AllThreeSpecies\n"
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m// Step 1: For each species, count how often each substance exceeds TU > 0.001 across all sites and time points
+CALL {
+  // Algae
+  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+  WHERE r.TU_algae > 0.001
+  RETURN s.Name AS ChemicalName, 'algae' AS Species, count(*) AS ExceedanceCount
+  UNION ALL
+  // Crustacean (daphnia)
+  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+  WHERE r.TU_crustacean > 0.001
+  RETURN s.Name AS ChemicalName, 'crustacean' AS Species, count(*) AS ExceedanceCount
+  UNION ALL
+  // Fish
+  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+  WHERE r.TU_fish > 0.001
+  RETURN s.Name AS ChemicalName, 'fish' AS Species, count(*) AS ExceedanceCount
+}
+WITH ChemicalName, Species, ExceedanceCount
+
+// Step 2: For each species, collect all counts to determine the top 1% threshold
+ORDER BY Species, ExceedanceCount DESC
+WITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS SubstanceCounts
+
+WITH Species, SubstanceCounts,
+     toInteger(ceil(size(SubstanceCounts) * 0.01)) AS TopN
+
+// Step 3: Extract top 1% substances for each species
+WITH Species, SubstanceCounts, TopN
+UNWIND range(0, TopN-1) AS idx
+WITH Species, SubstanceCounts[idx] AS TopSubstance
+WHERE TopSubstance IS NOT NULL
+WITH Species, TopSubstance.ChemicalName AS ChemicalName, TopSubstance.ExceedanceCount AS ExceedanceCount
+
+// Step 4: Collect top substances per species into lists for intersection
+WITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS TopList
+WITH collect({Species: Species, TopList: TopList}) AS SpeciesTopLists
+
+// Step 5: Prepare lists for intersection
+WITH
+  [x IN SpeciesTopLists WHERE x.Species = 'algae' | x.TopList] AS AlgaeList,
+  [x IN SpeciesTopLists WHERE x.Species = 'crustacean' | x.TopList] AS CrustaceanList,
+  [x IN SpeciesTopLists WHERE x.Species = 'fish' | x.TopList] AS FishList
+
+// Step 6: Find intersection of chemical names in all three lists
+WITH
+  [x IN coalesce(head(AlgaeList), []) | x.ChemicalName] AS AlgaeNames,
+  [x IN coalesce(head(CrustaceanList), []) | x.ChemicalName] AS CrustaceanNames,
+  [x IN coalesce(head(FishList), []) | x.ChemicalName] AS FishNames
+
+WITH apoc.coll.intersection(apoc.coll.intersection(AlgaeNames, CrustaceanNames), FishNames) AS TopAcrossAllSpecies,
+     AlgaeNames, CrustaceanNames, FishNames
+
+RETURN
+  AlgaeNames AS Top1Percent_Algae,
+  CrustaceanNames AS Top1Percent_Crustacean,
+  FishNames AS Top1Percent_Fish,
+  TopAcrossAllSpecies AS Top1Percent_AllThreeSpecies
+[0m
+D10 rep1: tool=True ex=False goal=0.0 15.5s 
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is now deprecated. Use CALL () { ... }', position=<SummaryInputPosition line=2, column=1, offset=112>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 112, 'line': 2, 'column': 1}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "// Step 1: For each species, count how often each substance exceeds TU > 0.001 across all sites and time points\nCALL {\n  // Algae\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_algae > 0.001\n  RETURN s.Name AS ChemicalName, 'algae' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Crustacean (daphnia)\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_crustacean > 0.001\n  RETURN s.Name AS ChemicalName, 'crustacean' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Fish\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_fish > 0.001\n  RETURN s.Name AS ChemicalName, 'fish' AS Species, count(*) AS ExceedanceCount\n}\nWITH ChemicalName, Species, ExceedanceCount\n\n// Step 2: For each species, collect all counts to determine the top 1% threshold\nORDER BY Species, ExceedanceCount DESC\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS SubstanceCounts\n\nWITH Species, SubstanceCounts,\n     toInteger(ceil(size(SubstanceCounts) * 0.01)) AS TopN\n\n// Step 3: Extract top 1% substances for each species\nWITH Species, SubstanceCounts, TopN\nUNWIND range(0, TopN-1) AS idx\nWITH Species, SubstanceCounts[idx] AS TopSubstance\nWHERE TopSubstance IS NOT NULL\nWITH Species, TopSubstance.ChemicalName AS ChemicalName, TopSubstance.ExceedanceCount AS ExceedanceCount\n\n// Step 4: Collect top substances per species into lists for intersection\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS TopList\nWITH collect({Species: Species, TopList: TopList}) AS SpeciesTopLists\n\n// Step 5: Prepare lists for intersection\nWITH\n  [x IN SpeciesTopLists WHERE x.Species = 'algae' | x.TopList] AS AlgaeList,\n  [x IN SpeciesTopLists WHERE x.Species = 'crustacean' | x.TopList] AS CrustaceanList,\n  [x IN SpeciesTopLists WHERE x.Species = 'fish' | x.TopList] AS FishList\n\n// Step 6: Find intersection of chemical names in all three lists\nWITH\n  [x IN coalesce(head(AlgaeList), []) | x.ChemicalName] AS AlgaeNames,\n  [x IN coalesce(head(CrustaceanList), []) | x.ChemicalName] AS CrustaceanNames,\n  [x IN coalesce(head(FishList), []) | x.ChemicalName] AS FishNames\n\nWITH apoc.coll.intersection(apoc.coll.intersection(AlgaeNames, CrustaceanNames), FishNames) AS TopAcrossAllSpecies,\n     AlgaeNames, CrustaceanNames, FishNames\n\nRETURN\n  AlgaeNames AS Top1Percent_Algae,\n  CrustaceanNames AS Top1Percent_Crustacean,\n  FishNames AS Top1Percent_Fish,\n  TopAcrossAllSpecies AS Top1Percent_AllThreeSpecies\n"
+
+[1m> Finished chain.[0m
+Correcting cypher statement:
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+D10 rep2: tool=True ex=False goal=0.0 16.5s 
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is now deprecated. Use CALL () { ... }', position=<SummaryInputPosition line=2, column=1, offset=112>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 112, 'line': 2, 'column': 1}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "// Step 1: For each species, count how often each substance exceeds TU > 0.001 across all sites and time points\nCALL {\n  // Algae\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_algae > 0.001\n  RETURN s.Name AS ChemicalName, 'algae' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Crustacean (daphnia)\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_crustacean > 0.001\n  RETURN s.Name AS ChemicalName, 'crustacean' AS Species, count(*) AS ExceedanceCount\n  UNION ALL\n  // Fish\n  MATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)\n  WHERE r.TU_fish > 0.001\n  RETURN s.Name AS ChemicalName, 'fish' AS Species, count(*) AS ExceedanceCount\n}\nWITH ChemicalName, Species, ExceedanceCount\n\n// Step 2: For each species, collect all counts to determine the top 1% threshold\nORDER BY Species, ExceedanceCount DESC\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS SubstanceCounts\n\nWITH Species, SubstanceCounts,\n     toInteger(ceil(size(SubstanceCounts) * 0.01)) AS TopN\n\n// Step 3: Extract top 1% substances for each species\nWITH Species, SubstanceCounts, TopN\nUNWIND range(0, TopN-1) AS idx\nWITH Species, SubstanceCounts[idx] AS TopSubstance\nWHERE TopSubstance IS NOT NULL\nWITH Species, TopSubstance.ChemicalName AS ChemicalName, TopSubstance.ExceedanceCount AS ExceedanceCount\n\n// Step 4: Collect top substances per species into lists for intersection\nWITH Species, collect({ChemicalName: ChemicalName, ExceedanceCount: ExceedanceCount}) AS TopList\nWITH collect({Species: Species, TopList: TopList}) AS SpeciesTopLists\n\n// Step 5: Prepare lists for intersection\nWITH\n  [x IN SpeciesTopLists WHERE x.Species = 'algae' | x.TopList] AS AlgaeList,\n  [x IN SpeciesTopLists WHERE x.Species = 'crustacean' | x.TopList] AS CrustaceanList,\n  [x IN SpeciesTopLists WHERE x.Species = 'fish' | x.TopList] AS FishList\n\n// Step 6: Find intersection of chemical names in all three lists\nWITH\n  [x IN coalesce(head(AlgaeList), []) | x.ChemicalName] AS AlgaeNames,\n  [x IN coalesce(head(CrustaceanList), []) | x.ChemicalName] AS CrustaceanNames,\n  [x IN coalesce(head(FishList), []) | x.ChemicalName] AS FishNames\n\nWITH apoc.coll.intersection(apoc.coll.intersection(AlgaeNames, CrustaceanNames), FishNames) AS TopAcrossAllSpecies,\n     AlgaeNames, CrustaceanNames, FishNames\n\nRETURN\n  AlgaeNames AS Top1Percent_Algae,\n  CrustaceanNames AS Top1Percent_Crustacean,\n  FishNames AS Top1Percent_Fish,\n  TopAcrossAllSpecies AS Top1Percent_AllThreeSpecies"
+Correcting cypher statement:
+Correcting cypher statement:
+D10 rep3: tool=True ex=False goal=0.0 15.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+D11 rep1: tool=True ex=None goal=0.0 34.3s 
+Generated Cypher:
+[32;1m[1;3m// Step 1: Find all site-year-quarter events where sumTU for algae exceeds 1
+MATCH (site:Site)-[impact:SUMMARIZED_IMPACT_ON]->(species:Species)
+WHERE species.name = 'algae' AND impact.sumTU > 1
+WITH site, impact.year AS year, impact.quarter AS quarter
+
+// Step 2: For each event, count the number of substances with TU_algae > 0.001
+MATCH (sub:Substance)-[meas:MEASURED_AT]->(site)
+WHERE meas.year = year AND meas.quarter = quarter AND meas.TU_algae > 0.001
+WITH site.name AS SiteName, year, quarter, count(DISTINCT sub) AS n_substances
+
+// Step 3: Collect counts for summary statistics
+WITH collect(n_substances) AS counts
+
+// Step 4: Calculate summary statistics
+UNWIND counts AS value
+WITH counts, value
+ORDER BY value
+WITH 
+  counts,
+  value,
+  size(counts) AS n,
+  avg(value) AS mean,
+  min(value) AS min,
+  max(value) AS max,
+  apoc.coll.stdev(counts) AS stdev
+WITH 
+  counts,
+  mean,
+  min,
+  max,
+  stdev,
+  n,
+  CASE 
+    WHEN n % 2 = 1 THEN counts[toInteger(n/2)]
+    ELSE (counts[toInteger(n/2)-1] + counts[toInteger(n/2)]) / 2.0
+  END AS median
+RETURN
+  mean,
+  median,
+  min,
+  max,
+  stdev
+[0m
+
+[1m> Finished chain.[0m
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+D11 rep2: tool=True ex=None goal=0.0 21.3s 
+Generated Cypher:
+[32;1m[1;3m// Step 1: Find all site-year-quarter events where sumTU for algae exceeds 1
+MATCH (site:Site)-[impact:SUMMARIZED_IMPACT_ON]->(species:Species)
+WHERE species.name = 'algae' AND impact.sumTU > 1
+WITH site, impact.year AS year, impact.quarter AS quarter
+
+// Step 2: For each event, count the number of substances with TU_algae > 0.001
+MATCH (sub:Substance)-[meas:MEASURED_AT]->(site)
+WHERE meas.year = year AND meas.quarter = quarter AND meas.TU_algae > 0.001
+
+WITH site.name AS SiteName, year, quarter, count(DISTINCT sub) AS n_substances
+ORDER BY SiteName, year, quarter
+
+// Step 3: Summarize the typical number of such substances per event
+WITH collect(n_substances) AS substance_counts
+RETURN
+  apoc.agg.median(substance_counts) AS MedianSubstancesPerEvent,
+  avg(reduce(s = 0.0, x IN substance_counts | s + toFloat(x)) / toFloat(size(substance_counts))) AS MeanSubstancesPerEvent,
+  min(substance_counts) AS MinSubstancesPerEvent,
+  max(substance_counts) AS MaxSubstancesPerEvent,
+  size(substance_counts) AS NumberOfEvents[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D11 rep3: tool=True ex=None goal=0.0 44.5s 
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE s.name IN ['algae', 'crustacean', 'fish'] AND r.ratioTU IS NOT NULL
+WITH s.name AS Species, collect(r.ratioTU) AS ratioTUs
+WITH Species,
+     reduce(sum = 0.0, x IN ratioTUs | sum + x) / size(ratioTUs) AS avg_ratioTU,
+     apoc.coll.sort(ratioTUs) AS sorted_ratioTUs,
+     size(ratioTUs) AS n
+WITH Species, avg_ratioTU,
+     sorted_ratioTUs[toInteger(n * 0.25)] AS ratioTU_25th_percentile,
+     sorted_ratioTUs[toInteger(n * 0.75)] AS ratioTU_75th_percentile
+RETURN Species,
+       avg_ratioTU AS AverageRatioTU,
+       ratioTU_25th_percentile AS RatioTU_25thPercentile,
+       ratioTU_75th_percentile AS RatioTU_75thPercentile
+ORDER BY Species
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+D12 rep2: tool=True ex=False goal=0.0 30.6s 
+D12 rep1: tool=True ex=True goal=0.0 36.3s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+D13 rep3: tool=True ex=False goal=0.0 12.0s 
+D12 rep3: tool=True ex=True goal=0.0 16.1s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D13 rep2: tool=True ex=False goal=0.0 17.2s 
+D13 rep1: tool=True ex=True goal=0.0 12.6s 
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r1:SUMMARIZED_IMPACT_ON]->(sp1:Species),
+      (l)-[r2:SUMMARIZED_IMPACT_ON]->(sp2:Species)
+WHERE sp1.name = 'algae' AND sp2.name = 'fish'
+  AND r1.year = r2.year AND r1.quarter = r2.quarter AND r1.time_point = r2.time_point
+  AND r1.sumTU > 0.0001 AND r2.sumTU > 0.0001
+WITH r2.sumTU / r1.sumTU AS ratio
+RETURN
+  avg(ratio) AS AverageRatio,
+  percentileCont(ratio, 0.025) AS Percentile_2_5,
+  percentileCont(ratio, 0.975) AS Percentile_97_5[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Correcting cypher statement:
+Correcting cypher statement:
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDetectedSubstances
+ORDER BY NumberOfDetectedSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[:IS_DRIVER]->(l:Site)
+WHERE l.river_basin IS NOT NULL
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDriverSubstances
+ORDER BY NumberOfDriverSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m// Count sumTU exceedances per river basin and species for both thresholds
+
+// For sumTU > 1
+MATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE r.sumTU > 1
+WITH l.river_basin AS RiverBasin, s.name AS Species, count(r) AS Exceedances_GT1
+// For sumTU > 0.001
+MATCH (l2:Site)-[r2:SUMMARIZED_IMPACT_ON]->(s2:Species)
+WHERE r2.sumTU > 0.001
+WITH RiverBasin, Species, Exceedances_GT1,
+     count(r2) AS Exceedances_GT0001
+RETURN RiverBasin, Species,
+       Exceedances_GT1,
+       Exceedances_GT0001
+ORDER BY Species, Exceedances_GT1 DESC, Exceedances_GT0001 DESC
+[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDetectedSubstances
+ORDER BY NumberOfDetectedSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D14 rep1: tool=True ex=False goal=0.0 14.4s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDriverSubstances
+ORDER BY NumberOfDriverSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE (r.sumTU > 1 OR r.sumTU > 0.001)
+  AND s.name IN ['algae', 'crustacean', 'fish']
+RETURN l.river_basin AS RiverBasin,
+s.name AS SpeciesGroup,
+count(r) AS n_exceedances
+ORDER BY n_exceedances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE r.median_concentration > 0
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDetectedSubstances
+ORDER BY NumberOfDetectedSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D14 rep3: tool=True ex=False goal=0.0 15.6s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[:IS_DRIVER]->(l:Site)
+WHERE l.river_basin IS NOT NULL
+RETURN l.river_basin AS RiverBasin, count(DISTINCT s.DTXSID) AS NumberOfDriverSubstances
+ORDER BY NumberOfDriverSubstances DESC
+[0m
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (l:Site)-[r:SUMMARIZED_IMPACT_ON]->(s:Species)
+WHERE (r.sumTU > 1 OR r.sumTU > 0.001)
+  AND (s.name = 'algae' OR s.name = 'crustacean' OR s.name = 'fish')
+WITH l.river_basin AS RiverBasin, s.name AS SpeciesGroup, count(r) AS ExceedanceCount
+RETURN RiverBasin, SpeciesGroup, ExceedanceCount
+ORDER BY ExceedanceCount DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D14 rep2: tool=True ex=True goal=1.0 23.2s 
+Correcting cypher statement:
+Generated Cypher:
+[32;1m[1;3m// Step 1 & 2 combined: Find top pairs of substances with highest JOINT_DRIVER_WITH frequency
+// and check if both are detected (median_concentration > 0) at the same sites
+MATCH (s1:Substance)-[j:JOINT_DRIVER_WITH]->(s2:Substance)
+WITH s1, s2, j.frequency AS frequency
+ORDER BY frequency DESC
+LIMIT 20
+
+MATCH (s1)-[r1:MEASURED_AT]->(site:Site)<-[r2:MEASURED_AT]-(s2)
+WHERE r1.median_concentration > 0 AND r2.median_concentration > 0
+
+WITH s1.Name AS Substance1, s2.Name AS Substance2, frequency, collect(DISTINCT site.name) AS SharedSites
+RETURN 
+  Substance1, 
+  Substance2, 
+  frequency AS JointDriverFrequency,
+  CASE WHEN size(SharedSites) > 0 THEN true ELSE false END AS BothDetectedAtSameSites,
+  SharedSites
+ORDER BY JointDriverFrequency DESC
+[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D15 rep2: tool=True ex=None goal=0.0 15.2s 
+
+[1m> Finished chain.[0m
+Generated Cypher:
+[32;1m[1;3m// Step 1: Find top pairs of substances with highest JOINT_DRIVER_WITH frequency
+MATCH (s1:Substance)-[j:JOINT_DRIVER_WITH]->(s2:Substance)
+WITH s1, s2, j.frequency AS joint_driver_frequency
+ORDER BY joint_driver_frequency DESC
+LIMIT 20
+
+// Step 2: For each pair, count sites where both are detected (median_concentration > 0)
+MATCH (s1)-[r1:MEASURED_AT]->(site:Site)<-[r2:MEASURED_AT]-(s2)
+WHERE r1.median_concentration > 0 AND r2.median_concentration > 0
+WITH s1.Name AS Substance1, s2.Name AS Substance2, joint_driver_frequency,
+     count(DISTINCT site) AS CoDetectionCount
+
+RETURN Substance1, Substance2, joint_driver_frequency AS JointDriverFrequency, 
+       CoDetectionCount
+ORDER BY JointDriverFrequency DESC, CoDetectionCount DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3m// Step 1: Find top pairs of substances with highest JOINT_DRIVER_WITH frequency
+MATCH (s1:Substance)-[j:JOINT_DRIVER_WITH]->(s2:Substance)
+WITH s1, s2, j.frequency AS joint_driver_frequency
+ORDER BY joint_driver_frequency DESC
+LIMIT 20
+
+// Step 2: For each pair, count sites where both are detected (median_concentration > 0)
+MATCH (s1)-[r1:MEASURED_AT]->(site:Site)<-[r2:MEASURED_AT]-(s2)
+WHERE r1.median_concentration > 0 AND r2.median_concentration > 0
+WITH s1.Name AS Substance1, s2.Name AS Substance2, joint_driver_frequency,
+     count(DISTINCT site) AS co_detection_count
+ORDER BY joint_driver_frequency DESC, co_detection_count DESC
+
+RETURN Substance1, Substance2, joint_driver_frequency AS JointDriverFrequency,
+       co_detection_count AS CoDetectionCount
+[0m
+
+[1m> Finished chain.[0m
+D15 rep3: tool=True ex=None goal=0.0 15.5s 
+D15 rep1: tool=True ex=None goal=0.0 21.2s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s1:Substance)-[:JOINT_DRIVER_WITH]->(s2:Substance),
+      (s1)-[:IS_DRIVER]->(site:Site)
+WITH site.country AS Country, site.river_basin AS RiverBasin,
+     collect(DISTINCT s1.DTXSID) + collect(DISTINCT s2.DTXSID) AS Substances,
+     collect(DISTINCT site.name) AS Sites,
+     count(*) AS n_joint_driver_edges
+RETURN
+  Country,
+  RiverBasin,
+  n_joint_driver_edges AS TotalJointDriverEdges,
+  size(apoc.coll.toSet(Substances)) AS UniqueSubstancesInvolved,
+  size(Sites) AS SamplingSites
+ORDER BY Country, RiverBasin
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s1:Substance)-[j:JOINT_DRIVER_WITH]->(s2:Substance),
+      (s1)-[:IS_DRIVER]->(site:Site)
+WITH site.country AS Country, site.river_basin AS RiverBasin,
+     collect(DISTINCT s1.DTXSID) + collect(DISTINCT s2.DTXSID) AS Substances,
+     collect(DISTINCT site.name) AS Sites,
+     count(j) AS TotalEdges
+RETURN
+  Country,
+  RiverBasin,
+  TotalEdges AS NumberOfCoDriverEdges,
+  size(apoc.coll.toSet(Substances)) AS NumberOfUniqueSubstances,
+  size(Sites) AS NumberOfSites
+ORDER BY Country, RiverBasin
+[0m
+D16 rep2: tool=True ex=None goal=1.0 13.7s 
+
+[1m> Finished chain.[0m
+D16 rep1: tool=True ex=None goal=1.0 18.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s1:Substance)-[j:JOINT_DRIVER_WITH]->(s2:Substance),
+      (s1)-[:IS_DRIVER]->(site:Site)
+WITH site.country AS Country, site.river_basin AS RiverBasin,
+     collect(DISTINCT s1.DTXSID) + collect(DISTINCT s2.DTXSID) AS Substances,
+     collect(DISTINCT site.name) AS Sites,
+     count(j) AS TotalEdges
+RETURN
+  Country,
+  RiverBasin,
+  TotalEdges AS NumberOfCoDriverEdges,
+  size(apoc.coll.toSet(Substances)) AS NumberOfUniqueSubstances,
+  size(Sites) AS NumberOfSamplingSites
+ORDER BY Country, RiverBasin
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[m:MEASURED_AT]->(l:Site)
+OPTIONAL MATCH (s)-[t:TESTED_FOR_TOXICITY]->(sp:Species)
+OPTIONAL MATCH (s)-[d:IS_DRIVER]->(l2:Site)
+WITH s, m, t, sp, 
+     m.median_concentration AS median_conc, 
+     m.mean_concentration AS mean_conc, 
+     t.tox_value_mg_L AS tox_val, 
+     CASE 
+         WHEN t.tox_value_mg_L IS NOT NULL AND m.median_concentration IS NOT NULL AND t.tox_value_mg_L > 0 
+         THEN m.median_concentration / t.tox_value_mg_L 
+         ELSE NULL 
+     END AS margin, 
+     CASE WHEN d IS NULL THEN false ELSE true END AS is_driver
+WHERE m.median_concentration IS NOT NULL AND t.tox_value_mg_L IS NOT NULL
+RETURN DISTINCT
+    s.DTXSID AS DTXSID,
+    s.Name AS ChemicalName,
+    median_conc AS MedianConcentration_mg_L,
+    mean_conc AS MeanConcentration_mg_L,
+    sp.name AS Species,
+    tox_val AS ToxicityValue_mg_L,
+    margin AS Margin_MedianConc_to_ToxValue,
+    is_driver AS IsDriver
+ORDER BY margin ASC
+[0m
+D17 rep1: tool=True ex=None goal=1.0 13.4s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+D16 rep3: tool=True ex=None goal=1.0 21.7s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[m:MEASURED_AT]->(l:Site)
+OPTIONAL MATCH (s)-[t:TESTED_FOR_TOXICITY]->(sp:Species)
+OPTIONAL MATCH (s)-[d:IS_DRIVER]->(l2:Site)
+WITH s, m, t, sp, d,
+     CASE 
+         WHEN m.median_concentration IS NOT NULL THEN m.median_concentration
+         ELSE m.mean_concentration
+     END AS measured_concentration
+WHERE measured_concentration IS NOT NULL AND t.tox_value_mg_L IS NOT NULL
+RETURN
+    s.DTXSID AS DTXSID,
+    s.Name AS ChemicalName,
+    measured_concentration AS MeasuredConcentration,
+    m.concentration_unit AS ConcentrationUnit,
+    sp.name AS Species,
+    t.tox_value_mg_L AS ToxicityValue_mg_L,
+    measured_concentration / t.tox_value_mg_L AS MarginMeasuredToToxic,
+    CASE WHEN d IS NOT NULL THEN true ELSE false END AS IsDriver
+ORDER BY ChemicalName, Species
+[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (sub:Substance)-[m:MEASURED_AT]->(site:Site)
+MATCH (sub)-[t:TESTED_FOR_TOXICITY]->(sp:Species)
+OPTIONAL MATCH (sub)-[d:IS_DRIVER]->(driver_site:Site)
+WHERE m.median_concentration IS NOT NULL AND t.tox_value_mg_L IS NOT NULL
+WITH 
+  sub.DTXSID AS DTXSID,
+  sub.Name AS ChemicalName,
+  m.median_concentration AS MedianConcentration,
+  m.mean_concentration AS MeanConcentration,
+  m.concentration_unit AS ConcentrationUnit,
+  t.tox_value_mg_L AS ToxicityValue_mg_L,
+  sp.name AS Species,
+  CASE WHEN d IS NULL THEN false ELSE true END AS IsDriver,
+  abs(m.median_concentration - t.tox_value_mg_L) AS Margin
+RETURN 
+  DTXSID,
+  ChemicalName,
+  MedianConcentration,
+  MeanConcentration,
+  ConcentrationUnit,
+  ToxicityValue_mg_L,
+  Species,
+  IsDriver,
+  Margin
+ORDER BY Margin ASC
+[0m
+D17 rep2: tool=True ex=None goal=1.0 14.8s 
+D17 rep3: tool=True ex=None goal=1.0 13.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND l.country = 'Germany' AND r.year = 2010
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+r.driver_importance AS DriverImportance,
+l.name AS SiteName, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY r.driver_importance DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND l.country = 'Germany' AND r.year = 2010
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+r.driver_importance AS DriverImportance,
+l.name AS SiteName, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY r.driver_importance DESC
+[0m
+
+[1m> Finished chain.[0m
+W01 rep1: tool=True ex=True goal=0.0 11.9s 
+W01 rep2: tool=True ex=True goal=0.0 10.5s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND l.country = 'Germany' AND r.year = 2010
+RETURN s.Name AS ChemicalName,
+l.name AS SiteName,
+l.country AS Country,
+l.water_body AS WaterBody,
+l.river_basin AS RiverBasin,
+r.driver_importance AS DriverImportance
+ORDER BY DriverImportance DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND l.country = 'France' AND r.year = 2010
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+r.driver_importance AS DriverImportance,
+l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY r.driver_importance DESC
+[0m
+
+[1m> Finished chain.[0m
+W01 rep3: tool=True ex=True goal=0.0 14.2s 
+W02 rep1: tool=True ex=True goal=1.0 10.4s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND r.year = 2010 AND l.country = 'France'
+RETURN s.Name AS ChemicalName,
+l.name AS SiteName,
+l.country AS Country,
+l.water_body AS WaterBody,
+l.river_basin AS RiverBasin,
+r.driver_importance AS DriverImportance
+ORDER BY r.driver_importance DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.Name = 'Iomeprol' AND l.country = 'France' AND r.year = 2010
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+r.driver_importance AS DriverImportance,
+l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY r.driver_importance DESC
+[0m
+
+[1m> Finished chain.[0m
+W02 rep2: tool=True ex=True goal=1.0 13.7s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.use_groups CONTAINS 'pharmaceutical' AND r.species = 'algae'
+RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID, count(r) AS FrequencyAsDriver
+ORDER BY FrequencyAsDriver DESC
+[0m
+
+[1m> Finished chain.[0m
+W02 rep3: tool=True ex=True goal=1.0 10.0s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.use_groups CONTAINS 'pharmaceutical' AND r.species = 'algae'
+RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID, count(r) AS Frequency
+ORDER BY Frequency DESC
+[0m
+
+[1m> Finished chain.[0m
+W03 rep1: tool=True ex=False goal=0.0 16.2s 
+W03 rep2: tool=True ex=False goal=0.0 9.9s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:IS_DRIVER]->(l:Site)
+WHERE s.use_groups CONTAINS 'pharmaceutical' AND r.species = 'algae'
+RETURN s.Name AS ChemicalName, s.DTXSID AS DTXSID, count(r) AS FrequencyAsDriver
+ORDER BY FrequencyAsDriver DESC
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[tox_fish:TESTED_FOR_TOXICITY]->(sp_fish:Species),
+      (s)-[tox_algae:TESTED_FOR_TOXICITY]->(sp_algae:Species),
+      (s)-[tox_crust:TESTED_FOR_TOXICITY]->(sp_crust:Species)
+WHERE sp_fish.name = 'fish'
+  AND sp_algae.name = 'algae'
+  AND (sp_crust.name = 'crustacean' OR sp_crust.name = 'daphnia' OR sp_crust.name = 'daphnia magna')
+  AND tox_fish.tox_value_mg_L < tox_algae.tox_value_mg_L / 10
+  AND tox_fish.tox_value_mg_L < tox_crust.tox_value_mg_L / 10
+RETURN DISTINCT s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+       tox_fish.tox_value_mg_L AS FishTox_mg_L,
+       tox_algae.tox_value_mg_L AS AlgaeTox_mg_L,
+       tox_crust.tox_value_mg_L AS CrustaceanTox_mg_L
+ORDER BY FishTox_mg_L ASC
+LIMIT 20
+[0m
+
+[1m> Finished chain.[0m
+W03 rep3: tool=True ex=False goal=0.0 15.2s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[tox_fish:TESTED_FOR_TOXICITY]->(sp_fish:Species),
+      (s)-[tox_algae:TESTED_FOR_TOXICITY]->(sp_algae:Species),
+      (s)-[tox_crust:TESTED_FOR_TOXICITY]->(sp_crust:Species)
+WHERE sp_fish.name = 'fish'
+  AND sp_algae.name = 'algae'
+  AND sp_crust.name = 'crustacean'
+  AND tox_fish.tox_value_mg_L < tox_algae.tox_value_mg_L / 10
+  AND tox_fish.tox_value_mg_L < tox_crust.tox_value_mg_L / 10
+RETURN s.DTXSID AS DTXSID,
+       s.Name AS ChemicalName,
+       tox_fish.tox_value_mg_L AS FishToxValue_mg_L,
+       tox_algae.tox_value_mg_L AS AlgaeToxValue_mg_L,
+       tox_crust.tox_value_mg_L AS CrustaceanToxValue_mg_L
+ORDER BY tox_fish.tox_value_mg_L ASC
+LIMIT 20
+[0m
+
+[1m> Finished chain.[0m
+W04 rep1: tool=True ex=True goal=0.0 37.6s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[tox_fish:TESTED_FOR_TOXICITY]->(sp_fish:Species),
+      (s)-[tox_algae:TESTED_FOR_TOXICITY]->(sp_algae:Species),
+      (s)-[tox_crust:TESTED_FOR_TOXICITY]->(sp_crust:Species)
+WHERE sp_fish.name = 'fish'
+  AND sp_algae.name = 'algae'
+  AND (sp_crust.name = 'crustacean' OR sp_crust.name = 'daphnia' OR sp_crust.name = 'daphnia magna')
+  AND tox_fish.tox_value_mg_L < tox_algae.tox_value_mg_L / 10
+  AND tox_fish.tox_value_mg_L < tox_crust.tox_value_mg_L / 10
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+       tox_fish.tox_value_mg_L AS FishTox_mg_L,
+       tox_algae.tox_value_mg_L AS AlgaeTox_mg_L,
+       tox_crust.tox_value_mg_L AS CrustaceanTox_mg_L
+ORDER BY FishTox_mg_L ASC
+LIMIT 20
+[0m
+
+[1m> Finished chain.[0m
+W04 rep2: tool=True ex=True goal=0.0 14.6s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.use_groups CONTAINS 'estrogenic'
+RETURN DISTINCT s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY ChemicalName, SiteName
+[0m
+
+[1m> Finished chain.[0m
+W05 rep1: tool=True ex=None goal=0.0 8.8s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.use_groups CONTAINS 'estrogenic'
+RETURN s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY s.Name, SiteName
+[0m
+
+[1m> Finished chain.[0m
+W04 rep3: tool=True ex=True goal=1.0 18.1s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.use_groups CONTAINS 'estrogenic'
+RETURN DISTINCT s.DTXSID AS DTXSID, s.Name AS ChemicalName,
+l.name AS SiteName, l.country AS Country, l.water_body AS WaterBody, l.river_basin AS RiverBasin
+ORDER BY ChemicalName, SiteName
+[0m
+
+[1m> Finished chain.[0m
+W05 rep2: tool=True ex=None goal=0.0 15.6s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+W05 rep3: tool=True ex=None goal=0.0 10.8s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'DDT'
+RETURN count(DISTINCT l) AS NumberOfSitesMeasured
+[0m
+
+[1m> Finished chain.[0m
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'DDT'
+RETURN count(DISTINCT l) AS NumberOfSitesMeasured
+[0m
+
+[1m> Finished chain.[0m
+W06 rep1: tool=True ex=True goal=1.0 21.4s 
+
+
+[1m> Entering new GraphCypherQAChain chain...[0m
+W06 rep2: tool=True ex=True goal=1.0 19.1s 
+Generated Cypher:
+[32;1m[1;3mMATCH (s:Substance)-[r:MEASURED_AT]->(l:Site)
+WHERE s.Name = 'DDT'
+RETURN count(DISTINCT l) AS NumberOfSitesMeasured
+[0m
+
+[1m> Finished chain.[0m
+W06 rep3: tool=True ex=True goal=1.0 20.7s 
+D18 rep1: tool=False ex=None goal=0.0 592.5s ClientError: {neo4j_code: Neo.ClientError.Transaction.Terminated} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. }
+D18 rep3: tool=False ex=None goal=0.0 573.5s ClientError: {neo4j_code: Neo.ClientError.Transaction.Terminated} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. }
+D18 rep2: tool=False ex=None goal=0.0 583.0s ClientError: {neo4j_code: Neo.ClientError.Transaction.Terminated} {message: The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. } {gql_status: 50N42} {gql_status_description: error: general processing exception - unexpected error. The transaction has been terminated. Retry your operation in a new transaction, and you should see a successful result. Explicitly terminated by the user. }
+Results written to benchmark/results/20261114_114044
