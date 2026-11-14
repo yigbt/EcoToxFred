@@ -66,14 +66,15 @@ def row_values(rows, columns=None):
     return [frozenset(normalize(v) for v in row.values()) for row in rows]
 
 
-def compare(gold_rows, agent_rows, mode, answer_columns=None):
+def compare(gold_rows, agent_rows, mode, answer_columns=None, last_rows=None):
     """Return (match, row_recall) of the agent result with respect to the reference result.
 
     Only the answer columns of the reference result are compared. A reference row is found if all its
-    answer values occur together in one row of the agent result; column names are ignored.
+    answer values occur together in one row of the agent result; column names are ignored. For questions
+    without matching data, the last generated query, on which the answer is based, must return no rows.
     """
     if mode == "abstain":
-        return (len(agent_rows) == 0, None)
+        return (last_rows == 0, None)
     if agent_rows is None:
         return (False, 0.0)
     gold, agent = row_values(gold_rows, answer_columns), row_values(agent_rows)
@@ -108,14 +109,16 @@ def extract_cyphers(messages):
 
 
 def execute_all(graph, cyphers):
-    """Execute all generated queries and return the union of their rows and the errors."""
-    rows, errors = [], []
+    """Execute all generated queries and return the union of their rows, the errors, and the row count of the
+    last query (None if no query was generated)."""
+    rows, errors, last_rows = [], [], None
     for cypher in cyphers:
         result, error = run_query(graph, cypher)
         rows.extend(result or [])
+        last_rows = len(result or [])
         if error:
             errors.append(error)
-    return rows, errors
+    return rows, errors, last_rows
 
 
 def run_query(graph, cypher):
@@ -164,6 +167,9 @@ async def main(args):
     tests = json.load(open(args.test_set))["tests"]
     if args.only:
         tests = [t for t in tests if t["id"] in args.only]
+    if args.agent_model:
+        # The agent and its tools read the model name from the configuration when they are created
+        config._config["OPENAI_MODEL"] = args.agent_model
     out_dir = Path(args.out) / datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir.mkdir(parents=True, exist_ok=True)
     meta = dict(agent_model=config["OPENAI_MODEL"], judge_model=args.judge_model, repetitions=args.repetitions,
@@ -203,11 +209,12 @@ async def main(args):
 
             cyphers = extract_cyphers(messages)
             record["generated_cyphers"] = cyphers
-            agent_rows, query_errors = await asyncio.to_thread(execute_all, graph, cyphers)
+            agent_rows, query_errors, last_rows = await asyncio.to_thread(execute_all, graph, cyphers)
             record["query_errors"] = query_errors
             record["agent_rows"] = len(agent_rows)
             if item["check"] != "none" and (gold[item["id"]] is not None or item["check"] == "abstain"):
-                match, recall = compare(gold[item["id"]] or [], agent_rows, item["check"], item.get("answer_columns"))
+                match, recall = compare(gold[item["id"]] or [], agent_rows, item["check"], item.get("answer_columns"),
+                                        last_rows)
                 record["execution_match"], record["row_recall"] = match, recall
             else:
                 record["execution_match"], record["row_recall"] = None, None
@@ -233,6 +240,7 @@ if __name__ == "__main__":
     parser.add_argument("--test-set", default="test_set.json")
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--judge-model", default="gpt-5")
+    parser.add_argument("--agent-model", help="Overrides OPENAI_MODEL of the configuration")
     parser.add_argument("--out", default="benchmark/results")
     parser.add_argument("--only", nargs="*", help="Run only these item ids, e.g. D02 W01")
     parser.add_argument("--concurrency", type=int, default=5, help="Number of questions run in parallel")

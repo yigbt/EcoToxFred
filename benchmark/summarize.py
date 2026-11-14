@@ -39,7 +39,6 @@ def summarize(group):
         "judge_missing": int(group["goal_accuracy"].isna().sum()),
         "agent_errors": int(group["error"].notna().sum()),
         "median_latency_s": group["latency_s"].median(),
-        "mean_tokens": (group["input_tokens"] + group["output_tokens"]).mean(),
     })
 
 

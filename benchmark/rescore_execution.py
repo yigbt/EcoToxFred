@@ -28,8 +28,8 @@ def main(run_dir):
         item = tests[record["id"]]
         if item["check"] == "none" or (gold[item["id"]] is None and item["check"] != "abstain"):
             continue
-        agent_rows, _ = execute_all(graph, record["generated_cyphers"])
-        match, recall = compare(gold[item["id"]] or [], agent_rows, item["check"], item.get("answer_columns"))
+        agent_rows, _, last_rows = execute_all(graph, record["generated_cyphers"])
+        match, recall = compare(gold[item["id"]] or [], agent_rows, item["check"], item.get("answer_columns"), last_rows)
         if match != record["execution_match"]:
             changed += 1
             print(f"{record['id']} rep{record['repetition']}: {record['execution_match']} -> {match}")
