@@ -76,6 +76,10 @@ Patrick Scheibe - pscheibe@cbs.mpg.de
 
 If you use EcoToxFred in your work, please cite our preprint:
 
+Patrick Scheibe,  Thilo Simon Schmid, Jana Schor (2026).
+EcoToxFred: A knowledge-graph-grounded conversational agent for exploring ecotoxicological monitoring and hazard data. 
+[Scheibe et al (2026)](https://doi.org/10.1101/2025.07.04.663152)
+
 Schor & Scheibe (2025). AI-Driven Science Communication: Leveraging LLMs and Knowledge Graphs for Seamless Knowledge Exchange.
 [Schor & Scheibe (2025)](https://www.biorxiv.org/content/10.1101/2025.07.04.663152v1)
 
